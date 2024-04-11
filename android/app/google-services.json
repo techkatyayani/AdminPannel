@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "1063108267034",
+    "project_id": "krishisevakendra-8430a",
+    "storage_bucket": "krishisevakendra-8430a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063108267034:android:caf314f5c5184c1b45d5a3",
+        "android_client_info": {
+          "package_name": "com.example.adminpannal"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlqg0XfRUj88bxGyBY_eCQcDBhMdv9s9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1063108267034:android:c01586a6417e5be345d5a3",
+        "android_client_info": {
+          "package_name": "com.katyayani.krishisevakendra"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAlqg0XfRUj88bxGyBY_eCQcDBhMdv9s9w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

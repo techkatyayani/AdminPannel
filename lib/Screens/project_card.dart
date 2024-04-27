@@ -43,7 +43,7 @@ class ProjectCard extends StatelessWidget {
               const SizedBox(height: 5),
               Row(
                 children: [
-                  const _SubtitleText("Release time : "),
+                  const _SubtitleText("Today Date : "),
                   _ReleaseTimeText(data.releaseTime)
                 ],
               )

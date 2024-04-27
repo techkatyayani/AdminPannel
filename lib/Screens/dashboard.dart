@@ -1,6 +1,12 @@
+import 'dart:developer';
+
 import 'package:adminpannal/Screens/Banners.dart';
+import 'package:adminpannal/Screens/CropScreen.dart';
 import 'package:adminpannal/Screens/header.dart';
+import 'package:adminpannal/Screens/project_card.dart';
+import 'package:adminpannal/Screens/selection_bottom.dart';
 import 'package:adminpannal/Screens/sidebar.dart';
+import 'package:adminpannal/Screens/upgrade_premium_card.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -28,7 +34,17 @@ class _DashBoardState extends State<DashBoard> {
   List<Widget> screens = [
     const BannerScreen(),
     const Center(
-      child: Text("Home Screen"),
+      child: Text("Notification Screen"),
+    ),
+    const CropScreen(),
+    const Center(
+      child: Text("Admin Screen"),
+    ),
+    const Center(
+      child: Text("Others Screen"),
+    ),
+    const Center(
+      child: Text("Support Screen"),
     ),
   ];
 
@@ -44,85 +60,123 @@ class _DashBoardState extends State<DashBoard> {
                 child: Sidebar(),
               ),
             ),
-      body: SingleChildScrollView(
-          child: ResponsiveBuilder(
+      body: ResponsiveBuilder(
         mobileBuilder: (context, constraints) {
-          return Column(children: [
-            const SizedBox(height: krishiSpacing * (kIsWeb ? 1 : 2)),
-            _buildHeader(
-              onPressedMenu: () {
-                openDrawer();
-              },
-            ),
-          ]);
-        },
-        tabletBuilder: (context, constraints) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Flexible(
-                flex: (constraints.maxWidth < 950) ? 6 : 9,
-                child: const Column(
-                  children: [],
-                ),
+          return SingleChildScrollView(
+            child: Column(children: [
+              const SizedBox(height: krishiSpacing * (kIsWeb ? 1 : 2)),
+              _buildHeader(
+                onPressedMenu: () {
+                  openDrawer();
+                },
               ),
-              Flexible(
-                flex: 4,
-                child: Column(
-                  children: [
-                    const SizedBox(height: krishiSpacing * (kIsWeb ? 1 : 2)),
-                    _buildHeader(onPressedMenu: () {
-                      openDrawer();
-                    }),
-                  ],
-                ),
-              )
-            ],
+              screens[screenIndex],
+            ]),
           );
         },
         desktopBuilder: (context, constraints) {
           return Row(
+            mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Flexible(
                 flex: (constraints.maxWidth < 1360) ? 4 : 3,
-                child: const ClipRRect(
-                  borderRadius: BorderRadius.only(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(krishiBorderRadius),
                     bottomRight: Radius.circular(krishiBorderRadius),
                   ),
-                  child: Sidebar(),
+                  child: Container(
+                    color: Theme.of(context).cardColor,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+                          const SizedBox(height: krishiSpacing),
+                          Padding(
+                            padding: const EdgeInsets.all(krishiSpacing),
+                            child: ProjectCard(
+                              data: ProjectCardData(
+                                projectImage:
+                                    const AssetImage("assets/images/logo1.png"),
+                                projectName: "Katyayani Admin",
+                                releaseTime: DateTime.now(),
+                                percent: .3,
+                              ),
+                            ),
+                          ),
+                          const Divider(thickness: 1),
+                          const SizedBox(height: krishiSpacing),
+                          SelectionButton(
+                            data: [
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.grid,
+                                icon: EvaIcons.gridOutline,
+                                label: "Banner Images",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.archive,
+                                icon: EvaIcons.archiveOutline,
+                                label: "Notifications",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: Icons.energy_savings_leaf,
+                                icon: Icons.energy_savings_leaf_outlined,
+                                label: "Crops",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.activity,
+                                icon: EvaIcons.activityOutline,
+                                label: "Admin",
+                                // totalNotif: 20,
+                              ),
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.person,
+                                icon: EvaIcons.personOutline,
+                                label: "Others",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.settings,
+                                icon: EvaIcons.settingsOutline,
+                                label: "Support",
+                              ),
+                            ],
+                            onSelected: (index, value) {
+                              setState(() {
+                                screenIndex = index;
+                              });
+                              log("index : $index | label : ${value.label}");
+                            },
+                          ),
+                          const Divider(thickness: 1),
+                          const SizedBox(height: krishiSpacing),
+                          UpgradePremiumCard(
+                            backgroundColor:
+                                Theme.of(context).canvasColor.withOpacity(.4),
+                            onPressed: () {},
+                          ),
+                          const SizedBox(height: krishiSpacing),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
               Flexible(
-                flex: 9,
-                child: Column(
-                  children: [
-                    const SizedBox(height: krishiSpacing * (kIsWeb ? 1 : 2)),
-                    _buildHeader(),
-                    screens[screenIndex],
-                  ],
+                flex: 13,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const SizedBox(height: krishiSpacing * (kIsWeb ? 1 : 2)),
+                      _buildHeader(),
+                      screens[screenIndex],
+                    ],
+                  ),
                 ),
               ),
-              // Flexible(
-              //   flex: 9,
-              //   child: Column(
-              //     children: [
-              //       const SizedBox(height: krishiSpacing * (kIsWeb ? 1 : 2)),
-              //       _buildHeader(),
-              //     ],
-              //   ),
-              // ),
-              Flexible(
-                flex: 4,
-                child: Column(
-                  children: [],
-                ),
-              )
             ],
           );
         },
-      )),
+      ),
     );
   }
 

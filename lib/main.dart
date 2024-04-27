@@ -1,8 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:adminpannal/Screens/dashboard.dart';
+import 'package:adminpannal/config/themes/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'Screens/Banners.dart';
 import 'firebase_options.dart';
 
 Future<void> main() async {
@@ -18,12 +17,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
-      home: BannerScreen(),
+      debugShowCheckedModeBanner: false,
+      title: 'Katyayani Admin',
+      theme: AppTheme.basic,
+      home: const DashBoard(),
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 Future<Map<String, dynamic>> getImage() async {
@@ -8,7 +10,7 @@ Future<Map<String, dynamic>> getImage() async {
     DocumentSnapshot userSnapshot = await user1.get();
     return userSnapshot.data() as Map<String, dynamic>;
   } catch (e) {
-    print(e.toString());
+    log(e.toString());
   }
   return {};
 }

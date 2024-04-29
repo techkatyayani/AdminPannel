@@ -6,14 +6,27 @@ import 'firebase_options.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.web,
   );
+
+  await initializeFlutterFire();
+
   runApp(const MyApp());
 }
 
+
+Future<void> initializeFlutterFire() async {
+
+  await Future.wait<void>([
+
+  ]);
+}
+
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(

@@ -34,9 +34,11 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   List<Widget> screens = [
-    const BannerScreen(),
-    const NotificationScreen(),
     const CropScreen(),
+    const Center(
+      child: Text("Notification Screen"),
+    ),
+    const BannerScreen(),
     const Center(
       child: Text("Admin Screen"),
     ),

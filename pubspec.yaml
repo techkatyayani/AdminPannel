@@ -39,12 +39,12 @@ dependencies:
   flutter_staggered_grid_view: ^0.4.1
   flutter_svg: ^0.23.0+1
   get: ^4.3.8
-  image_picker: ^1.0.8
+  image_picker: ^1.1.0
   lottie: ^3.1.0
   onesignal_flutter: ^5.1.5
-  percent_indicator: ^3.4.0
   page_transition: ^2.1.0
   firebase_messaging: ^14.9.1
+  percent_indicator: ^3.4.0
 
 dev_dependencies:
   flutter_lints: ^3.0.0

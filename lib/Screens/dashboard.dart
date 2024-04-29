@@ -13,6 +13,8 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'notification_screen.dart';
+
 int screenIndex = 0;
 
 class DashBoard extends StatefulWidget {
@@ -33,9 +35,7 @@ class _DashBoardState extends State<DashBoard> {
 
   List<Widget> screens = [
     const BannerScreen(),
-    const Center(
-      child: Text("Notification Screen"),
-    ),
+    const NotificationScreen(),
     const CropScreen(),
     const Center(
       child: Text("Admin Screen"),

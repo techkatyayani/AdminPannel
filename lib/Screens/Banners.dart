@@ -29,6 +29,9 @@ class _BannerScreenState extends State<BannerScreen> {
     'plant_growth.jpg',
     'fungicide.jpg',
     'agri',
+    'refer and earn.jpg',
+    'Gst.jpg',
+    'find your product.jpg'
   ];
   List<String> hindiStripBanner = [
     'new arrival hindi.jpg',
@@ -40,6 +43,9 @@ class _BannerScreenState extends State<BannerScreen> {
     'plant_growth hindi.jpg',
     'fungicide hindi.jpg',
     'agri hindi',
+    'refer and earn hindi.jpg',
+    'Gst hindi.jpg',
+    'find your product hindi.jpg'
   ];
 
   late Future<Map<String, dynamic>> userDataFuture;

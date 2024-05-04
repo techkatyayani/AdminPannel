@@ -11,4 +11,6 @@ const krishiFontColorPallets = [
   Color.fromRGBO(170, 170, 170, 1),
 ];
 
+const krishiPrimaryColor = Color.fromRGBO(128, 109, 255, 1);
+
 const krishiNotifColor = Color.fromRGBO(74, 177, 120, 1);

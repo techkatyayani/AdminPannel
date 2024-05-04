@@ -1,3 +1,4 @@
+import 'package:adminpannal/Screens/addCropsForm.dart';
 import 'package:adminpannal/Screens/dashboard.dart';
 import 'package:adminpannal/config/themes/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -16,16 +17,12 @@ Future<void> main() async {
   runApp(const MyApp());
 }
 
-
 Future<void> initializeFlutterFire() async {
-
-  await Future.wait<void>([
-
-  ]);
+  await Future.wait<void>([]);
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {

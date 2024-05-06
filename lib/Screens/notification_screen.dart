@@ -30,14 +30,15 @@ class _NotificationScreenState extends State<NotificationScreen> {
   TextEditingController DescriptionController = TextEditingController();
 
   Future<void> sendNotification(BuildContext context, String imageUrl) async {
-    final String fcmUrl = "https://fcm.googleapis.com/fcm/send";
-    final String serverKey = "AAAA94YwzBo:APA91bEkK_So83BZUKNm-H3q6MOdKyOzN6NoFviVt3NuBq0GLppV5O3sdtZNHjJC7HNoDM_W1tAlD-e-YnVEmEEqWpD681qOp_oL0lWXV27VuhHEqOl-Y6iwhzksQuldvkgadm4j2PZJ"; // Replace with your server key
+    const String fcmUrl = "https://fcm.googleapis.com/fcm/send";
+    const String serverKey =
+        "AAAA94YwzBo:APA91bEkK_So83BZUKNm-H3q6MOdKyOzN6NoFviVt3NuBq0GLppV5O3sdtZNHjJC7HNoDM_W1tAlD-e-YnVEmEEqWpD681qOp_oL0lWXV27VuhHEqOl-Y6iwhzksQuldvkgadm4j2PZJ";
 
     Map<String, dynamic> notificationPayload = {
       "to": "/topics/Topics",
       "notification": {
         "title": titleController.text,
-        "body":  DescriptionController.text,
+        "body": DescriptionController.text,
         "image": imageUrl
       }
     };
@@ -56,14 +57,14 @@ class _NotificationScreenState extends State<NotificationScreen> {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Notification sent successfully!'),
             backgroundColor: Colors.green,
           ),
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Failed to send notification. Please try again.'),
             backgroundColor: Colors.red,
           ),
@@ -72,7 +73,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
     } catch (e) {
       print('Error sending notification: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Error sending notification. Please try again.'),
           backgroundColor: Colors.red,
         ),
@@ -80,13 +81,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
     }
   }
 
-
   Future<void> _sendNotification() async {
     setState(() {
       _isLoading = true;
     });
     if (_imageBytes != null && _imageBytes!.isNotEmpty) {
-      String? imageUrl = await uploadImageToFirebaseStorage(_imageBytes!, 'image1.jpg');
+      String? imageUrl =
+          await uploadImageToFirebaseStorage(_imageBytes!, 'image1.jpg');
       if (imageUrl != null) {
         await sendNotification(context, imageUrl);
         setState(() {
@@ -110,12 +111,13 @@ class _NotificationScreenState extends State<NotificationScreen> {
     });
   }
 
-  Widget buildImageContainer(double width, XFile? imageFile, Uint8List? imageBytes, Function() onTapChangeImage) {
+  Widget buildImageContainer(double width, XFile? imageFile,
+      Uint8List? imageBytes, Function() onTapChangeImage) {
     return Container(
       width: width * 0.3,
       height: width * 0.15,
       decoration: BoxDecoration(
-        boxShadow: [
+        boxShadow: const [
           BoxShadow(
             color: Color.fromRGBO(111, 88, 255, 1),
             spreadRadius: -3,
@@ -147,7 +149,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
               top: 0,
               right: 0,
               child: IconButton(
-                icon: Icon(Icons.edit),
+                icon: const Icon(Icons.edit),
                 color: Colors.white,
                 onPressed: onTapChangeImage,
               ),
@@ -159,7 +161,7 @@ class _NotificationScreenState extends State<NotificationScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.upload),
+                    const Icon(Icons.upload),
                     Text(
                       'Upload Image',
                       style: TextStyle(
@@ -177,9 +179,11 @@ class _NotificationScreenState extends State<NotificationScreen> {
     );
   }
 
-  Future<String?> uploadImageToFirebaseStorage(Uint8List imageBytes, String imageName) async {
+  Future<String?> uploadImageToFirebaseStorage(
+      Uint8List imageBytes, String imageName) async {
     try {
-      Reference ref = FirebaseStorage.instance.ref().child('Notification').child(imageName);
+      Reference ref =
+          FirebaseStorage.instance.ref().child('Notification').child(imageName);
       UploadTask uploadTask = ref.putData(imageBytes);
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
@@ -190,7 +194,8 @@ class _NotificationScreenState extends State<NotificationScreen> {
   }
 
   Future<void> pickImage() async {
-    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+    final XFile? pickedImage =
+        await _picker.pickImage(source: ImageSource.gallery);
 
     if (pickedImage != null) {
       final Uint8List imageBytes = await pickedImage.readAsBytes();
@@ -215,43 +220,40 @@ class _NotificationScreenState extends State<NotificationScreen> {
   Widget build(BuildContext context) {
     double width = MediaQuery.of(context).size.width;
     double height = MediaQuery.of(context).size.height;
-    return _isLoading ? Center(
-      child: Lottie.asset(
-        "assets/images/loading.json",
-        height: 140,
-      ),
-    ): Row(
-      children: [
-        Expanded(
-            child:  Column(
-              // mainAxisAlignment: MainAxisAlignment.start,
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(
-                  height: height * 0.05,
-                ),
-
-                GestureDetector(
-                  onTap: () {
-                    pickImage();
-                  },
-                  child: buildImageContainer(width, _imageFile, _imageBytes, pickImage),
-                ),
-
-
-                SizedBox(
-                  height: height * 0.05,
-                ),
-
-
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                    child:  Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Text(
+    return _isLoading
+        ? Center(
+            child: Lottie.asset(
+              "assets/images/loading.json",
+              height: 140,
+            ),
+          )
+        : Row(
+            children: [
+              Expanded(
+                  child: Column(
+                // mainAxisAlignment: MainAxisAlignment.start,
+                // crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: height * 0.05,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      pickImage();
+                    },
+                    child: buildImageContainer(
+                        width, _imageFile, _imageBytes, pickImage),
+                  ),
+                  SizedBox(
+                    height: height * 0.05,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
                             'Write Your Notification Title*',
                             style: TextStyle(
                               color: Colors.white,
@@ -259,47 +261,40 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               fontSize: width * 0.01,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        TextField(
-                          controller: titleController,
-                          onChanged: (value) {
-                            setState(() {});
-                          },
-                          decoration: InputDecoration(
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            //prefixIcon: const Icon(EvaIcons.),
-                            hintText: "Notification Title",
-                            isDense: true,
-                            fillColor: Theme.of(context).cardColor,
+                          const SizedBox(
+                            height: 20,
                           ),
-                          textInputAction: TextInputAction.search,
-                          style: TextStyle(color: krishiFontColorPallets[1]),
-                        ),
-                      ],
-                    )
-                ),
-
-                SizedBox(
-                  height: height * 0.05,
-                ),
-
-
-                Padding(
-                    padding: EdgeInsets.symmetric(horizontal: width * 0.05),
-                    child:  Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          child: Text(
+                          TextField(
+                            controller: titleController,
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                            decoration: InputDecoration(
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              //prefixIcon: const Icon(EvaIcons.),
+                              hintText: "Notification Title",
+                              isDense: true,
+                              fillColor: Theme.of(context).cardColor,
+                            ),
+                            textInputAction: TextInputAction.search,
+                            style: TextStyle(color: krishiFontColorPallets[1]),
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    height: height * 0.05,
+                  ),
+                  Padding(
+                      padding: EdgeInsets.symmetric(horizontal: width * 0.05),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
                             'Write Your Notification Description*',
                             style: TextStyle(
                               color: Colors.white,
@@ -307,92 +302,114 @@ class _NotificationScreenState extends State<NotificationScreen> {
                               fontSize: width * 0.01,
                             ),
                           ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
-
-                        TextField(
-                          controller: DescriptionController,
-                          onChanged: (value) {
-                            setState(() {});
-                          },
-                          maxLines: 5,
-                          decoration: InputDecoration(
-                            filled: true,
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                              borderSide: BorderSide.none,
-                            ),
-                            //prefixIcon: const Icon(EvaIcons.),
-                            hintText: "Notification Description",
-                            isDense: true,
-                            fillColor: Theme.of(context).cardColor,
+                          const SizedBox(
+                            height: 20,
                           ),
-                          textInputAction: TextInputAction.search,
-                          style: TextStyle(color: krishiFontColorPallets[1]),
+                          TextField(
+                            controller: DescriptionController,
+                            onChanged: (value) {
+                              setState(() {});
+                            },
+                            maxLines: 5,
+                            decoration: InputDecoration(
+                              filled: true,
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(10),
+                                borderSide: BorderSide.none,
+                              ),
+                              //prefixIcon: const Icon(EvaIcons.),
+                              hintText: "Notification Description",
+                              isDense: true,
+                              fillColor: Theme.of(context).cardColor,
+                            ),
+                            textInputAction: TextInputAction.search,
+                            style: TextStyle(color: krishiFontColorPallets[1]),
+                          ),
+                        ],
+                      )),
+                  SizedBox(
+                    height: height * 0.05,
+                  ),
+                  ElevatedButton(
+                    onPressed: _sendNotification,
+                    style: ElevatedButton.styleFrom(
+                      foregroundColor: Colors.white,
+                      backgroundColor:
+                          buttonHovered ? Colors.red : Colors.transparent,
+                      elevation: 0,
+                      side: BorderSide(
+                        color: buttonHovered
+                            ? Colors.red
+                            : const Color.fromRGBO(111, 88, 255, 1),
+                      ),
+                    ),
+                    child: Text(
+                      "Send Now",
+                      style: TextStyle(
+                        color: buttonHovered
+                            ? Colors.white
+                            : const Color.fromRGBO(111, 88, 255, 1),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: krishiSpacing * 3,
+                  ),
+                ],
+              )),
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      horizontal: width * 0.11, vertical: height * 0.05),
+                  child: Container(
+                    height: height * 0.8,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(),
+                      color: Color(
+                        int.parse("FFC4C7C5", radix: 16),
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        NoficationCard(
+                          title: titleController.text.isNotEmpty
+                              ? titleController.text
+                              : 'Write a Title',
+                          subTitle: DescriptionController.text.isNotEmpty
+                              ? DescriptionController.text
+                              : 'Write a Subtitle',
+                          selectedImage: _imageBytes,
+                        ),
+                        Container(
+                          color: Colors.black12,
+                          height: height * 0.05,
+                          child: const Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(
+                                EvaIcons.menu,
+                                color: Colors.black38,
+                              ),
+                              Icon(
+                                Icons.circle_outlined,
+                                color: Colors.black38,
+                              ),
+                              Icon(
+                                EvaIcons.arrowForward,
+                                color: Colors.black38,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
-                    )
-                ),
-
-                SizedBox(height: height * 0.05,),
-
-                ElevatedButton(
-                  onPressed: _sendNotification,
-                  child: Text(
-                    "Send Now",
-                    style: TextStyle(
-                      color: buttonHovered ? Colors.white : Color.fromRGBO(111, 88, 255, 1),
                     ),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    foregroundColor: Colors.white, backgroundColor: buttonHovered ? Colors.red : Colors.transparent,
-                    elevation: 0,
-                    side: BorderSide(
-                      color: buttonHovered ? Colors.red : Color.fromRGBO(111, 88, 255, 1),
-                    ),
-                  ),
-                )
-              ],
-            )),
-        Expanded(
-            child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: width * 0.11, vertical: height * 0.05),
-          child: Container(
-            height: height * 0.8,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(),
-                color: Color(int.parse("FFC4C7C5", radix: 16))
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                NoficationCard(
-                  title: titleController.text.isNotEmpty ? titleController.text : 'Write a Title',
-                  subTitle: DescriptionController.text.isNotEmpty ? DescriptionController.text : 'Write a Subtitle',
-                  selectedImage: _imageBytes,
                 ),
-                Container(
-                  color: Colors.black12,
-                  height: height * 0.05,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Icon(EvaIcons.menu, color: Colors.black38,),
-                      Icon(Icons.circle_outlined, color: Colors.black38,),
-                      Icon(EvaIcons.arrowForward, color: Colors.black38,),
-                    ],
-                  ),
-                )
-              ],
-            )
-          ),
-        ),
-        )
-      ],
-    ) ;
+              )
+            ],
+          );
   }
 }
 
@@ -402,42 +419,43 @@ class NoficationCard extends StatelessWidget {
   final String? imagePath;
   final Uint8List? selectedImage;
   const NoficationCard({
-    Key? key,
+    super.key,
     this.title,
     this.subTitle,
     this.imagePath,
     this.selectedImage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10),
+      padding: const EdgeInsets.all(10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             'Notification Center',
             style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
           ),
-          Divider(
+          const Divider(
             color: Colors.black12,
           ),
           Row(
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(50),
-                child: Image(
+                child: const Image(
                   image: AssetImage('assets/images/appIcon.jpg'),
                   width: 30,
                 ),
               ),
-              SizedBox(width: 10),
-              Text('krishi seva kendra', style: TextStyle(color: Colors.black54)),
-              Icon(Icons.keyboard_arrow_down, color: Colors.black54)
+              const SizedBox(width: 10),
+              const Text('krishi seva kendra',
+                  style: TextStyle(color: Colors.black54)),
+              const Icon(Icons.keyboard_arrow_down, color: Colors.black54)
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
@@ -445,12 +463,16 @@ class NoficationCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      title ?? 'Write a Title', // Display default message if title is null or empty
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 12),
+                      title ??
+                          'Write a Title', // Display default message if title is null or empty
+                      style: const TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12),
                     ),
                     Text(
                       subTitle ?? 'Write a Subtitle',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
                         fontSize: 8,
@@ -464,20 +486,20 @@ class NoficationCard extends StatelessWidget {
               Container(
                 child: selectedImage != null
                     ? Image.memory(
-                  selectedImage!,
-                  width: 50,
-                )
+                        selectedImage!,
+                        width: 50,
+                      )
                     : (imagePath != null
-                    ? Image.asset(
-                  imagePath!,
-                  width: 50,
-                )
-                    : SizedBox()),
+                        ? Image.asset(
+                            imagePath!,
+                            width: 50,
+                          )
+                        : const SizedBox()),
               )
             ],
           ),
-          SizedBox(height: 0.05),
-          Divider(
+          const SizedBox(height: 0.05),
+          const Divider(
             color: Colors.black12,
           ),
         ],
@@ -485,5 +507,3 @@ class NoficationCard extends StatelessWidget {
     );
   }
 }
-
-

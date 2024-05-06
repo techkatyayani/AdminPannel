@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:adminpannal/Screens/addCropsForm.dart';
 import 'package:adminpannal/Screens/subCropsScreen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
@@ -5,7 +6,6 @@ import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lottie/lottie.dart';
@@ -191,6 +191,7 @@ class _CropScreenState extends State<CropScreen> {
                 "Add Crops",
                 style: TextStyle(
                   fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
               ),
             ),
@@ -279,7 +280,7 @@ class _CropScreenState extends State<CropScreen> {
                           right: 0,
                           child: GestureDetector(
                             onTap: () {
-                              print(snapshot.data!.docs[index]['Name']);
+                              log(snapshot.data!.docs[index]['Name']);
                               _showUpdateDialog(
                                   snapshot.data!.docs[index].id,
                                   snapshot.data!.docs[index]['Name'],

@@ -29,7 +29,7 @@ class TodayText extends StatelessWidget {
         children: [
           Text(
             "Today",
-            style: Theme.of(context).textTheme.caption,
+            // style: Theme.of(context).textTheme.caption,
           ),
           Text(
             DateTime.now().toIso8601String().substring(0, 10),

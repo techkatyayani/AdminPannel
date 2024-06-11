@@ -3,6 +3,8 @@ import 'dart:developer';
 import 'package:adminpannal/Screens/Banners.dart';
 import 'package:adminpannal/Screens/CropScreen.dart';
 import 'package:adminpannal/Screens/header.dart';
+import 'package:adminpannal/Screens/homelayout.dart';
+import 'package:adminpannal/Screens/productCollectionScreen.dart';
 import 'package:adminpannal/Screens/project_card.dart';
 import 'package:adminpannal/Screens/selection_bottom.dart';
 import 'package:adminpannal/Screens/sidebar.dart';
@@ -34,12 +36,10 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   List<Widget> screens = [
-    const CropScreen(),
-    const NotificationScreen(),
     const BannerScreen(),
-    const Center(
-      child: Text("Admin Screen"),
-    ),
+    const NotificationScreen(),
+    const CropScreen(),
+    const ProductCollectionScreen(),
     const Center(
       child: Text("Others Screen"),
     ),
@@ -126,7 +126,7 @@ class _DashBoardState extends State<DashBoard> {
                               SelectionButtonData(
                                 activeIcon: EvaIcons.activity,
                                 icon: EvaIcons.activityOutline,
-                                label: "Admin",
+                                label: "Home Layout",
                                 // totalNotif: 20,
                               ),
                               SelectionButtonData(

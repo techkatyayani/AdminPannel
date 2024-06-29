@@ -37,9 +37,9 @@ class _DashBoardState extends State<DashBoard> {
 
   List<Widget> screens = [
     const BannerScreen(),
-    const NotificationScreen(),
     const CropScreen(),
     const ProductCollectionScreen(),
+    const NotificationScreen(),
     const Center(
       child: Text("Others Screen"),
     ),
@@ -114,11 +114,6 @@ class _DashBoardState extends State<DashBoard> {
                                 label: "Banner Images",
                               ),
                               SelectionButtonData(
-                                activeIcon: EvaIcons.archive,
-                                icon: EvaIcons.archiveOutline,
-                                label: "Notifications",
-                              ),
-                              SelectionButtonData(
                                 activeIcon: Icons.energy_savings_leaf,
                                 icon: Icons.energy_savings_leaf_outlined,
                                 label: "Crops",
@@ -128,6 +123,11 @@ class _DashBoardState extends State<DashBoard> {
                                 icon: EvaIcons.activityOutline,
                                 label: "Home Layout",
                                 // totalNotif: 20,
+                              ),
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.archive,
+                                icon: EvaIcons.archiveOutline,
+                                label: "Notifications",
                               ),
                               SelectionButtonData(
                                 activeIcon: EvaIcons.person,

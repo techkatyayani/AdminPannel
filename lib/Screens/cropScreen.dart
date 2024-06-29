@@ -1,5 +1,6 @@
 import 'dart:developer';
 import 'package:adminpannal/Screens/addCropsForm.dart';
+import 'package:adminpannal/Screens/cropDisposition.dart';
 import 'package:adminpannal/Screens/subCropsScreen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -19,6 +20,7 @@ class CropScreen extends StatefulWidget {
 }
 
 class _CropScreenState extends State<CropScreen> {
+  List<DocumentSnapshot>? _docs;
   late TextEditingController _nameController;
   late TextEditingController _imageUrlController;
 
@@ -177,23 +179,48 @@ class _CropScreenState extends State<CropScreen> {
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Align(
             alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  PageTransition(
-                    child: const AddCropsForm(),
-                    type: PageTransitionType.fade,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        child: const CropDisposition(),
+                        type: PageTransitionType.fade,
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Change Position",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                );
-              },
-              child: const Text(
-                "Add Crops",
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
                 ),
-              ),
+                // const Spacer(),
+                const SizedBox(width: 20),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        child: const AddCropsForm(),
+                        type: PageTransitionType.fade,
+                      ),
+                    );
+                  },
+                  child: const Text(
+                    "Add Crops",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -211,6 +238,11 @@ class _CropScreenState extends State<CropScreen> {
                 ),
               );
             } else {
+              _docs = snapshot.data!.docs;
+
+              _docs!.sort((a, b) =>
+                  int.parse(a['index']).compareTo(int.parse(b['index'])));
+
               return Padding(
                 padding: const EdgeInsets.only(
                     top: krishiSpacing,
@@ -229,10 +261,8 @@ class _CropScreenState extends State<CropScreen> {
                         : size.width * .25,
                   ),
                   shrinkWrap: true,
-                  itemCount: snapshot.data!.docs.length,
+                  itemCount: _docs!.length,
                   itemBuilder: (BuildContext context, int index) {
-                    Map<String, dynamic> data =
-                        snapshot.data!.docs[index].data();
                     return Stack(
                       children: [
                         GestureDetector(
@@ -241,8 +271,8 @@ class _CropScreenState extends State<CropScreen> {
                               context,
                               PageTransition(
                                   child: SubCropsScreen(
-                                    cropName: data['Name'],
-                                    cropId: snapshot.data!.docs[index].id,
+                                    cropName: _docs![index]['Name'],
+                                    cropId: _docs![index].id,
                                   ),
                                   type: PageTransitionType.topToBottom),
                             );
@@ -261,11 +291,11 @@ class _CropScreenState extends State<CropScreen> {
                                       ? size.width * .08
                                       : size.width * .2,
                                   child: Image.network(
-                                    data['Image'],
+                                    _docs![index]['Image'],
                                   ),
                                 ),
                                 Text(
-                                  data['Name'],
+                                  _docs![index]['Name'],
                                   style: const TextStyle(
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold,
@@ -280,11 +310,11 @@ class _CropScreenState extends State<CropScreen> {
                           right: 0,
                           child: GestureDetector(
                             onTap: () {
-                              log(snapshot.data!.docs[index]['Name']);
+                              log(_docs![index]['Name']);
                               _showUpdateDialog(
-                                  snapshot.data!.docs[index].id,
-                                  snapshot.data!.docs[index]['Name'],
-                                  snapshot.data!.docs[index]['Image']);
+                                  _docs![index].id,
+                                  _docs![index]['Name'],
+                                  _docs![index]['Image']);
                             },
                             child: Container(
                               width: ResponsiveBuilder.isDesktop(context)

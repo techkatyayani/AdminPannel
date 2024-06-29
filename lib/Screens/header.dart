@@ -18,7 +18,7 @@ class Header extends StatelessWidget {
 }
 
 class TodayText extends StatelessWidget {
-  const TodayText({Key? key}) : super(key: key);
+  const TodayText({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class TodayText extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
+          const Text(
             "Today",
             // style: Theme.of(context).textTheme.caption,
           ),

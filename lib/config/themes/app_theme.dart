@@ -13,7 +13,7 @@ class AppTheme {
             style: ElevatedButton.styleFrom(
           backgroundColor: const Color.fromRGBO(128, 109, 255, 1),
         ).merge(
-          ButtonStyle(elevation: MaterialStateProperty.all(0)),
+          ButtonStyle(elevation: WidgetStateProperty.all(0)),
         )),
         canvasColor: const Color.fromRGBO(31, 29, 44, 1),
         cardColor: const Color.fromRGBO(38, 40, 55, 1),

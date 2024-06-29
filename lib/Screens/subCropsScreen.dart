@@ -1,3 +1,5 @@
+import 'package:adminpannal/Screens/addCropsForm.dart';
+import 'package:adminpannal/Screens/cropCalenderScreen.dart';
 import 'package:adminpannal/Screens/symptomScreen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -279,7 +281,34 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                     );
                   }
                 }),
-            const SizedBox(height: krishiSpacing),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 30, vertical: krishiSpacing),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      PageTransition(
+                        child: CropCalanderScreen(
+                          cropName: widget.cropName,
+                          cropId: widget.cropId,
+                        ),
+                        type: PageTransitionType.fade,
+                      ),
+                    );
+                  },
+                  child: Text(
+                    "${widget.cropName} Crop Calendar",
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
+            ),
             StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('product')

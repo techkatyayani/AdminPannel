@@ -9,8 +9,12 @@ import 'package:lottie/lottie.dart';
 class CropCalendarForm extends StatefulWidget {
   final String cropId;
   final String cropName;
+  final String language;
   const CropCalendarForm(
-      {super.key, required this.cropId, required this.cropName});
+      {super.key,
+      required this.cropId,
+      required this.cropName,
+      required this.language});
 
   @override
   State<CropCalendarForm> createState() => _CropCalendarFormState();
@@ -54,7 +58,8 @@ class _CropCalendarFormState extends State<CropCalendarForm> {
           _selectedImageBytesList!.isNotEmpty) {
         for (var imageBytes in _selectedImageBytesList!) {
           final storageRef = FirebaseStorage.instance.ref();
-          final folderRef = storageRef.child('cropcalender/${widget.cropName}');
+          final folderRef = storageRef
+              .child('cropcalender/${widget.cropName} ${widget.language}');
           final imageRef =
               folderRef.child('${DateTime.now().millisecondsSinceEpoch}');
           await imageRef.putData(imageBytes).snapshotEvents.forEach((event) {
@@ -87,10 +92,15 @@ class _CropCalendarFormState extends State<CropCalendarForm> {
   Future<void> _saveImageUrlsToFirestore() async {
     try {
       final firestore = FirebaseFirestore.instance;
-      final cropCalendarRef = firestore
-          .collection('product')
-          .doc(widget.cropId)
-          .collection('CropCalendar');
+      final cropCalendarRef = widget.language == 'English'
+          ? firestore
+              .collection('product')
+              .doc(widget.cropId)
+              .collection('CropCalendar')
+          : firestore
+              .collection('product')
+              .doc(widget.cropId)
+              .collection('HindiCropCalendar');
       int? length;
       await cropCalendarRef.get().then((snapshot) {
         length = snapshot.docs.length;

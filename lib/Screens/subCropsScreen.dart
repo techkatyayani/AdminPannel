@@ -284,29 +284,53 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
             Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: 30, vertical: krishiSpacing),
-              child: Align(
-                alignment: Alignment.centerRight,
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      PageTransition(
-                        child: CropCalanderScreen(
-                          cropName: widget.cropName,
-                          cropId: widget.cropId,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          child: CropCalanderScreen(
+                              cropName: widget.cropName,
+                              cropId: widget.cropId,
+                              language: "English"),
+                          type: PageTransitionType.fade,
                         ),
-                        type: PageTransitionType.fade,
+                      );
+                    },
+                    child: const Text(
+                      "Crop Calendar English",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
-                    );
-                  },
-                  child: Text(
-                    "${widget.cropName} Crop Calendar",
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
                     ),
                   ),
-                ),
+                  const SizedBox(width: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                          child: CropCalanderScreen(
+                              cropName: widget.cropName,
+                              cropId: widget.cropId,
+                              language: "Hindi"),
+                          type: PageTransitionType.fade,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      "Crop Calendar Hindi",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
             StreamBuilder(

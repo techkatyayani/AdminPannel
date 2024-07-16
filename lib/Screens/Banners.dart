@@ -205,24 +205,24 @@ class _BannerScreenState extends State<BannerScreen> {
                               onTap: () =>
                                   _pickImageAndUpdate('best selling.jpg'),
                             ),
-                            ImageContainer(
-                              imageUrl: userData['agri advisor.jpg'] ?? '',
-                              imageName: 'agri advisor.jpg',
-                              onTap: () =>
-                                  _pickImageAndUpdate('agri advisor.jpg'),
-                            ),
+                            // ImageContainer(
+                            //   imageUrl: userData['agri advisor.jpg'] ?? '',
+                            //   imageName: 'agri advisor.jpg',
+                            //   onTap: () =>
+                            //       _pickImageAndUpdate('agri advisor.jpg'),
+                            // ),
                             ImageContainer(
                               imageUrl: userData['crop calender.jpg'] ?? '',
                               imageName: 'crop calender.jpg',
                               onTap: () =>
                                   _pickImageAndUpdate('crop calender.jpg'),
                             ),
-                            ImageContainer(
-                              imageUrl: userData['farmer favourite.jpg'] ?? '',
-                              imageName: 'farmer favourite.jpg',
-                              onTap: () =>
-                                  _pickImageAndUpdate('farmer favourite.jpg'),
-                            ),
+                            // ImageContainer(
+                            //   imageUrl: userData['farmer favourite.jpg'] ?? '',
+                            //   imageName: 'farmer favourite.jpg',
+                            //   onTap: () =>
+                            //       _pickImageAndUpdate('farmer favourite.jpg'),
+                            // ),
                           ],
                         ),
                       ),
@@ -276,24 +276,10 @@ class _BannerScreenState extends State<BannerScreen> {
                             ),
                             ImageContainer(
                               imageUrl:
-                                  userData['agri advisor hindi.jpg'] ?? '',
-                              imageName: 'agri advisor hindi.jpg',
-                              onTap: () =>
-                                  _pickImageAndUpdate('agri advisor hindi.jpg'),
-                            ),
-                            ImageContainer(
-                              imageUrl:
                                   userData['crop calender hindi.jpg'] ?? '',
                               imageName: 'crop calender hindi.jpg',
                               onTap: () => _pickImageAndUpdate(
                                   'crop calender hindi.jpg'),
-                            ),
-                            ImageContainer(
-                              imageUrl:
-                                  userData['farmer favourite hindi.jpg'] ?? '',
-                              imageName: 'farmer favourite hindi.jpg',
-                              onTap: () =>
-                                  _pickImageAndUpdate('150 product hindi.jpg'),
                             ),
                           ],
                         ),
@@ -414,6 +400,152 @@ class _BannerScreenState extends State<BannerScreen> {
                         ),
                       ),
                     ),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'Agri Advisor Banner',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.01,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          ImageContainer(
+                            imageUrl: userData['agri advisor.jpg'] ?? '',
+                            imageName: 'agri advisor.jpg',
+                            onTap: () =>
+                                _pickImageAndUpdate('agri advisor.jpg'),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "Agri Advisor English",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ImageContainer(
+                            imageUrl: userData['agri advisor hindi.jpg'] ?? '',
+                            imageName: 'agri advisor hindi.jpg',
+                            onTap: () =>
+                                _pickImageAndUpdate('agri advisor hindi.jpg'),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "Agri Advisor Hindi",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'Wallet Banner',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.01,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          ImageContainer(
+                            imageUrl: userData['wallet_english'] ?? '',
+                            imageName: 'wallet_english',
+                            onTap: () => _pickImageAndUpdate('wallet_english'),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "Wallet Banner English",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ImageContainer(
+                            imageUrl: userData['wallet_hindi'] ?? '',
+                            imageName: 'wallet_hindi',
+                            onTap: () => _pickImageAndUpdate('wallet_hindi'),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "Wallet Banner Hindi",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Text(
+                          'Refer & Earn Banner',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: width * 0.01,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      Column(
+                        children: [
+                          ImageContainer(
+                            imageUrl: userData['refer_english'] ?? '',
+                            imageName: 'refer_english',
+                            onTap: () => _pickImageAndUpdate('refer_english'),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "Refer Banner English",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          ImageContainer(
+                            imageUrl: userData['refer_hindi'] ?? '',
+                            imageName: 'refer_hindi',
+                            onTap: () => _pickImageAndUpdate('refer_hindi'),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            "Refer Banner Hindi",
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ],
               ),

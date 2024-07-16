@@ -2,8 +2,8 @@ import 'dart:developer';
 
 import 'package:adminpannal/Screens/Banners.dart';
 import 'package:adminpannal/Screens/CropScreen.dart';
+import 'package:adminpannal/Screens/discountCoupons.dart';
 import 'package:adminpannal/Screens/header.dart';
-import 'package:adminpannal/Screens/homelayout.dart';
 import 'package:adminpannal/Screens/productCollectionScreen.dart';
 import 'package:adminpannal/Screens/project_card.dart';
 import 'package:adminpannal/Screens/selection_bottom.dart';
@@ -40,11 +40,12 @@ class _DashBoardState extends State<DashBoard> {
     const CropScreen(),
     const ProductCollectionScreen(),
     const NotificationScreen(),
+    const DiscountCoupons(),
     const Center(
-      child: Text("Others Screen"),
+      child: Text("Comming Soon"),
     ),
     const Center(
-      child: Text("Support Screen"),
+      child: Text("Comming Soon"),
     ),
   ];
 
@@ -128,6 +129,11 @@ class _DashBoardState extends State<DashBoard> {
                                 activeIcon: EvaIcons.archive,
                                 icon: EvaIcons.archiveOutline,
                                 label: "Notifications",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: Icons.discount_outlined,
+                                icon: Icons.discount_outlined,
+                                label: "Discount Coupons",
                               ),
                               SelectionButtonData(
                                 activeIcon: EvaIcons.person,

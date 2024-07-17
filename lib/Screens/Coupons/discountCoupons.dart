@@ -1,4 +1,4 @@
-import 'package:adminpannal/Screens/addDiscountcoupon.dart';
+import 'package:adminpannal/Screens/Coupons/addDiscountcoupon.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';

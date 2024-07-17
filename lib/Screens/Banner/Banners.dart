@@ -1,5 +1,6 @@
 import 'dart:typed_data';
 
+import 'package:adminpannal/Screens/Banner/stripBanners.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -7,6 +8,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 import 'package:adminpannal/constants/app_constants.dart';
+import 'package:page_transition/page_transition.dart';
 
 class BannerScreen extends StatefulWidget {
   const BannerScreen({super.key});
@@ -46,8 +48,28 @@ class _BannerScreenState extends State<BannerScreen> {
     'find your product hindi.jpg'
   ];
 
+  final List<String> productBetweenStripBanners = [
+    'stripBanner1',
+    'stripBanner2',
+    'stripBanner3',
+    'stripBanner4',
+    'stripBanner5',
+    'stripBanner6',
+    'stripBanner7',
+    'stripBanner8',
+  ];
+  final List<String> productBetweenStripBannersHindi = [
+    'stripBannerHindi1',
+    'stripBannerHindi2',
+    'stripBannerHindi3',
+    'stripBannerHindi4',
+    'stripBannerHindi5',
+    'stripBannerHindi6',
+    'stripBannerHindi7',
+    'stripBannerHindi8',
+  ];
+
   late Future<Map<String, dynamic>> userDataFuture;
-  final ImagePicker _picker = ImagePicker();
   bool isLoading = false;
 
   @override
@@ -154,6 +176,11 @@ class _BannerScreenState extends State<BannerScreen> {
                 _buildBannerSection(
                     'Hindi Strip Banners', hindiStripBanner, userData, width),
                 const SizedBox(height: krishiSpacing),
+                _buildBannerSection('English Products Between Strip Banners',
+                    productBetweenStripBanners, userData, width),
+                _buildBannerSection('Hindi Products Between Strip Banners',
+                    productBetweenStripBannersHindi, userData, width),
+                const SizedBox(height: krishiSpacing),
                 _buildImageSection(
                     'Agri Advisor Banner',
                     ['agri advisor.jpg', 'agri advisor hindi.jpg'],
@@ -191,12 +218,43 @@ class _BannerScreenState extends State<BannerScreen> {
     );
   }
 
+  Widget _buildStripBannersHeader(
+      String title, double width, List<String> bannersList) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(20),
+          child: Text(title,
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: width * 0.01)),
+        ),
+        TextButton(
+          onPressed: () {
+            Navigator.push(
+                context,
+                PageTransition(
+                    child: StripBannerScreen(
+                        bannersList: bannersList, screenName: title),
+                    type: PageTransitionType.fade));
+          },
+          child: const Text(
+            "View All >",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _buildBannerSection(String title, List<String> banners,
       Map<String, dynamic> userData, double width) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildSectionHeader(title, width),
+        _buildStripBannersHeader(title, width, banners),
         SizedBox(
           height: MediaQuery.of(context).size.height * .1,
           child: Scrollbar(
@@ -275,11 +333,10 @@ class ImageContainer extends StatefulWidget {
   final VoidCallback onTap;
 
   const ImageContainer(
-      {Key? key,
+      {super.key,
       required this.imageUrl,
       required this.imageName,
-      required this.onTap})
-      : super(key: key);
+      required this.onTap});
 
   @override
   _ImageContainerState createState() => _ImageContainerState();

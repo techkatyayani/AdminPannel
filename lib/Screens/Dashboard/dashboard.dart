@@ -1,21 +1,20 @@
 import 'dart:developer';
-
-import 'package:adminpannal/Screens/Banners.dart';
-import 'package:adminpannal/Screens/CropScreen.dart';
-import 'package:adminpannal/Screens/discountCoupons.dart';
-import 'package:adminpannal/Screens/header.dart';
-import 'package:adminpannal/Screens/productCollectionScreen.dart';
-import 'package:adminpannal/Screens/project_card.dart';
-import 'package:adminpannal/Screens/selection_bottom.dart';
-import 'package:adminpannal/Screens/sidebar.dart';
-import 'package:adminpannal/Screens/upgrade_premium_card.dart';
+import 'package:adminpannal/Screens/Banner/Banners.dart';
+import 'package:adminpannal/Screens/Coupons/discountCoupons.dart';
+import 'package:adminpannal/Screens/Crops/cropScreen.dart';
+import 'package:adminpannal/Screens/Dashboard/header.dart';
+import 'package:adminpannal/Screens/HomeLayout/productCollectionScreen.dart';
+import 'package:adminpannal/Screens/Dashboard/project_card.dart';
+import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
+import 'package:adminpannal/Screens/Dashboard/sidebar.dart';
+import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'notification_screen.dart';
+import '../Notification/notification_screen.dart';
 
 int screenIndex = 0;
 

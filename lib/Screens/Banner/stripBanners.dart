@@ -1,9 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:lottie/lottie.dart';
 
@@ -11,7 +11,7 @@ class StripBannerScreen extends StatefulWidget {
   final List<String> bannersList;
   final String screenName;
   const StripBannerScreen({
-    Key? key,
+    super.key,
     required this.bannersList,
     required this.screenName,
   });
@@ -24,7 +24,6 @@ class _StripBannerScreenState extends State<StripBannerScreen> {
   bool isLoading = false;
   late Future<Map<String, dynamic>> stripBannerImage;
 
-  final ImagePicker _picker = ImagePicker();
   @override
   void initState() {
     super.initState();
@@ -65,7 +64,9 @@ class _StripBannerScreenState extends State<StripBannerScreen> {
           .child(imageName)
           .delete()
           .catchError((error) {
-        print('Error deleting existing image: $error');
+        if (kDebugMode) {
+          print('Error deleting existing image: $error');
+        }
       });
       String? imageUrl =
           await _uploadImage(imageBytes: fileBytes, imageName: imageName);
@@ -90,7 +91,9 @@ class _StripBannerScreenState extends State<StripBannerScreen> {
       TaskSnapshot snapshot = await uploadTask;
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
-      print('Error uploading image: $e');
+      if (kDebugMode) {
+        print('Error uploading image: $e');
+      }
       return null;
     }
   }
@@ -103,13 +106,14 @@ class _StripBannerScreenState extends State<StripBannerScreen> {
           .doc('Category')
           .set({imageName: imageUrl}, SetOptions(merge: true));
     } catch (e) {
-      print('Error updating image URL in Firestore: $e');
+      if (kDebugMode) {
+        print('Error updating image URL in Firestore: $e');
+      }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    double width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.screenName),

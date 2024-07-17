@@ -1,6 +1,5 @@
-import 'package:adminpannal/Screens/addCropsForm.dart';
-import 'package:adminpannal/Screens/cropCalenderScreen.dart';
-import 'package:adminpannal/Screens/symptomScreen.dart';
+import 'package:adminpannal/Screens/Crops/cropCalenderScreen.dart';
+import 'package:adminpannal/Screens/Crops/symptomScreen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

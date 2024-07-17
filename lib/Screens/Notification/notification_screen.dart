@@ -9,7 +9,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lottie/lottie.dart';
 import 'package:path/path.dart' as Path;
 import 'package:http/http.dart' as http;
-import '../constants/app_constants.dart';
+import '../../constants/app_constants.dart';
 
 class NotificationScreen extends StatefulWidget {
   const NotificationScreen({super.key});

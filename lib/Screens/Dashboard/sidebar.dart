@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:adminpannal/Screens/dashboard.dart';
-import 'package:adminpannal/Screens/project_card.dart';
-import 'package:adminpannal/Screens/selection_bottom.dart';
-import 'package:adminpannal/Screens/upgrade_premium_card.dart';
+import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
+import 'package:adminpannal/Screens/Dashboard/project_card.dart';
+import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
+import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';

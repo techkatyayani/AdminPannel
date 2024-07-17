@@ -225,7 +225,10 @@ class _ImageContainerState extends State<ImageContainer> {
               child: Visibility(
                 visible: isHovered,
                 child: Container(
-                  color: Colors.black.withOpacity(0.5),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black54,
+                  ),
                   child: const Align(
                     alignment: Alignment.center,
                     child: Column(

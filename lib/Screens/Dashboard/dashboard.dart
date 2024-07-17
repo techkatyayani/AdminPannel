@@ -8,11 +8,14 @@ import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
 import 'package:adminpannal/Screens/Dashboard/sidebar.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
+import 'package:adminpannal/Screens/Others/others_screen.dart';
+import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
 import '../Notification/notification_screen.dart';
 
@@ -40,12 +43,8 @@ class _DashBoardState extends State<DashBoard> {
     const ProductCollectionScreen(),
     const NotificationScreen(),
     const DiscountCoupons(),
-    const Center(
-      child: Text("Comming Soon"),
-    ),
-    const Center(
-      child: Text("Comming Soon"),
-    ),
+    ImageUploadScreen(),
+    const SupportScreen(),
   ];
 
   @override

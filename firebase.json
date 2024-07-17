@@ -1,33 +1,39 @@
 {
-    "flutter": {
-        "platforms": {
-            "android": {
-                "default": {
-                    "projectId": "krishisevakendra-8430a",
-                    "appId": "1:1063108267034:android:caf314f5c5184c1b45d5a3",
-                    "fileOutput": "android/app/google-services.json"
-                }
-            },
-            "dart": {
-                "lib/firebase_options.dart": {
-                    "projectId": "krishisevakendra-8430a",
-                    "configurations": {
-                        "android": "1:1063108267034:android:caf314f5c5184c1b45d5a3",
-                        "ios": "1:1063108267034:ios:959ef8896527c73145d5a3",
-                        "macos": "1:1063108267034:ios:959ef8896527c73145d5a3",
-                        "web": "1:1063108267034:web:89645ed1a82d865645d5a3",
-                        "windows": "1:1063108267034:web:f94e1af5cd62dbd845d5a3"
-                    }
-                }
-            }
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "krishisevakendra-8430a",
+          "appId": "1:1063108267034:android:caf314f5c5184c1b45d5a3",
+          "fileOutput": "android/app/google-services.json"
         }
-    },
-    "hosting": {
-        "public": "build/web",
-        "ignore": [
-            "firebase.json",
-            "**/.*",
-            "**/node_modules/**"
-        ]
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "krishisevakendra-8430a",
+          "configurations": {
+            "android": "1:1063108267034:android:caf314f5c5184c1b45d5a3",
+            "ios": "1:1063108267034:ios:959ef8896527c73145d5a3",
+            "macos": "1:1063108267034:ios:959ef8896527c73145d5a3",
+            "web": "1:1063108267034:web:89645ed1a82d865645d5a3",
+            "windows": "1:1063108267034:web:f94e1af5cd62dbd845d5a3"
+          }
+        }
+      }
     }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
 }

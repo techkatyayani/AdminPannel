@@ -187,6 +187,18 @@ class _BannerScreenState extends State<BannerScreen> {
                     userData,
                     width),
                 const SizedBox(height: krishiSpacing),
+                _buildImageSection(
+                    'Soil Testing',
+                    ['soil_testing_english', 'soil_testing_hindi'],
+                    userData,
+                    width),
+                const SizedBox(height: krishiSpacing),
+                _buildImageSection(
+                    'Water Testing',
+                    ['water_testing_english', 'water_testing_hindi'],
+                    userData,
+                    width),
+                const SizedBox(height: krishiSpacing),
                 _buildImageSection('Wallet Banner',
                     ['wallet_english', 'wallet_hindi'], userData, width),
                 const SizedBox(height: krishiSpacing),
@@ -372,7 +384,10 @@ class _ImageContainerState extends State<ImageContainer> {
               child: Visibility(
                 visible: isHovered,
                 child: Container(
-                  color: Colors.black54,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                    color: Colors.black54,
+                  ),
                   child: const Center(
                     child: Text('Edit',
                         style: TextStyle(

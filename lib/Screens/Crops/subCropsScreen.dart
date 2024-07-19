@@ -5,10 +5,8 @@ import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
@@ -31,6 +29,8 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
   late TextEditingController _idController;
   @override
   void initState() {
+    print(widget.cropId);
+    print(widget.cropName);
     super.initState();
     _nameController = TextEditingController();
     _imageUrlController = TextEditingController();
@@ -188,7 +188,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
     );
   }
 
-  void _updateTopImage() async {
+  void _updateTopImage(String imageName) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.image,
       allowMultiple: false,
@@ -198,7 +198,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
       Reference ref = FirebaseStorage.instance
           .ref()
           .child('product_images')
-          .child('${widget.cropId}.jpg');
+          .child('${widget.cropId}$imageName.jpg');
       Uint8List uint8List = result.files.single.bytes!;
       UploadTask uploadTask = ref.putData(uint8List);
       TaskSnapshot snapshot = await uploadTask;
@@ -208,7 +208,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
           .collection('product')
           .doc(widget.cropId)
           .update({
-        'image2': imageUrl,
+        imageName: imageUrl,
       });
     }
   }
@@ -235,47 +235,131 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                       ConnectionState.waiting) {
                     return Container();
                   } else {
-                    return Stack(
+                    return Row(
                       children: [
-                        SizedBox(
-                          height: ResponsiveBuilder.isDesktop(context)
-                              ? size.width * .12
-                              : size.width * .2,
-                          width: double.infinity,
-                          child: Image.network(
-                            snapshot.data['image2'],
-                            fit: BoxFit.fitWidth,
-                          ),
-                        ),
-                        Positioned(
-                          top: 0,
-                          right: 0,
-                          child: GestureDetector(
-                            onTap: _updateTopImage,
-                            child: Container(
-                              width: ResponsiveBuilder.isDesktop(context)
-                                  ? size.width * .1
-                                  : size.width * .15,
-                              height: ResponsiveBuilder.isDesktop(context)
-                                  ? size.width * .03
-                                  : size.width * .06,
-                              decoration: BoxDecoration(
-                                borderRadius: const BorderRadius.only(
-                                  bottomLeft: Radius.circular(10),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 30),
+                            child: Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    SizedBox(
+                                      height:
+                                          ResponsiveBuilder.isDesktop(context)
+                                              ? size.width * .12
+                                              : size.width * .2,
+                                      width: double.infinity,
+                                      child: Image.network(
+                                        snapshot.data['image2'],
+                                        fit: BoxFit.contain,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    const Text(
+                                      "English Banner",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 22),
+                                    ),
+                                  ],
                                 ),
-                                color: Colors.black.withOpacity(.8),
-                              ),
-                              child: const Center(
-                                child: Text(
-                                  "Edit",
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      _updateTopImage('image2');
+                                    },
+                                    child: Container(
+                                      width:
+                                          ResponsiveBuilder.isDesktop(context)
+                                              ? size.width * .1
+                                              : size.width * .15,
+                                      height:
+                                          ResponsiveBuilder.isDesktop(context)
+                                              ? size.width * .03
+                                              : size.width * .06,
+                                      decoration: BoxDecoration(
+                                        borderRadius: const BorderRadius.only(
+                                          bottomLeft: Radius.circular(10),
+                                        ),
+                                        color: Colors.black.withOpacity(.8),
+                                      ),
+                                      child: const Center(
+                                        child: Text(
+                                          "Edit",
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                        )
+                        ),
+                        Expanded(
+                          child: Stack(
+                            children: [
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: ResponsiveBuilder.isDesktop(context)
+                                        ? size.width * .12
+                                        : size.width * .2,
+                                    width: double.infinity,
+                                    child: Image.network(
+                                      snapshot.data['hindiimage2'] ??
+                                          imagePlaceholder,
+                                      fit: BoxFit.contain,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  const Text(
+                                    "Hindi Banner",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 22),
+                                  ),
+                                ],
+                              ),
+                              Positioned(
+                                top: 0,
+                                right: 0,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    _updateTopImage('hindiimage2');
+                                  },
+                                  child: Container(
+                                    width: ResponsiveBuilder.isDesktop(context)
+                                        ? size.width * .1
+                                        : size.width * .15,
+                                    height: ResponsiveBuilder.isDesktop(context)
+                                        ? size.width * .03
+                                        : size.width * .06,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.only(
+                                        bottomLeft: Radius.circular(10),
+                                      ),
+                                      color: Colors.black.withOpacity(.8),
+                                    ),
+                                    child: const Center(
+                                      child: Text(
+                                        "Edit",
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
                       ],
                     );
                   }

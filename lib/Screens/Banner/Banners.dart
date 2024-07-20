@@ -30,7 +30,9 @@ class _BannerScreenState extends State<BannerScreen> {
     'agri',
     'refer and earn.jpg',
     'Gst.jpg',
-    'find your product.jpg'
+    'find your product.jpg',
+    'shopByCategoryEn',
+    'shopByCropEn'
   ];
 
   final List<String> hindiStripBanner = [
@@ -45,7 +47,9 @@ class _BannerScreenState extends State<BannerScreen> {
     'agri hindi',
     'refer and earn hindi.jpg',
     'Gst hindi.jpg',
-    'find your product hindi.jpg'
+    'find your product hindi.jpg',
+    'shopByCategoryHi',
+    'shopByCropHi',
   ];
 
   final List<String> productBetweenStripBanners = [
@@ -204,8 +208,8 @@ class _BannerScreenState extends State<BannerScreen> {
                 const SizedBox(height: krishiSpacing),
                 _buildImageSection('Refer & Earn Banner',
                     ['refer_english', 'refer_hindi'], userData, width),
-                _buildImageSection(
-                    'Track Order Banner', ['track.jpg'], userData, width),
+                _buildImageSection('Track Order Banner',
+                    ['track.jpg', 'trackHindi.jpg'], userData, width),
               ],
             ),
           );

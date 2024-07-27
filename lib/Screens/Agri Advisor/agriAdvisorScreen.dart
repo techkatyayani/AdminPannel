@@ -81,7 +81,7 @@ class _AgriAdvisorScreenState extends State<AgriAdvisorScreen> {
                         Row(
                           children: [
                             const Text(
-                              "Discounted Fees : ",
+                              "Discounted Price : ",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
@@ -97,7 +97,7 @@ class _AgriAdvisorScreenState extends State<AgriAdvisorScreen> {
                         Row(
                           children: [
                             const Text(
-                              "Actual Fees : ",
+                              "Actual Price : ",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),

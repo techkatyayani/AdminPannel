@@ -23,29 +23,30 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Katyayani Admin',
       theme: AppTheme.basic,
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          // Check if the user is logged in or not
-          if (snapshot.connectionState == ConnectionState.active) {
-            User? user = snapshot.data;
-            if (user == null) {
-              // If user is not logged in, show the login screen
-              return const LoginScreen();
-            } else {
-              // If user is logged in, show the dashboard screen
-              return const DashBoard();
-            }
-          } else {
-            // Show a loading spinner while checking the authentication state
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
-          }
-        },
-      ),
+      home: const DashBoard(),
+      // home: StreamBuilder<User?>(
+      //   stream: FirebaseAuth.instance.authStateChanges(),
+      //   builder: (context, snapshot) {
+      //     // Check if the user is logged in or not
+      //     if (snapshot.connectionState == ConnectionState.active) {
+      //       User? user = snapshot.data;
+      //       if (user == null) {
+      //         // If user is not logged in, show the login screen
+      //         return const LoginScreen();
+      //       } else {
+      //         // If user is logged in, show the dashboard screen
+      //         return const DashBoard();
+      //       }
+      //     } else {
+      //       // Show a loading spinner while checking the authentication state
+      //       return const Scaffold(
+      //         body: Center(
+      //           child: CircularProgressIndicator(),
+      //         ),
+      //       );
+      //     }
+      // },
+      // ),
     );
   }
 }

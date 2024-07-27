@@ -1,7 +1,9 @@
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/widgets.dart';
 import 'package:page_transition/page_transition.dart';
 import 'package:rive/rive.dart';
 
@@ -88,15 +90,30 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 SizedBox(height: height * .05),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
-                  child: Text(
-                    "Admin Login",
-                    style: TextStyle(
-                        color: Colors.black,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 30),
-                    textAlign: TextAlign.center,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      // Image(
+                      //   height: MediaQuery.sizeOf(context).height * .1,
+                      //   image: const AssetImage(
+                      //     'assets/images/icon.png',
+                      //   ),
+                      // ),
+                      const SizedBox(width: 20),
+                      const Align(
+                        alignment: Alignment.center,
+                        child: Text(
+                          "Admin Login",
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 30),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(

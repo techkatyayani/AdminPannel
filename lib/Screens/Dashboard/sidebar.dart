@@ -1,6 +1,4 @@
 import 'dart:developer';
-
-import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
@@ -9,8 +7,13 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 
 class Sidebar extends StatefulWidget {
+  final int screenIndex;
+  final Function(int) onScreenSelected;
+
   const Sidebar({
     super.key,
+    required this.screenIndex,
+    required this.onScreenSelected,
   });
 
   @override
@@ -45,39 +48,56 @@ class _SidebarState extends State<Sidebar> {
                 SelectionButtonData(
                   activeIcon: EvaIcons.grid,
                   icon: EvaIcons.gridOutline,
-                  label: "Dashboard",
-                ),
-                SelectionButtonData(
-                  activeIcon: EvaIcons.archive,
-                  icon: EvaIcons.archiveOutline,
                   label: "Banner Images",
                 ),
                 SelectionButtonData(
-                  activeIcon: EvaIcons.person,
-                  icon: EvaIcons.personOutline,
-                  label: "Users",
+                  activeIcon: Icons.energy_savings_leaf,
+                  icon: Icons.energy_savings_leaf_outlined,
+                  label: "Crops",
                 ),
                 SelectionButtonData(
                   activeIcon: EvaIcons.activity,
                   icon: EvaIcons.activityOutline,
-                  label: "Admin",
-                  // totalNotif: 20,
+                  label: "Home Layout",
+                ),
+                SelectionButtonData(
+                  activeIcon: Icons.discount,
+                  icon: Icons.discount_outlined,
+                  label: "Discount Coupons",
+                ),
+                SelectionButtonData(
+                  activeIcon: Icons.pages,
+                  icon: Icons.pages_rounded,
+                  label: "Product Between Banners",
+                ),
+                SelectionButtonData(
+                  activeIcon: EvaIcons.headphones,
+                  icon: EvaIcons.headphonesOutline,
+                  label: "Agri Advisor",
+                ),
+                SelectionButtonData(
+                  activeIcon: EvaIcons.archive,
+                  icon: EvaIcons.archiveOutline,
+                  label: "Notifications",
                 ),
                 SelectionButtonData(
                   activeIcon: EvaIcons.person,
                   icon: EvaIcons.personOutline,
-                  label: "Others",
+                  label: "Developers",
                 ),
                 SelectionButtonData(
                   activeIcon: EvaIcons.settings,
                   icon: EvaIcons.settingsOutline,
                   label: "Support",
                 ),
+                SelectionButtonData(
+                  activeIcon: Icons.logout,
+                  icon: Icons.logout_outlined,
+                  label: "Log Out",
+                ),
               ],
               onSelected: (index, value) {
-                setState(() {
-                  screenIndex = index;
-                });
+                widget.onScreenSelected(index);
                 log("index : $index | label : ${value.label}");
               },
             ),

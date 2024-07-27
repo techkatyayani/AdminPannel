@@ -1,3 +1,4 @@
+import 'package:adminpannal/Screens/Banner/Banners.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -151,6 +152,7 @@ class _StripBannerScreenState extends State<StripBannerScreen> {
                           Padding(
                             padding: const EdgeInsets.symmetric(vertical: 14),
                             child: ImageContainer(
+                              isLarge: true,
                               imageUrl: userData[imageName] ?? '',
                               imageName: imageName,
                               onTap: () => _pickImageAndUpdate(imageName),
@@ -163,97 +165,6 @@ class _StripBannerScreenState extends State<StripBannerScreen> {
               }
             }
           },
-        ),
-      ),
-    );
-  }
-}
-
-class ImageContainer extends StatefulWidget {
-  final String imageUrl;
-  final String imageName;
-  final VoidCallback onTap;
-
-  const ImageContainer({
-    super.key,
-    required this.imageUrl,
-    required this.imageName,
-    required this.onTap,
-  });
-
-  @override
-  _ImageContainerState createState() => _ImageContainerState();
-}
-
-class _ImageContainerState extends State<ImageContainer> {
-  bool isHovered = false;
-  @override
-  Widget build(BuildContext context) {
-    final width = MediaQuery.sizeOf(context).width;
-    return MouseRegion(
-      onEnter: (_) {
-        setState(() {
-          isHovered = true;
-        });
-      },
-      onExit: (_) {
-        setState(() {
-          isHovered = false;
-        });
-      },
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Stack(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  color: Colors.black,
-                  width: 2.0,
-                ),
-                borderRadius: BorderRadius.circular(20.0),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20.0),
-                child: Image.network(
-                  widget.imageUrl,
-                  width: width * 0.4,
-                ),
-              ),
-            ),
-            Positioned.fill(
-              child: Visibility(
-                visible: isHovered,
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.black54,
-                  ),
-                  child: const Align(
-                    alignment: Alignment.center,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(
-                          Icons.edit,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                        SizedBox(height: 4),
-                        Text(
-                          'Edit',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
         ),
       ),
     );

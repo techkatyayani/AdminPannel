@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:adminpannal/Screens/Agri%20Advisor/agriAdvisorScreen.dart';
 import 'package:adminpannal/Screens/Banner/Banners.dart';
 import 'package:adminpannal/Screens/Coupons/discountCoupons.dart';
 import 'package:adminpannal/Screens/Crops/cropScreen.dart';
@@ -8,14 +9,15 @@ import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
 import 'package:adminpannal/Screens/Dashboard/sidebar.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
+import 'package:adminpannal/Screens/Log%20Out/logoutScreen.dart';
 import 'package:adminpannal/Screens/Others/others_screen.dart';
+import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../Notification/notification_screen.dart';
 
@@ -41,10 +43,13 @@ class _DashBoardState extends State<DashBoard> {
     const BannerScreen(),
     const CropScreen(),
     const ProductCollectionScreen(),
-    const NotificationScreen(),
     const DiscountCoupons(),
-    ImageUploadScreen(),
+    const ProductBetweenBanners(),
+    const AgriAdvisorScreen(),
+    const NotificationScreen(),
+    const ImageUploadScreen(),
     const SupportScreen(),
+    const LogoutScreen()
   ];
 
   @override
@@ -56,7 +61,7 @@ class _DashBoardState extends State<DashBoard> {
           : const Drawer(
               child: Padding(
                 padding: EdgeInsets.only(top: krishiSpacing),
-                child: Sidebar(),
+                // child: Sidebar(),
               ),
             ),
       body: ResponsiveBuilder(
@@ -124,24 +129,39 @@ class _DashBoardState extends State<DashBoard> {
                                 // totalNotif: 20,
                               ),
                               SelectionButtonData(
+                                activeIcon: Icons.discount,
+                                icon: Icons.discount_outlined,
+                                label: "Discount Coupons",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: Icons.pages,
+                                icon: Icons.pages_rounded,
+                                label: "Product Between Banners",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: EvaIcons.headphones,
+                                icon: EvaIcons.headphonesOutline,
+                                label: "Agri Advisor",
+                              ),
+                              SelectionButtonData(
                                 activeIcon: EvaIcons.archive,
                                 icon: EvaIcons.archiveOutline,
                                 label: "Notifications",
                               ),
                               SelectionButtonData(
-                                activeIcon: Icons.discount_outlined,
-                                icon: Icons.discount_outlined,
-                                label: "Discount Coupons",
-                              ),
-                              SelectionButtonData(
                                 activeIcon: EvaIcons.person,
                                 icon: EvaIcons.personOutline,
-                                label: "Others",
+                                label: "Developers",
                               ),
                               SelectionButtonData(
                                 activeIcon: EvaIcons.settings,
                                 icon: EvaIcons.settingsOutline,
                                 label: "Support",
+                              ),
+                              SelectionButtonData(
+                                activeIcon: Icons.logout,
+                                icon: Icons.logout_outlined,
+                                label: "Log Out",
                               ),
                             ],
                             onSelected: (index, value) {

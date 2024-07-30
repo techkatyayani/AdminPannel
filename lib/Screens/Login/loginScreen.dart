@@ -216,75 +216,90 @@ class _LoginScreenState extends State<LoginScreen> {
                               setState(() {
                                 isLoading = true;
                               });
-                              emailFocusNode.unfocus();
-                              passwordFocusNode.unfocus();
-
-                              final email = emailController.text;
-                              final password = passwordController.text;
-
-                              if (email.isEmpty || password.isEmpty) {
-                                showErrorDialog("Please fill all fields");
-                                setState(() {
-                                  isLoading = false;
-                                });
-                                return;
-                              }
-
-                              try {
-                                UserCredential userCredential =
-                                    await FirebaseAuth.instance
-                                        .signInWithEmailAndPassword(
-                                  email: email,
-                                  password: password,
+                              if (emailController.text == 'marketing900' &&
+                                  passwordController.text == 'm900') {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => DashBoard(),
+                                  ),
                                 );
-
-                                final user = userCredential.user;
-                                if (user != null) {
-                                  // Store user data in Firestore
-                                  await FirebaseFirestore.instance
-                                      .collection('AdminUsers')
-                                      .doc(user.uid)
-                                      .set({
-                                    'email': email,
-                                    'uid': user.uid,
-                                  });
-
-                                  trigSuccess?.change(true);
-                                  await Future.delayed(
-                                    const Duration(milliseconds: 2000),
-                                  );
-
-                                  // ignore: use_build_context_synchronously
-                                  Navigator.push(
-                                    context,
-                                    PageTransition(
-                                      child: const DashBoard(),
-                                      type: PageTransitionType.fade,
-                                    ),
-                                  );
-                                }
-                              } on FirebaseAuthException catch (e) {
-                                print(e);
-                                trigFail?.change(true);
-                                String errorMessage;
-                                switch (e.code) {
-                                  case 'user-not-found':
-                                    errorMessage =
-                                        "No user found for that email.";
-                                    break;
-                                  case 'wrong-password':
-                                    errorMessage = "Wrong password provided.";
-                                    break;
-                                  default:
-                                    errorMessage =
-                                        "An error occurred. Please try again.";
-                                }
-                                showErrorDialog(errorMessage);
-                              } catch (e) {
-                                trigFail?.change(true);
-                                showErrorDialog(
-                                    "An error occurred. Please try again.");
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Wrong Credentials"),
+                                  ),
+                                );
                               }
+                              // emailFocusNode.unfocus();
+                              // passwordFocusNode.unfocus();
+
+                              // final email = emailController.text;
+                              // final password = passwordController.text;
+
+                              // if (email.isEmpty || password.isEmpty) {
+                              //   showErrorDialog("Please fill all fields");
+                              //   setState(() {
+                              //     isLoading = false;
+                              //   });
+                              //   return;
+                              // }
+
+                              // try {
+                              //   UserCredential userCredential =
+                              //       await FirebaseAuth.instance
+                              //           .signInWithEmailAndPassword(
+                              //     email: email,
+                              //     password: password,
+                              //   );
+
+                              //   final user = userCredential.user;
+                              //   if (user != null) {
+                              //     // Store user data in Firestore
+                              //     await FirebaseFirestore.instance
+                              //         .collection('AdminUsers')
+                              //         .doc(user.uid)
+                              //         .set({
+                              //       'email': email,
+                              //       'uid': user.uid,
+                              //     });
+
+                              //     trigSuccess?.change(true);
+                              //     await Future.delayed(
+                              //       const Duration(milliseconds: 2000),
+                              //     );
+
+                              //     // ignore: use_build_context_synchronously
+                              //     Navigator.push(
+                              //       context,
+                              //       PageTransition(
+                              //         child: const DashBoard(),
+                              //         type: PageTransitionType.fade,
+                              //       ),
+                              //     );
+                              //   }
+                              // } on FirebaseAuthException catch (e) {
+                              //   print(e);
+                              //   trigFail?.change(true);
+                              //   String errorMessage;
+                              //   switch (e.code) {
+                              //     case 'user-not-found':
+                              //       errorMessage =
+                              //           "No user found for that email.";
+                              //       break;
+                              //     case 'wrong-password':
+                              //       errorMessage = "Wrong password provided.";
+                              //       break;
+                              //     default:
+                              //       errorMessage =
+                              //           "An error occurred. Please try again.";
+                              //   }
+                              //   showErrorDialog(errorMessage);
+                              // } catch (e) {
+                              //   trigFail?.change(true);
+                              //   showErrorDialog(
+                              //       "An error occurred. Please try again.");
+                              // }
 
                               setState(() {
                                 isLoading = false;

@@ -1,32 +1,62 @@
 import 'dart:developer';
 import 'dart:typed_data';
+import 'package:adminpannal/Screens/Crops/addCropsForm.dart';
+import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:lottie/lottie.dart';
 
 class CropCalendarForm extends StatefulWidget {
   final String cropId;
   final String cropName;
   final String language;
-  const CropCalendarForm(
-      {super.key,
-      required this.cropId,
-      required this.cropName,
-      required this.language});
+  const CropCalendarForm({
+    super.key,
+    required this.cropId,
+    required this.cropName,
+    required this.language,
+  });
 
   @override
   State<CropCalendarForm> createState() => _CropCalendarFormState();
 }
 
 class _CropCalendarFormState extends State<CropCalendarForm> {
+  final List<TextEditingController> controllerList = [];
   bool isLoading = false;
   List<Uint8List>? _selectedImageBytesList = [];
   final List<String> _imageUrls = [];
   double _uploadProgress = 0.0;
   int imageIndex = 1;
   int selectedImages = 0;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    // Dispose all controllers to avoid memory leaks
+    for (var controller in controllerList) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  void _addTextField() {
+    setState(() {
+      controllerList.add(TextEditingController());
+    });
+  }
+
+  void _removeTextField(int index) {
+    setState(() {
+      controllerList[index].dispose();
+      controllerList.removeAt(index);
+    });
+  }
 
   Future<void> _pickImages() async {
     try {
@@ -107,9 +137,15 @@ class _CropCalendarFormState extends State<CropCalendarForm> {
         log('Length: $length');
       });
       int firebaseId = length! + 1;
+
+      final productsList =
+          controllerList.map((controller) => controller.text).toList();
       for (var imageUrl in _imageUrls) {
-        await cropCalendarRef
-            .add({'ImageUrl': imageUrl, 'Id': firebaseId.toString()});
+        await cropCalendarRef.add({
+          'ImageUrl': imageUrl,
+          'Id': firebaseId.toString(),
+          'products': productsList
+        });
         firebaseId++;
       }
       ScaffoldMessenger.of(context).showSnackBar(
@@ -142,8 +178,9 @@ class _CropCalendarFormState extends State<CropCalendarForm> {
               color: const Color.fromRGBO(38, 40, 55, 1),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Center(
+            child: SingleChildScrollView(
               child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   const Align(
                     alignment: Alignment.centerLeft,
@@ -155,50 +192,48 @@ class _CropCalendarFormState extends State<CropCalendarForm> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  selectedImages == 0
-                      ? Container()
-                      : Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            'Images Selected - $selectedImages',
-                            style: const TextStyle(fontSize: 24),
-                          ),
-                        ),
+                  // const SizedBox(height: 20),
+                  // selectedImages == 0
+                  //     ? Container()
+                  //     : Align(
+                  //         alignment: Alignment.centerLeft,
+                  //         child: Text(
+                  //           'Images Selected - $selectedImages',
+                  //           style: const TextStyle(fontSize: 24),
+                  //         ),
+                  //       ),
                   const SizedBox(height: 20),
                   KrishiCalendarImagePicker(
                     onTap: _pickImages,
                     selectedImageBytesList: _selectedImageBytesList,
                   ),
                   const SizedBox(height: 20),
-                  selectedImages == 0
-                      ? Container()
-                      : ElevatedButton(
-                          onPressed: () {
-                            if (_selectedImageBytesList != null &&
-                                _selectedImageBytesList!.isNotEmpty) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => ImageReorderScreen(
-                                    imageBytesList: _selectedImageBytesList!,
-                                    onReorderDone: (reorderedImages) {
-                                      setState(() {
-                                        _selectedImageBytesList =
-                                            reorderedImages;
-                                      });
-                                    },
-                                  ),
-                                ),
-                              );
-                            }
-                          },
-                          child: const Text(
-                            "Rearrange Images",
-                            style: TextStyle(color: Colors.white),
-                          ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: controllerList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: KrishiTextField(
+                          controller: controllerList[index],
+                          width: size.width * .2,
+                          hintText: 'Product Id ${index + 1}',
                         ),
-                  SizedBox(height: size.height * .02),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () => _removeTextField(index),
+                        ),
+                      );
+                    },
+                  ),
+                  const SizedBox(height: krishiSpacing),
+                  ElevatedButton(
+                    onPressed: _addTextField,
+                    child: const Text(
+                      "+ Add Product Id",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ),
+                  const SizedBox(height: krishiSpacing * 2),
                   isLoading
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -226,10 +261,17 @@ class _CropCalendarFormState extends State<CropCalendarForm> {
                           ],
                         )
                       : ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10)),
+                              minimumSize:
+                                  Size(size.width * .2, size.height * .08)),
                           onPressed: _uploadImages,
                           child: const Text(
                             "Upload Images",
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold),
                           ),
                         ),
                 ],
@@ -246,8 +288,11 @@ class KrishiCalendarImagePicker extends StatelessWidget {
   final VoidCallback onTap;
   final List<Uint8List>? selectedImageBytesList;
 
-  const KrishiCalendarImagePicker(
-      {super.key, required this.onTap, required this.selectedImageBytesList});
+  const KrishiCalendarImagePicker({
+    super.key,
+    required this.onTap,
+    required this.selectedImageBytesList,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -285,78 +330,6 @@ class KrishiCalendarImagePicker extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class ImageReorderScreen extends StatefulWidget {
-  final List<Uint8List> imageBytesList;
-  final Function(List<Uint8List>) onReorderDone;
-
-  const ImageReorderScreen(
-      {super.key, required this.imageBytesList, required this.onReorderDone});
-
-  @override
-  State<ImageReorderScreen> createState() => _ImageReorderScreenState();
-}
-
-class _ImageReorderScreenState extends State<ImageReorderScreen> {
-  late List<Uint8List> _imageBytesList;
-
-  @override
-  void initState() {
-    super.initState();
-    _imageBytesList = widget.imageBytesList;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Rearrange Images"),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.check),
-            onPressed: () {
-              widget.onReorderDone(_imageBytesList);
-              Navigator.pop(context);
-            },
-          ),
-        ],
-      ),
-      body: ReorderableListView(
-        onReorder: (int oldIndex, int newIndex) {
-          setState(() {
-            if (newIndex > oldIndex) {
-              newIndex -= 1;
-            }
-            final item = _imageBytesList.removeAt(oldIndex);
-            _imageBytesList.insert(newIndex, item);
-          });
-        },
-        children: [
-          for (int index = 0; index < _imageBytesList.length; index++)
-            SizedBox(
-              height: MediaQuery.sizeOf(context).height * .4,
-              key: ValueKey(index),
-              child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                child: Row(
-                  children: [
-                    Text(
-                      (index + 1).toString(),
-                      style: const TextStyle(
-                          fontSize: 24, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(width: 20),
-                    Image.memory(_imageBytesList[index]),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
     );
   }
 }

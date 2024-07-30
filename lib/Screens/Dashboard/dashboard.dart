@@ -40,12 +40,12 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   List<Widget> screens = [
-    const AgriAdvisorScreen(),
     const BannerScreen(),
     const CropScreen(),
     const ProductCollectionScreen(),
     const DiscountCoupons(),
     const ProductBetweenBanners(),
+    const AgriAdvisorScreen(),
     const NotificationScreen(),
     const ImageUploadScreen(),
     const SupportScreen(),
@@ -158,11 +158,11 @@ class _DashBoardState extends State<DashBoard> {
                                 icon: EvaIcons.settingsOutline,
                                 label: "Support",
                               ),
-                              // SelectionButtonData(
-                              //   activeIcon: Icons.logout,
-                              //   icon: Icons.logout_outlined,
-                              //   label: "Log Out",
-                              // ),
+                              SelectionButtonData(
+                                activeIcon: Icons.logout,
+                                icon: Icons.logout_outlined,
+                                label: "Log Out",
+                              ),
                             ],
                             onSelected: (index, value) {
                               setState(() {

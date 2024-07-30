@@ -1,10 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:adminpannal/Screens/Crops/cropCalendarForm.dart';
+import 'package:adminpannal/Screens/Crops/cropCalendarImageUpdate.dart';
+import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:page_transition/page_transition.dart';
 
 class CropCalanderScreen extends StatefulWidget {
   final String cropName;
@@ -12,11 +16,11 @@ class CropCalanderScreen extends StatefulWidget {
   final String language;
 
   const CropCalanderScreen({
-    Key? key,
+    super.key,
     required this.cropName,
     required this.cropId,
     required this.language,
-  }) : super(key: key);
+  });
 
   @override
   State<CropCalanderScreen> createState() => _CropCalanderScreenState();
@@ -207,8 +211,9 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                          builder: (context) => CropCalendarForm(
+                        PageTransition(
+                          type: PageTransitionType.fade,
+                          child: CropCalendarForm(
                               cropId: widget.cropId,
                               cropName: widget.cropName,
                               language: widget.language),
@@ -256,7 +261,60 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
                                   fit: BoxFit.cover,
                                 ),
                               ),
-                              const SizedBox(height: 10),
+                              const SizedBox(height: 4),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      PageTransition(
+                                          child: CropCalendarImageUpdate(
+                                            id: widget.cropId,
+                                            products: (calenderData.data()
+                                                        as Map<String, dynamic>)
+                                                    .containsKey('products')
+                                                ? calenderData['products']
+                                                : [],
+                                            language: widget.language,
+                                            calendarId: calenderData.id,
+                                          ),
+                                          type: PageTransitionType.fade));
+                                },
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 24, vertical: 8),
+                                  decoration: BoxDecoration(
+                                      color: krishiPrimaryColor,
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Text(
+                                    "Update Product",
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 6),
+                              Wrap(
+                                alignment: WrapAlignment.center,
+                                spacing: 2.0,
+                                runSpacing: 2.0,
+                                children: [
+                                  if ((calenderData.data()
+                                          as Map<String, dynamic>)
+                                      .containsKey('products'))
+                                    ...calenderData['products']
+                                        .map<Widget>(
+                                            (product) => Text("$product, "))
+                                        .toList(),
+                                  if (!(calenderData.data()
+                                              as Map<String, dynamic>)
+                                          .containsKey('products') ||
+                                      (calenderData['products']
+                                              as List<dynamic>)
+                                          .isEmpty)
+                                    const Text("No products available"),
+                                ],
+                              ),
                               Text(
                                 calenderData['Id'],
                                 style: const TextStyle(
@@ -273,7 +331,7 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 10),
+                                  horizontal: 24, vertical: 8),
                               decoration: const BoxDecoration(
                                 color: Colors.black87,
                                 borderRadius: BorderRadius.only(
@@ -281,7 +339,7 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
                                 ),
                               ),
                               child: const Text(
-                                "Edit",
+                                "Update Image",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                 ),

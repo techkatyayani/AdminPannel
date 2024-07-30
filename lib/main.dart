@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Katyayani Admin',
       theme: AppTheme.basic,
-      home: const DashBoard(),
+      home: const LoginScreen(),
       // home: StreamBuilder<User?>(
       //   stream: FirebaseAuth.instance.authStateChanges(),
       //   builder: (context, snapshot) {
@@ -45,7 +45,7 @@ class MyApp extends StatelessWidget {
       //         ),
       //       );
       //     }
-      // },
+      //   },
       // ),
     );
   }

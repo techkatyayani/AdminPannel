@@ -16,36 +16,39 @@ class UpgradePremiumCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      borderRadius: BorderRadius.circular(krishiBorderRadius),
-      color: backgroundColor ?? Theme.of(context).cardColor,
-      child: InkWell(
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Material(
         borderRadius: BorderRadius.circular(krishiBorderRadius),
-        onTap: onPressed,
-        child: Container(
-          constraints: const BoxConstraints(
-            minWidth: 250,
-            maxWidth: 250,
-            minHeight: 250,
-            maxHeight: 250,
-          ),
-          padding: const EdgeInsets.all(10),
-          child: Stack(
-            children: [
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.only(
-                    top: 80,
+        color: backgroundColor ?? Theme.of(context).cardColor,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(krishiBorderRadius),
+          onTap: onPressed,
+          child: Container(
+            // constraints: const BoxConstraints(
+            //   minWidth: 250,
+            //   maxWidth: 250,
+            //   minHeight: 250,
+            //   maxHeight: 250,
+            // ),
+            padding: const EdgeInsets.all(10),
+            child: Stack(
+              children: [
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      top: 80,
+                    ),
+                    child: Lottie.asset("assets/images/upgrade.json",
+                        repeat: false, height: 120),
                   ),
-                  child:
-                      Lottie.asset("assets/images/upgrade.json", repeat: false),
                 ),
-              ),
-              const Padding(
-                padding: EdgeInsets.all(10),
-                child: _Info(),
-              ),
-            ],
+                const Padding(
+                  padding: EdgeInsets.all(10),
+                  child: _Info(),
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -72,7 +75,7 @@ class _Info extends StatelessWidget {
 
   Widget _title() {
     return const Text(
-      "Katyayani Admin Panel",
+      "Krishi Seva Kendra Admin",
     );
   }
 

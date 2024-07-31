@@ -1,8 +1,5 @@
-import 'dart:js';
-
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
 class SelectionButtonData {
   final IconData activeIcon;
@@ -51,7 +48,7 @@ class _SelectionButtonState extends State<SelectionButton> {
         final data = e.value;
 
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
           child: _Button(
             selected: selected == index,
             onPressed: () {
@@ -90,7 +87,7 @@ class _Button extends StatelessWidget {
         onTap: onPressed,
         borderRadius: BorderRadius.circular(10),
         child: Padding(
-          padding: const EdgeInsets.all(krishiSpacing),
+          padding: const EdgeInsets.all(14),
           child: Row(
             children: [
               _icon((!selected) ? data.icon : data.activeIcon, context),

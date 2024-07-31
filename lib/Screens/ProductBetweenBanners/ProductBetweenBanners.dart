@@ -2,7 +2,6 @@ import 'package:adminpannal/Screens/Banner/adminUiHelper.dart';
 import 'package:adminpannal/Screens/Banner/bannerProvider.dart';
 import 'package:adminpannal/Screens/ProductBetweenBanners/addBetweenBanners.dart';
 import 'package:adminpannal/Screens/ProductBetweenBanners/productBetweenDetailsScreen.dart';
-import 'package:adminpannal/Screens/ProductBetweenBanners/upload.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

@@ -435,6 +435,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                   );
                 } else {
                   return GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount:

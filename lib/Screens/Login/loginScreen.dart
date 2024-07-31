@@ -1,10 +1,5 @@
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/widgets.dart';
-import 'package:page_transition/page_transition.dart';
 import 'package:rive/rive.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +11,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
+  bool isPasswordVisible = false;
 
   /// input form controller
   FocusNode emailFocusNode = FocusNode();
@@ -53,7 +49,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void passwordFocus() {
-    isHandsUp?.change(passwordFocusNode.hasFocus);
+    if (passwordFocusNode.hasFocus && !isPasswordVisible) {
+      isHandsUp?.change(true);
+    } else {
+      isHandsUp?.change(false);
+    }
+  }
+
+  void togglePasswordVisibility() {
+    setState(() {
+      isPasswordVisible = !isPasswordVisible;
+      isHandsUp?.change(!isPasswordVisible);
+    });
   }
 
   void showErrorDialog(String message) {
@@ -74,6 +81,97 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
+  void login() async {
+    setState(() {
+      isLoading = true;
+    });
+    if (emailController.text == 'marketing900' &&
+        passwordController.text == 'm900') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const DashBoard(),
+        ),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Wrong Credentials"),
+        ),
+      );
+    }
+
+    // emailFocusNode.unfocus();
+    // passwordFocusNode.unfocus();
+
+    // final email = emailController.text;
+    // final password = passwordController.text;
+
+    // if (email.isEmpty || password.isEmpty) {
+    //   showErrorDialog("Please fill all fields");
+    //   setState(() {
+    //     isLoading = false;
+    //   });
+    //   return;
+    // }
+
+    // try {
+    //   UserCredential userCredential =
+    //       await FirebaseAuth.instance.signInWithEmailAndPassword(
+    //     email: email,
+    //     password: password,
+    //   );
+
+    //   final user = userCredential.user;
+    //   if (user != null) {
+    //     // Store user data in Firestore
+    //     await FirebaseFirestore.instance
+    //         .collection('AdminUsers')
+    //         .doc(user.uid)
+    //         .set({
+    //       'email': email,
+    //       'uid': user.uid,
+    //     });
+
+    //     trigSuccess?.change(true);
+    //     await Future.delayed(
+    //       const Duration(milliseconds: 2000),
+    //     );
+
+    //     // ignore: use_build_context_synchronously
+    //     Navigator.push(
+    //       context,
+    //       PageTransition(
+    //         child: const DashBoard(),
+    //         type: PageTransitionType.fade,
+    //       ),
+    //     );
+    //   }
+    // } on FirebaseAuthException catch (e) {
+    //   print(e);
+    //   trigFail?.change(true);
+    //   String errorMessage;
+    //   switch (e.code) {
+    //     case 'user-not-found':
+    //       errorMessage = "No user found for that email.";
+    //       break;
+    //     case 'wrong-password':
+    //       errorMessage = "Wrong password provided.";
+    //       break;
+    //     default:
+    //       errorMessage = "An error occurred. Please try again.";
+    //   }
+    //   showErrorDialog(errorMessage);
+    // } catch (e) {
+    //   trigFail?.change(true);
+    //   showErrorDialog("An error occurred. Please try again.");
+    // }
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final height = MediaQuery.sizeOf(context).height;
@@ -90,35 +188,43 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Column(
               children: [
                 SizedBox(height: height * .05),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 50),
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 50),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Image(
-                      //   height: MediaQuery.sizeOf(context).height * .1,
-                      //   image: const AssetImage(
-                      //     'assets/images/icon.png',
-                      //   ),
-                      // ),
-                      const SizedBox(width: 20),
-                      const Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "Admin Login",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 30),
-                          textAlign: TextAlign.center,
-                        ),
+                      SizedBox(width: 20),
+                      Column(
+                        children: [
+                          // Container(
+                          //   padding: const EdgeInsets.all(10),
+                          //   decoration: BoxDecoration(
+                          //     color: krishiPrimaryColor,
+                          //     borderRadius: BorderRadius.circular(10),
+                          //   ),
+                          //   child: Image.asset('assets/images/KSK Logo.png',
+                          //       height: 100),
+                          // ),
+                          // const SizedBox(height: 4),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Admin Login",
+                              style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 30),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
                 ),
                 SizedBox(
                   height: height * .4,
-                  width: height * .4,
+                  width: width * .4,
                   child: RiveAnimation.asset(
                     "assets/images/login-teddy.riv",
                     fit: BoxFit.fitHeight,
@@ -189,22 +295,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextField(
                             focusNode: passwordFocusNode,
                             controller: passwordController,
-                            decoration: const InputDecoration(
+                            decoration: InputDecoration(
                               iconColor: Colors.black,
-                              suffixIcon: Icon(
-                                Icons.visibility_rounded,
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  isPasswordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                ),
                                 color: Colors.black,
+                                onPressed: togglePasswordVisibility,
                               ),
                               border: InputBorder.none,
                               hintText: "Password",
-                              hintStyle: TextStyle(
+                              hintStyle: const TextStyle(
                                 color: Colors.black38,
                               ),
                             ),
                             style: const TextStyle(color: Colors.black),
                             cursorColor: Colors.black,
-                            obscureText: true,
+                            obscureText: !isPasswordVisible,
                             onChanged: (value) {},
+                            onSubmitted: (value) {
+                              login();
+                            },
                           ),
                         ),
                         const SizedBox(height: 32),
@@ -212,99 +326,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: MediaQuery.of(context).size.width,
                           height: 64,
                           child: ElevatedButton(
-                            onPressed: () async {
-                              setState(() {
-                                isLoading = true;
-                              });
-                              if (emailController.text == 'marketing900' &&
-                                  passwordController.text == 'm900') {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => DashBoard(),
-                                  ),
-                                );
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Wrong Credentials"),
-                                  ),
-                                );
-                              }
-                              // emailFocusNode.unfocus();
-                              // passwordFocusNode.unfocus();
-
-                              // final email = emailController.text;
-                              // final password = passwordController.text;
-
-                              // if (email.isEmpty || password.isEmpty) {
-                              //   showErrorDialog("Please fill all fields");
-                              //   setState(() {
-                              //     isLoading = false;
-                              //   });
-                              //   return;
-                              // }
-
-                              // try {
-                              //   UserCredential userCredential =
-                              //       await FirebaseAuth.instance
-                              //           .signInWithEmailAndPassword(
-                              //     email: email,
-                              //     password: password,
-                              //   );
-
-                              //   final user = userCredential.user;
-                              //   if (user != null) {
-                              //     // Store user data in Firestore
-                              //     await FirebaseFirestore.instance
-                              //         .collection('AdminUsers')
-                              //         .doc(user.uid)
-                              //         .set({
-                              //       'email': email,
-                              //       'uid': user.uid,
-                              //     });
-
-                              //     trigSuccess?.change(true);
-                              //     await Future.delayed(
-                              //       const Duration(milliseconds: 2000),
-                              //     );
-
-                              //     // ignore: use_build_context_synchronously
-                              //     Navigator.push(
-                              //       context,
-                              //       PageTransition(
-                              //         child: const DashBoard(),
-                              //         type: PageTransitionType.fade,
-                              //       ),
-                              //     );
-                              //   }
-                              // } on FirebaseAuthException catch (e) {
-                              //   print(e);
-                              //   trigFail?.change(true);
-                              //   String errorMessage;
-                              //   switch (e.code) {
-                              //     case 'user-not-found':
-                              //       errorMessage =
-                              //           "No user found for that email.";
-                              //       break;
-                              //     case 'wrong-password':
-                              //       errorMessage = "Wrong password provided.";
-                              //       break;
-                              //     default:
-                              //       errorMessage =
-                              //           "An error occurred. Please try again.";
-                              //   }
-                              //   showErrorDialog(errorMessage);
-                              // } catch (e) {
-                              //   trigFail?.change(true);
-                              //   showErrorDialog(
-                              //       "An error occurred. Please try again.");
-                              // }
-
-                              setState(() {
-                                isLoading = false;
-                              });
-                            },
+                            onPressed: login,
                             style: ElevatedButton.styleFrom(
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(16),

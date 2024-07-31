@@ -2,7 +2,6 @@ import 'package:adminpannal/Screens/Login/loginScreen.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class LogoutScreen extends StatelessWidget {
   const LogoutScreen({super.key});

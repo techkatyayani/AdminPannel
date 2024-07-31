@@ -35,7 +35,7 @@ class _SidebarState extends State<Sidebar> {
               child: ProjectCard(
                 data: ProjectCardData(
                   projectImage: const AssetImage("assets/images/logo1.png"),
-                  projectName: "Katyayani Admin",
+                  projectName: "Krishi Seva Kendra Admin",
                   releaseTime: DateTime.now(),
                   percent: .3,
                 ),

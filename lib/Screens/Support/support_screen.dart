@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 
 class SupportScreen extends StatefulWidget {
   const SupportScreen({super.key});

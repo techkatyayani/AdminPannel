@@ -24,7 +24,6 @@ class _ProductBetweenBannerDetailsScreenState
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("${widget.collectionName} (${widget.collectionId})"),

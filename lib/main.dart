@@ -1,7 +1,5 @@
-import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Login/loginScreen.dart';
 import 'package:adminpannal/config/themes/app_theme.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'firebase_options.dart';
@@ -21,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Katyayani Admin',
+      title: 'Krishi Seva Kendra Admin',
       theme: AppTheme.basic,
       home: const LoginScreen(),
       // home: StreamBuilder<User?>(

@@ -7,11 +7,10 @@ import 'package:adminpannal/Screens/Dashboard/header.dart';
 import 'package:adminpannal/Screens/HomeLayout/productCollectionScreen.dart';
 import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
-import 'package:adminpannal/Screens/Dashboard/sidebar.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
-import 'package:adminpannal/Screens/Log%20Out/logoutScreen.dart';
 import 'package:adminpannal/Screens/Others/others_screen.dart';
 import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.dart';
+import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -32,6 +31,8 @@ class DashBoard extends StatefulWidget {
 
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
+  bool isSidebarExpanded = true;
+  int screenIndex = 0;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -45,6 +46,7 @@ class _DashBoardState extends State<DashBoard> {
     const ProductCollectionScreen(),
     const DiscountCoupons(),
     const ProductBetweenBanners(),
+    const SoilAndWaterTesting(),
     const AgriAdvisorScreen(),
     const NotificationScreen(),
     const ImageUploadScreen(),
@@ -58,10 +60,103 @@ class _DashBoardState extends State<DashBoard> {
       key: scaffoldKey,
       drawer: (ResponsiveBuilder.isDesktop(context))
           ? null
-          : const Drawer(
-              child: Padding(
-                padding: EdgeInsets.only(top: krishiSpacing),
-                // child: Sidebar(),
+          : Drawer(
+              child: Column(
+                children: [
+                  Expanded(
+                    child: ListView(
+                      children: [
+                        const SizedBox(height: krishiSpacing),
+                        Padding(
+                          padding: const EdgeInsets.all(krishiSpacing),
+                          child: ProjectCard(
+                            data: ProjectCardData(
+                              projectImage: const AssetImage(
+                                  "assets/images/launchicon.png"),
+                              projectName: "Krishi Seva Kendra",
+                              releaseTime: DateTime.now(),
+                              percent: .3,
+                            ),
+                          ),
+                        ),
+                        const Divider(thickness: 1),
+                        const SizedBox(height: krishiSpacing),
+                        SelectionButton(
+                          data: [
+                            SelectionButtonData(
+                              activeIcon: EvaIcons.grid,
+                              icon: EvaIcons.gridOutline,
+                              label: "Banner Images",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.energy_savings_leaf,
+                              icon: Icons.energy_savings_leaf_outlined,
+                              label: "Crops",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: EvaIcons.activity,
+                              icon: EvaIcons.activityOutline,
+                              label: "Home Layout",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.discount,
+                              icon: Icons.discount_outlined,
+                              label: "Discount Coupons",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.pages,
+                              icon: Icons.pages_rounded,
+                              label: "Product Between Banners",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.adjust_sharp,
+                              icon: Icons.adjust,
+                              label: "Soil & Water Testing",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: EvaIcons.headphones,
+                              icon: EvaIcons.headphonesOutline,
+                              label: "Agri Advisor",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: EvaIcons.archive,
+                              icon: EvaIcons.archiveOutline,
+                              label: "Notifications",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: EvaIcons.person,
+                              icon: EvaIcons.personOutline,
+                              label: "Developers",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: EvaIcons.settings,
+                              icon: EvaIcons.settingsOutline,
+                              label: "Support",
+                            ),
+                          ],
+                          onSelected: (index, value) {
+                            setState(() {
+                              screenIndex = index;
+                            });
+                            Navigator.of(context)
+                                .pop(); // Automatically close drawer
+                            log("index : $index | label : ${value.label}");
+                          },
+                          initialSelected:
+                              screenIndex, // Set initial selected index
+                        ),
+                        const Divider(thickness: 1),
+                        const SizedBox(height: krishiSpacing),
+                        UpgradePremiumCard(
+                          backgroundColor:
+                              Theme.of(context).canvasColor.withOpacity(.4),
+                          onPressed: () {},
+                        ),
+                        const SizedBox(height: krishiSpacing),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
       body: ResponsiveBuilder(
@@ -83,8 +178,9 @@ class _DashBoardState extends State<DashBoard> {
             mainAxisSize: MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Flexible(
-                flex: (constraints.maxWidth < 1360) ? 4 : 3,
+              AnimatedContainer(
+                duration: const Duration(milliseconds: 300),
+                width: isSidebarExpanded ? 250 : 60, // Adjust width as needed
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(krishiBorderRadius),
@@ -92,95 +188,107 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                   child: Container(
                     color: Theme.of(context).cardColor,
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const SizedBox(height: krishiSpacing),
-                          Padding(
-                            padding: const EdgeInsets.all(krishiSpacing),
-                            child: ProjectCard(
-                              data: ProjectCardData(
-                                projectImage:
-                                    const AssetImage("assets/images/logo1.png"),
-                                projectName: "Katyayani Admin",
-                                releaseTime: DateTime.now(),
-                                percent: .3,
-                              ),
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                const SizedBox(height: krishiSpacing),
+                                Padding(
+                                  padding: const EdgeInsets.all(krishiSpacing),
+                                  child: ProjectCard(
+                                    data: ProjectCardData(
+                                      projectImage: const AssetImage(
+                                          "assets/images/launchicon.png"),
+                                      projectName: "Krishi Seva Kendra",
+                                      releaseTime: DateTime.now(),
+                                      percent: .3,
+                                    ),
+                                  ),
+                                ),
+                                const Divider(thickness: 1),
+                                const SizedBox(height: krishiSpacing),
+                                SelectionButton(
+                                  data: [
+                                    SelectionButtonData(
+                                      activeIcon: EvaIcons.grid,
+                                      icon: EvaIcons.gridOutline,
+                                      label: "Banner Images",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.energy_savings_leaf,
+                                      icon: Icons.energy_savings_leaf_outlined,
+                                      label: "Crops",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: EvaIcons.activity,
+                                      icon: EvaIcons.activityOutline,
+                                      label: "Home Layout",
+                                      // totalNotif: 20,
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.discount,
+                                      icon: Icons.discount_outlined,
+                                      label: "Discount Coupons",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.pages,
+                                      icon: Icons.pages_rounded,
+                                      label: "Product Between Banners",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.adjust_sharp,
+                                      icon: Icons.adjust,
+                                      label: "Soil & Water Testing",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: EvaIcons.headphones,
+                                      icon: EvaIcons.headphonesOutline,
+                                      label: "Agri Advisor",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: EvaIcons.archive,
+                                      icon: EvaIcons.archiveOutline,
+                                      label: "Notifications",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: EvaIcons.person,
+                                      icon: EvaIcons.personOutline,
+                                      label: "Developers",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: EvaIcons.settings,
+                                      icon: EvaIcons.settingsOutline,
+                                      label: "Support",
+                                    ),
+                                    // SelectionButtonData(
+                                    //   activeIcon: Icons.logout,
+                                    //   icon: Icons.logout_outlined,
+                                    //   label: "Log Out",
+                                    // ),
+                                  ],
+                                  onSelected: (index, value) {
+                                    setState(() {
+                                      screenIndex = index;
+                                    });
+                                    log("index : $index | label : ${value.label}");
+                                  },
+                                ),
+                                const Divider(thickness: 1),
+                                const SizedBox(height: krishiSpacing),
+                                UpgradePremiumCard(
+                                  backgroundColor: Theme.of(context)
+                                      .canvasColor
+                                      .withOpacity(.4),
+                                  onPressed: () {},
+                                ),
+                                const SizedBox(height: krishiSpacing),
+                              ],
                             ),
                           ),
-                          const Divider(thickness: 1),
-                          const SizedBox(height: krishiSpacing),
-                          SelectionButton(
-                            data: [
-                              SelectionButtonData(
-                                activeIcon: EvaIcons.grid,
-                                icon: EvaIcons.gridOutline,
-                                label: "Banner Images",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: Icons.energy_savings_leaf,
-                                icon: Icons.energy_savings_leaf_outlined,
-                                label: "Crops",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: EvaIcons.activity,
-                                icon: EvaIcons.activityOutline,
-                                label: "Home Layout",
-                                // totalNotif: 20,
-                              ),
-                              SelectionButtonData(
-                                activeIcon: Icons.discount,
-                                icon: Icons.discount_outlined,
-                                label: "Discount Coupons",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: Icons.pages,
-                                icon: Icons.pages_rounded,
-                                label: "Product Between Banners",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: EvaIcons.headphones,
-                                icon: EvaIcons.headphonesOutline,
-                                label: "Agri Advisor",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: EvaIcons.archive,
-                                icon: EvaIcons.archiveOutline,
-                                label: "Notifications",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: EvaIcons.person,
-                                icon: EvaIcons.personOutline,
-                                label: "Developers",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: EvaIcons.settings,
-                                icon: EvaIcons.settingsOutline,
-                                label: "Support",
-                              ),
-                              SelectionButtonData(
-                                activeIcon: Icons.logout,
-                                icon: Icons.logout_outlined,
-                                label: "Log Out",
-                              ),
-                            ],
-                            onSelected: (index, value) {
-                              setState(() {
-                                screenIndex = index;
-                              });
-                              log("index : $index | label : ${value.label}");
-                            },
-                          ),
-                          const Divider(thickness: 1),
-                          const SizedBox(height: krishiSpacing),
-                          UpgradePremiumCard(
-                            backgroundColor:
-                                Theme.of(context).canvasColor.withOpacity(.4),
-                            onPressed: () {},
-                          ),
-                          const SizedBox(height: krishiSpacing),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

@@ -67,7 +67,7 @@ class _ProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return CircularPercentIndicator(
-      radius: 55,
+      radius: 60,
       lineWidth: 2.0,
       percent: percent,
       center: center,
@@ -87,7 +87,7 @@ class _ProfilImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       backgroundImage: image,
-      radius: 20,
+      radius: 24,
       backgroundColor: Colors.white,
     );
   }

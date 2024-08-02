@@ -1,7 +1,7 @@
 import 'package:adminpannal/Screens/Coupons/addDiscountcoupon.dart';
+import 'package:adminpannal/Screens/Coupons/specialDiscount.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
@@ -34,26 +34,52 @@ class _DiscountCouponsState extends State<DiscountCoupons> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Align(
-            alignment: Alignment.centerRight,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    PageTransition(
-                      child: const AddDiscountCoupon(),
-                      type: PageTransitionType.fade,
-                    ));
-              },
-              child: const Text(
-                "Add Coupon",
-                style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                          child: const SpecialDiscount(),
+                          type: PageTransitionType.fade,
+                        ));
+                  },
+                  child: const Text(
+                    "Update Special Discount",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
               ),
             ),
-          ),
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Align(
+                alignment: Alignment.centerRight,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.push(
+                        context,
+                        PageTransition(
+                          child: const AddDiscountCoupon(),
+                          type: PageTransitionType.fade,
+                        ));
+                  },
+                  child: const Text(
+                    "Add Coupon",
+                    style: TextStyle(
+                        color: Colors.white, fontWeight: FontWeight.bold),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
         StreamBuilder<QuerySnapshot>(
           stream: FirebaseFirestore.instance

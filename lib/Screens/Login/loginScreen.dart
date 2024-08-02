@@ -13,14 +13,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool isLoading = false;
   bool isPasswordVisible = false;
 
-  /// input form controller
   FocusNode emailFocusNode = FocusNode();
   TextEditingController emailController = TextEditingController();
 
   FocusNode passwordFocusNode = FocusNode();
   TextEditingController passwordController = TextEditingController();
 
-  /// rive controller and input
   StateMachineController? controller;
 
   SMIInput<bool>? isChecking;
@@ -67,11 +65,11 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text('Error'),
+        title: const Text('Error'),
         content: Text(message),
         actions: <Widget>[
           TextButton(
-            child: Text('Okay'),
+            child: const Text('Okay'),
             onPressed: () {
               Navigator.of(ctx).pop();
             },
@@ -209,7 +207,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           Align(
                             alignment: Alignment.center,
                             child: Text(
-                              "Admin Login",
+                              "Krishi Seva Kendra\nAdmin Login",
                               style: TextStyle(
                                   color: Colors.black,
                                   fontWeight: FontWeight.bold,

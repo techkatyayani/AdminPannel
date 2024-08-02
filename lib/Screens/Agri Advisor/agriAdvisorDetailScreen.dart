@@ -28,6 +28,16 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
     fetchAgriData();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+    _meetUrlController.dispose();
+    _startTimeController.dispose();
+    _endTimeController.dispose();
+    _discountedFeesController.dispose();
+    _actualFeesController.dispose();
+  }
+
   void fetchAgriData() async {
     try {
       final response = await FirebaseFirestore.instance
@@ -64,16 +74,16 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
       appBar: AppBar(
         title: const Text("Agri Advisor Video Call"),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.all(size.width * .04),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              color: boxColor,
-            ),
-            child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.all(size.width * .04),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(14),
+                color: boxColor,
+              ),
               child: Form(
                 key: _formKey,
                 child: Column(

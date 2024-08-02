@@ -35,9 +35,9 @@ class LogoutScreen extends StatelessWidget {
               child: const Text('Logout'),
               onPressed: () {
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  builder: (context) => LoginScreen(),
+                  builder: (context) => const LoginScreen(),
                 )); // Dismiss the dialog
-                _signOut(context); // Proceed with logout
+                // _signOut(context); // Proceed with logout
               },
             ),
           ],

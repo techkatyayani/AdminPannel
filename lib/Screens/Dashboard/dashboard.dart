@@ -8,8 +8,10 @@ import 'package:adminpannal/Screens/HomeLayout/productCollectionScreen.dart';
 import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
+import 'package:adminpannal/Screens/Log%20Out/logoutScreen.dart';
 import 'package:adminpannal/Screens/Others/others_screen.dart';
 import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.dart';
+import 'package:adminpannal/Screens/Sale/saleScreen.dart';
 import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
@@ -47,11 +49,12 @@ class _DashBoardState extends State<DashBoard> {
     const DiscountCoupons(),
     const ProductBetweenBanners(),
     const SoilAndWaterTesting(),
+    const SaleScreen(),
     const AgriAdvisorScreen(),
     const NotificationScreen(),
     const ImageUploadScreen(),
     const SupportScreen(),
-    // const LogoutScreen()
+    const LogoutScreen()
   ];
 
   @override
@@ -96,7 +99,7 @@ class _DashBoardState extends State<DashBoard> {
                             SelectionButtonData(
                               activeIcon: EvaIcons.activity,
                               icon: EvaIcons.activityOutline,
-                              label: "Home Layout",
+                              label: "Home Rearrange",
                             ),
                             SelectionButtonData(
                               activeIcon: Icons.discount,
@@ -112,6 +115,11 @@ class _DashBoardState extends State<DashBoard> {
                               activeIcon: Icons.adjust_sharp,
                               icon: Icons.adjust,
                               label: "Soil & Water Testing",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.card_giftcard,
+                              icon: Icons.card_giftcard_outlined,
+                              label: "KSK Sale",
                             ),
                             SelectionButtonData(
                               activeIcon: EvaIcons.headphones,
@@ -132,6 +140,11 @@ class _DashBoardState extends State<DashBoard> {
                               activeIcon: EvaIcons.settings,
                               icon: EvaIcons.settingsOutline,
                               label: "Support",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.logout,
+                              icon: Icons.logout_outlined,
+                              label: "Log Out",
                             ),
                           ],
                           onSelected: (index, value) {
@@ -180,7 +193,7 @@ class _DashBoardState extends State<DashBoard> {
             children: [
               AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
-                width: isSidebarExpanded ? 250 : 60, // Adjust width as needed
+                width: isSidebarExpanded ? 250 : 60,
                 child: ClipRRect(
                   borderRadius: const BorderRadius.only(
                     topRight: Radius.circular(krishiBorderRadius),
@@ -203,7 +216,7 @@ class _DashBoardState extends State<DashBoard> {
                                           "assets/images/launchicon.png"),
                                       projectName: "Krishi Seva Kendra",
                                       releaseTime: DateTime.now(),
-                                      percent: .3,
+                                      percent: .8,
                                     ),
                                   ),
                                 ),
@@ -224,7 +237,7 @@ class _DashBoardState extends State<DashBoard> {
                                     SelectionButtonData(
                                       activeIcon: EvaIcons.activity,
                                       icon: EvaIcons.activityOutline,
-                                      label: "Home Layout",
+                                      label: "Home Rearranges",
                                       // totalNotif: 20,
                                     ),
                                     SelectionButtonData(
@@ -241,6 +254,11 @@ class _DashBoardState extends State<DashBoard> {
                                       activeIcon: Icons.adjust_sharp,
                                       icon: Icons.adjust,
                                       label: "Soil & Water Testing",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.card_giftcard,
+                                      icon: Icons.card_giftcard_outlined,
+                                      label: "KSK Sale",
                                     ),
                                     SelectionButtonData(
                                       activeIcon: EvaIcons.headphones,
@@ -262,11 +280,11 @@ class _DashBoardState extends State<DashBoard> {
                                       icon: EvaIcons.settingsOutline,
                                       label: "Support",
                                     ),
-                                    // SelectionButtonData(
-                                    //   activeIcon: Icons.logout,
-                                    //   icon: Icons.logout_outlined,
-                                    //   label: "Log Out",
-                                    // ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.logout,
+                                      icon: Icons.logout_outlined,
+                                      label: "Log Out",
+                                    ),
                                   ],
                                   onSelected: (index, value) {
                                     setState(() {

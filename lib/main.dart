@@ -1,6 +1,4 @@
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
-import 'package:adminpannal/Screens/Login/loginScreen.dart';
-import 'package:adminpannal/Screens/Sale/saleDetailsScreen.dart';
 import 'package:adminpannal/config/themes/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -23,7 +21,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Krishi Seva Kendra Admin',
       theme: AppTheme.basic,
-      home: const LoginScreen(),
+      home: const DashBoard(),
       // home: StreamBuilder<User?>(
       //   stream: FirebaseAuth.instance.authStateChanges(),
       //   builder: (context, snapshot) {

@@ -1,10 +1,11 @@
 import 'dart:typed_data';
-import 'package:adminpannal/Screens/Crops/addCropsForm.dart';
+import 'package:adminpannal/Screens/Crops/widgets/krishiTextField.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart'; // Import this for DateFormat
 import 'package:image/image.dart' as img;
 
 class SaleDetailsScreen extends StatefulWidget {
@@ -17,9 +18,7 @@ class SaleDetailsScreen extends StatefulWidget {
 class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
   final _collectionIdController = TextEditingController();
-  final _daysController = TextEditingController();
-  final _hoursController = TextEditingController();
-  final _minutesController = TextEditingController();
+  DateTime? _selectedEndTime;
   bool _isOfferOpen = false;
   Uint8List? _topstripBannerBytes;
   Uint8List? _topstripBannerHiBytes;
@@ -49,14 +48,16 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
         final data = docSnapshot.data()!;
         setState(() {
           _collectionIdController.text = data['CollectionId'];
-          _daysController.text = data['Days'].toString();
-          _hoursController.text = data['hours'].toString();
-          _minutesController.text = data['minutes'].toString();
           _isOfferOpen = data['isOffer'];
           _topstripBannerUrl = data['TopstripBanner'];
           _topstripBannerHiUrl = data['TopstripBannerHi'];
           _productBGUrl = data['ProductBG'];
           _bgImageUrl = data['BgImage'];
+
+          final timestamp = data['EndTime'] as Timestamp?;
+          if (timestamp != null) {
+            _selectedEndTime = timestamp.toDate();
+          }
         });
       }
     } catch (e) {
@@ -102,12 +103,13 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
     setState(() {
       isLoading = true;
     });
+
     final updateData = <String, dynamic>{
       'CollectionId': _collectionIdController.text,
-      'Days': int.parse(_daysController.text),
-      'hours': int.parse(_hoursController.text),
-      'minutes': int.parse(_minutesController.text),
       'isOffer': _isOfferOpen,
+      'EndTime': _selectedEndTime != null
+          ? Timestamp.fromDate(_selectedEndTime!)
+          : null,
     };
 
     try {
@@ -128,32 +130,46 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
             await _uploadImage(_bgImageBytes!, 'BgImage.jpg');
       }
 
-      if (updateData.isNotEmpty) {
-        await FirebaseFirestore.instance
-            .collection('DynamicSection')
-            .doc('HomeSection')
-            .update(updateData);
-        setState(() {
-          isLoading = false;
-        });
-        Navigator.pop(context);
+      await FirebaseFirestore.instance
+          .collection('DynamicSection')
+          .doc('HomeSection')
+          .update(updateData);
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Data updated successfully!')),
-        );
-      } else {
-        setState(() {
-          isLoading = false;
-        });
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No changes to update!')),
-        );
-      }
+      setState(() {
+        isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Data updated successfully!')),
+      );
     } catch (e) {
       setState(() {
         isLoading = false;
       });
       _showErrorSnackBar('Error updating data: $e');
+    }
+  }
+
+  Future<void> _pickDateTime(BuildContext context) async {
+    final DateTime? date = await showDatePicker(
+      context: context,
+      initialDate: _selectedEndTime ?? DateTime.now(),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+    );
+
+    if (date != null) {
+      final TimeOfDay? time = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(_selectedEndTime ?? DateTime.now()),
+      );
+
+      if (time != null) {
+        setState(() {
+          _selectedEndTime =
+              DateTime(date.year, date.month, date.day, time.hour, time.minute);
+        });
+      }
     }
   }
 
@@ -166,6 +182,10 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+
+    // Update the date format to include day, month, year, hour, minute and AM/PM
+    final dateFormat = DateFormat('dd MMMM yyyy hh:mm a');
+
     return Scaffold(
       appBar: AppBar(title: const Text('KSK SALE')),
       body: Padding(
@@ -204,62 +224,36 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
                 ),
                 const SizedBox(height: krishiSpacing),
 
-                // Days Field
+                // EndTime Picker
+                const Text(
+                  'End Time',
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: krishiSpacing / 2),
                 Row(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Days',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: krishiSpacing / 2),
-                        KrishiTextField(
-                          controller: _daysController,
-                          hintText: 'Days',
-                          width: size.width * .1,
-                        ),
-                      ],
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 15, horizontal: 10),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        _selectedEndTime != null
+                            ? dateFormat.format(_selectedEndTime!)
+                            : 'Select Date and Time',
+                        style: const TextStyle(fontSize: 16),
+                      ),
                     ),
-                    const SizedBox(width: krishiSpacing),
-
-                    // Hours Field
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Hours',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: krishiSpacing / 2),
-                        KrishiTextField(
-                          controller: _hoursController,
-                          hintText: 'Hours',
-                          width: size.width * .1,
-                        ),
-                      ],
-                    ),
-                    const SizedBox(width: krishiSpacing),
-
-                    // Minutes Field
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Minutes',
-                          style: TextStyle(
-                              fontSize: 20, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(height: krishiSpacing / 2),
-                        KrishiTextField(
-                          controller: _minutesController,
-                          hintText: 'Minutes',
-                          width: size.width * .1,
-                        ),
-                      ],
+                    const SizedBox(width: 20),
+                    ElevatedButton(
+                      onPressed: () => _pickDateTime(context),
+                      child: const Text(
+                        "Update",
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ],
                 ),
@@ -297,8 +291,8 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
                   child: GestureDetector(
                     onTap: () => _pickFile('TopstripBanner'),
                     child: Container(
-                      height: size.height * .1,
-                      width: size.width * .6,
+                      // height: size.height * .1,
+                      width: size.width * .4,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(20),
@@ -326,8 +320,8 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
                   child: GestureDetector(
                     onTap: () => _pickFile('TopstripBannerHi'),
                     child: Container(
-                      height: size.height * .1,
-                      width: size.width * .6,
+                      // height: size.height * .1,
+                      width: size.width * .4,
                       decoration: BoxDecoration(
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(10),
@@ -409,9 +403,6 @@ class _SaleDetailsScreenState extends State<SaleDetailsScreen> {
                     ),
                   ],
                 ),
-
-                // BG Image Picker
-                const SizedBox(height: 20),
 
                 // Submit Button
                 Align(

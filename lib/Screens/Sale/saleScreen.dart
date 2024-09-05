@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:intl/intl.dart'; // For date formatting
 
 class SaleScreen extends StatefulWidget {
   const SaleScreen({super.key});
@@ -17,6 +18,7 @@ class _SaleScreenState extends State<SaleScreen> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
+
     return Padding(
       padding: const EdgeInsets.symmetric(
           horizontal: krishiSpacing * 6, vertical: krishiSpacing),
@@ -40,7 +42,13 @@ class _SaleScreenState extends State<SaleScreen> {
               if (!snapshot.hasData || !snapshot.data!.exists) {
                 return const Center(child: Text('Document does not exist'));
               }
+
               final saleData = snapshot.data!;
+              // Extract the EndTime field and format it using intl package
+              Timestamp endTimeTimestamp = saleData['EndTime'] as Timestamp;
+              DateTime endTime = endTimeTimestamp.toDate();
+              String formattedEndTime =
+                  DateFormat('dd MMMM yyyy hh:mm a').format(endTime);
 
               return InkWell(
                 onTap: () {
@@ -76,27 +84,30 @@ class _SaleScreenState extends State<SaleScreen> {
                                   fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                             Text(
-                              saleData!['CollectionId'],
+                              saleData['CollectionId'],
                               style: const TextStyle(fontSize: 18),
                             ),
                           ],
                         ),
                         const SizedBox(height: krishiSpacing / 2),
+
+                        // Replaced the Day, Hour, Minute with EndTime
                         Row(
                           children: [
                             const Text(
-                              "Time : ",
+                              "End Time : ",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 18),
                             ),
                             Expanded(
                               child: Text(
-                                "${saleData['Days']}Day ${saleData['hours']}Hour ${saleData['minutes']}minute",
+                                formattedEndTime, // Display formatted EndTime
                                 style: const TextStyle(fontSize: 18),
                               ),
                             ),
                           ],
                         ),
+
                         const SizedBox(height: krishiSpacing / 2),
                         Row(
                           children: [

@@ -8,6 +8,8 @@ import 'package:adminpannal/Screens/HomeLayout/productCollectionScreen.dart';
 import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
+import 'package:adminpannal/Screens/Krishi%20News/krishi_news_images.dart';
+import 'package:adminpannal/Screens/Krishi%20News/krishi_news_screen.dart';
 import 'package:adminpannal/Screens/Log%20Out/logoutScreen.dart';
 import 'package:adminpannal/Screens/Others/others_screen.dart';
 import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.dart';
@@ -43,6 +45,7 @@ class _DashBoardState extends State<DashBoard> {
   }
 
   List<Widget> screens = [
+    const KrishiNewsScreen(),
     const BannerScreen(),
     const CropScreen(),
     const ProductCollectionScreen(),
@@ -86,6 +89,11 @@ class _DashBoardState extends State<DashBoard> {
                         const SizedBox(height: krishiSpacing),
                         SelectionButton(
                           data: [
+                            SelectionButtonData(
+                              activeIcon: Icons.feed_sharp,
+                              icon: Icons.feed_outlined,
+                              label: "Krishi News",
+                            ),
                             SelectionButtonData(
                               activeIcon: EvaIcons.grid,
                               icon: EvaIcons.gridOutline,
@@ -172,6 +180,7 @@ class _DashBoardState extends State<DashBoard> {
                 ],
               ),
             ),
+
       body: ResponsiveBuilder(
         mobileBuilder: (context, constraints) {
           return SingleChildScrollView(
@@ -186,6 +195,7 @@ class _DashBoardState extends State<DashBoard> {
             ]),
           );
         },
+
         desktopBuilder: (context, constraints) {
           return Row(
             mainAxisSize: MainAxisSize.max,
@@ -224,6 +234,11 @@ class _DashBoardState extends State<DashBoard> {
                                 const SizedBox(height: krishiSpacing),
                                 SelectionButton(
                                   data: [
+                                    SelectionButtonData(
+                                      activeIcon: Icons.feed_sharp,
+                                      icon: Icons.feed_outlined,
+                                      label: "Krishi News",
+                                    ),
                                     SelectionButtonData(
                                       activeIcon: EvaIcons.grid,
                                       icon: EvaIcons.gridOutline,
@@ -311,6 +326,7 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                 ),
               ),
+
               Flexible(
                 flex: 13,
                 child: SingleChildScrollView(

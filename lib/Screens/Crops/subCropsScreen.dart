@@ -1,4 +1,5 @@
 import 'package:adminpannal/Screens/Crops/cropCalenderScreen.dart';
+import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
 import 'package:adminpannal/Screens/Crops/symptomScreen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -24,9 +25,11 @@ class SubCropsScreen extends StatefulWidget {
 }
 
 class _SubCropsScreenState extends State<SubCropsScreen> {
+
   late TextEditingController _nameController;
   late TextEditingController _imageUrlController;
   late TextEditingController _idController;
+
   @override
   void initState() {
     print(widget.cropId);
@@ -76,8 +79,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
     });
   }
 
-  Future<void> _showUpdateDialog(String documentId, String currentName,
-      String currentImageUrl, String currentId) async {
+  Future<void> _showUpdateDialog(String documentId, String currentName, String currentImageUrl, String currentId) async {
     List<int>? bytes;
 
     _nameController.text = currentName;
@@ -217,9 +219,11 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
+
       appBar: AppBar(
         title: Text(widget.cropName),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -301,6 +305,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                             ),
                           ),
                         ),
+
                         Expanded(
                           child: Stack(
                             children: [
@@ -364,12 +369,28 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                     );
                   }
                 }),
+
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 30, vertical: krishiSpacing),
+              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: krishiSpacing),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
+
+                  ElevatedButton(
+                    onPressed: () {
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => EditCropDetails(cropId: widget.cropId)));
+                    },
+                    child: const Text(
+                      "Crop Details",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+
+                  const SizedBox(width: 16),
+
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -391,7 +412,9 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                       ),
                     ),
                   ),
+
                   const SizedBox(width: 16),
+
                   ElevatedButton(
                     onPressed: () {
                       Navigator.push(
@@ -416,6 +439,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                 ],
               ),
             ),
+
             StreamBuilder(
               stream: FirebaseFirestore.instance
                   .collection('product')

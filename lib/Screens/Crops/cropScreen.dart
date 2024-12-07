@@ -200,8 +200,11 @@ class _CropScreenState extends State<CropScreen> {
                     ),
                   ),
                 ),
+
                 // const Spacer(),
+
                 const SizedBox(width: 20),
+
                 ElevatedButton(
                   onPressed: () {
                     Navigator.push(
@@ -224,6 +227,7 @@ class _CropScreenState extends State<CropScreen> {
             ),
           ),
         ),
+
         StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
           stream: FirebaseFirestore.instance.collection('product').snapshots(),
           builder: (BuildContext context,

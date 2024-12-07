@@ -1,3 +1,5 @@
+import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
+import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
 import 'package:adminpannal/config/themes/app_theme.dart';
@@ -22,12 +24,14 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => KrishiNewsProvider()),
+        ChangeNotifierProvider(create: (_) => CropProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Krishi Seva Kendra Admin',
         theme: AppTheme.basic,
         home: const DashBoard(),
+        // home: const EditCropDetails(cropId: 'oDNP2jC3GrBGh0ET5yEl'),
         // home: StreamBuilder<User?>(
         //   stream: FirebaseAuth.instance.authStateChanges(),
         //   builder: (context, snapshot) {

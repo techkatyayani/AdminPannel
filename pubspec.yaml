@@ -42,6 +42,7 @@ dependencies:
   rive: ^0.13.9
   shared_preferences: ^2.3.0
   path: ^1.9.0
+  flutter_rating_bar: ^4.0.1
 
 dev_dependencies:
   flutter_lints: ^3.0.0

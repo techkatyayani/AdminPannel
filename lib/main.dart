@@ -2,6 +2,7 @@ import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
+import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
 import 'package:adminpannal/config/themes/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => KrishiNewsProvider()),
         ChangeNotifierProvider(create: (_) => CropProvider()),
+        ChangeNotifierProvider(create: (_) => KskReviewController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

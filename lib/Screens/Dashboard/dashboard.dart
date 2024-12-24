@@ -22,6 +22,7 @@ import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../Category/category_screen.dart';
 import '../Notification/notification_screen.dart';
 
 int screenIndex = 0;
@@ -36,7 +37,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 0;
+  int screenIndex = 1;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -46,6 +47,7 @@ class _DashBoardState extends State<DashBoard> {
 
   List<Widget> screens = [
     const KrishiNewsScreen(),
+    const CategoryScreen(),
     const BannerScreen(),
     const CropScreen(),
     const ProductCollectionScreen(),
@@ -238,6 +240,11 @@ class _DashBoardState extends State<DashBoard> {
                                       activeIcon: Icons.feed_sharp,
                                       icon: Icons.feed_outlined,
                                       label: "Krishi News",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.category,
+                                      icon: Icons.category_outlined,
+                                      label: "Categories",
                                     ),
                                     SelectionButtonData(
                                       activeIcon: EvaIcons.grid,

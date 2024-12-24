@@ -1,3 +1,4 @@
+import 'package:adminpannal/Screens/Category/controller/category_provider.dart';
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
@@ -25,6 +26,7 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => KrishiNewsProvider()),
         ChangeNotifierProvider(create: (_) => CropProvider()),
+        ChangeNotifierProvider(create: (_) => CategoryProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

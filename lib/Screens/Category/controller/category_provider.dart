@@ -1,14 +1,24 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
+import 'package:adminpannal/constants/app_constants.dart';
+import 'package:flutter/foundation.dart' as foundation;
+import 'dart:html' as html;
 
 import 'package:adminpannal/Screens/Category/service/category_service.dart';
-import 'package:adminpannal/Screens/Crops/cropCalenderScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
+
 
 import '../model/category.dart';
 
 class CategoryProvider with ChangeNotifier {
 
   CategoryService categoryService = CategoryService();
+
+  Color getColorFromCode(String code) {
+    return code != "" ? Color(int.parse('0x$code')) : boxColor;
+  }
 
   List<List<Category>> _category = [];
   List<List<Category>> get category => _category;
@@ -17,13 +27,13 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Map<String, dynamic> data = {
-    'Fungicides': {
-      'categoryName': TextEditingController(),
-      'collectionID': TextEditingController(),
-      'position': TextEditingController(),
-    }
-  };
+  void initCategoryData(List<Category> categories) {
+    initController(categories);
+    initCategoryColors(categories);
+    initCategoryImages(categories);
+
+    notifyListeners();
+  }
 
   final Map<String, TextController> _controllers = {};
   Map<String, TextController> get controllers => _controllers;
@@ -37,8 +47,6 @@ class CategoryProvider with ChangeNotifier {
         positionController: TextEditingController(text: category.position),
       );
     }
-
-    notifyListeners();
   }
   void addController(String categoryName, String key) {
     if (!_controllers.containsKey(categoryName)) {
@@ -68,8 +76,6 @@ class CategoryProvider with ChangeNotifier {
         color2: category.categoryColor1
       );
     }
-
-    notifyListeners();
   }
   void setCategoryColor(String categoryName, int index, String colorCode) {
     if (_categoryColors.containsKey(categoryName)) {
@@ -88,6 +94,45 @@ class CategoryProvider with ChangeNotifier {
       _categoryColors.remove(categoryName);
       notifyListeners();
     }
+  }
+
+  final Map<String, String> _categoryImages = {};
+  Map<String, String> get categoryImages => _categoryImages;
+  void initCategoryImages(List<Category> categories) {
+    _categoryImages.clear();
+
+    for (var category in categories) {
+      _categoryImages[category.categoryName] = category.categoryImage;
+    }
+  }
+  void setCategoryImages(String categoryName, String path) {
+    _categoryImages[categoryName] = path;
+    notifyListeners();
+  }
+
+  ImagePicker imagePicker = ImagePicker();
+
+  Uint8List? _pickedFile;
+  Uint8List? get pickedFile => _pickedFile;
+  void removePickedFile() {
+    _pickedFile = null;
+    notifyListeners();
+  }
+
+  Future<void> pickFile(String categoryName) async {
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      log('Image Picked..!!');
+      log('Before $_pickedFile');
+      _pickedFile = await file.readAsBytes();
+      log('After $_pickedFile');
+      notifyListeners();
+    }
+  }
+
+  Future<String?> uploadFile() async {
+    String? url = await categoryService.uploadImage(pickedFile);
+    return url;
   }
 
   Stream<List<List<Category>>> fetchCategoryRows() async* {
@@ -111,7 +156,7 @@ class CategoryProvider with ChangeNotifier {
       Category data = Category(
         collectionId: controllers[categoryName]!.collectionIdController.text.trim(),
         categoryName: controllers[categoryName]!.categoryNameController.text.trim(),
-        categoryImage: category.categoryImage,
+        categoryImage: categoryImages[categoryName]!,
         categoryColor1: categoryColors[categoryName]!.color1.trim(),
         categoryColor2: categoryColors[categoryName]!.color2.trim(),
         position: controllers[categoryName]!.positionController.text.trim(),
@@ -123,8 +168,59 @@ class CategoryProvider with ChangeNotifier {
 
     bool isSaved = await categoryService.saveCategory(rowIndex: rowIndex, categories: updatedCategories);
 
+    if (isSaved) {
+      _category[rowIndex-1] = updatedCategories;
+      notifyListeners();
+    }
+
     return isSaved;
   }
+
+
+
+  // Add Category
+
+  TextEditingController categoryNameController = TextEditingController();
+  TextEditingController collectionIdController = TextEditingController();
+  TextEditingController positionController = TextEditingController();
+
+  Uint8List? _categoryImage;
+  Uint8List? get categoryImage => _categoryImage;
+
+  String _color1 = '';
+  String get color1 => _color1;
+  void setColor1(String value) {
+    _color1 = value;
+    notifyListeners();
+  }
+
+  String _color2 = '';
+  String get color2 => _color2;
+  void setColor2(String value) {
+    _color2 = value;
+    notifyListeners();
+  }
+
+  Future<void> pickCategoryImage() async {
+    XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
+    if (file != null) {
+      _categoryImage = await file.readAsBytes();
+      notifyListeners();
+    }
+  }
+
+  void clearCategoryAddDialog() {
+    categoryNameController.clear();
+    collectionIdController.clear();
+    positionController.clear();
+    _categoryImage = null;
+    _color1 = '';
+    _color2 = '';
+    notifyListeners();
+  }
+
+
+
 }
 
 class TextController {

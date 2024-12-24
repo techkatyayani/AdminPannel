@@ -99,8 +99,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     child: GestureDetector(
                       onTap: () {
 
-                        provider.initController(categories);
-                        provider.initCategoryColors(categories);
+                        provider.initCategoryData(categories);
 
                         for (var category in categories) {
                           log('Category Data - ${category.toJson()}');

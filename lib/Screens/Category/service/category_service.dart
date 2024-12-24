@@ -1,7 +1,9 @@
 import 'dart:developer';
+import 'dart:io';
 import 'dart:js_interop';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 
 import '../model/category.dart';
 
@@ -54,6 +56,32 @@ class CategoryService {
     } catch (e, stace) {
       log('Error while saving category - $e\n$stace');
       return false;
+    }
+  }
+
+  Future<String?> uploadImage(final mediaFile) async {
+    try {
+
+      final fileName = DateTime.now().millisecondsSinceEpoch.toString();
+
+      final storagePath = 'dynamic_category_images/$fileName';
+
+      final storageRef = FirebaseStorage.instance.ref().child(storagePath);
+
+      log('Uploading media file to Firebase Storage...');
+      final uploadTask = mediaFile is File
+          ? await storageRef.putFile(mediaFile)
+          : await storageRef.putData(mediaFile);
+
+      log('Getting download URL for uploaded file...');
+      final mediaUrl = await uploadTask.ref.getDownloadURL();
+      log('Media URL: $mediaUrl');
+
+      return mediaUrl;
+
+    } catch (e, stace) {
+      log('Error uploading file to firebase - $e\n$stace');
+      return null;
     }
   }
 

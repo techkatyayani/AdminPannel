@@ -1,16 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomPostTextField extends StatelessWidget {
 
   final TextEditingController controller;
   final String hintText;
   final bool? enabled;
+  final double? width;
+  final List<TextInputFormatter>? inputFormatter;
 
   const CustomPostTextField({
     super.key,
     required this.controller,
     required this.hintText,
-    this.enabled
+    this.enabled,
+    this.width,
+    this.inputFormatter,
   });
 
   @override
@@ -21,7 +26,7 @@ class CustomPostTextField extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(
-            width: 120,
+            width: width ?? 120,
             child: Text(
               hintText,
               style: const TextStyle(
@@ -39,6 +44,7 @@ class CustomPostTextField extends StatelessWidget {
               enabled: enabled,
               controller: controller,
               cursorColor: Colors.black,
+              inputFormatters: inputFormatter,
               style: const TextStyle(
                 fontSize: 16,
                 color: Colors.black,

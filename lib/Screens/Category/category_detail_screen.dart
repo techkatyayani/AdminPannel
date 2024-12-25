@@ -58,8 +58,8 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                         Category category = provider.category[widget.index][index];
                         String categoryName = category.categoryName;
 
-                        Color color1 = provider.getColorFromCode(provider.categoryColors[categoryName]!.color1);
-                        Color color2 = provider.getColorFromCode(provider.categoryColors[categoryName]!.color2);
+                        Color color1 = provider.getColorFromCode(provider.categoryColors[categoryName]?.color1 ?? '');
+                        Color color2 = provider.getColorFromCode(provider.categoryColors[categoryName]?.color2 ?? '');
 
                         return Container(
                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
@@ -732,7 +732,28 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
                               _customButton(
                                 onPressed: () async {
                                   if (formKey.currentState!.validate()) {
+                                    if ( provider.color1 != '' && provider.color2 != '') {
+                                      if (provider.categoryImage != null) {
 
+                                        Utils.showLoadingBox(context: context, title: 'Adding Category...');
+
+                                        bool isAdded = await provider.addCategory(widget.index + 1);
+
+                                        Navigator.pop(context);
+
+                                        if (isAdded) {
+                                          provider.clearCategoryAddDialog();
+                                          Navigator.pop(context);
+                                          Navigator.pop(context);
+
+                                          Utils.showSnackBar(context: context, message: 'Category Added Successfully :)');
+                                        }
+                                      } else {
+                                        Utils.showSnackBar(context: context, message: 'Please add category image..!!');
+                                      }
+                                    } else {
+                                      Utils.showSnackBar(context: context, message: 'Please add gradient color..!!');
+                                    }
                                   }
                                 },
                                 btnText: 'Add',

@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "kskadminpannel"
-  }
+    "default": "krishisevakendra-8430a",
+    "hosting": "krishisevakendra-8430a"
+  },
+  "targets": {},
+  "etags": {}
 }

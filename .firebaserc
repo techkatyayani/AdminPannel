@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "kskadminpannel"
-  }
+    "default": "todo-app-pro-57ab6",
+    "hosting": "todo-app-pro-57ab6"
+  },
+  "targets": {},
+  "etags": {}
 }

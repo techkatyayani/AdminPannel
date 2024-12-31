@@ -83,8 +83,7 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       isLoading = true;
     });
-    if (emailController.text == 'marketing900' &&
-        passwordController.text == 'm900') {
+    if (emailController.text == 'marketing900' && passwordController.text == 'm900') {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(

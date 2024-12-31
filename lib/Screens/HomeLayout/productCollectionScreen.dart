@@ -74,7 +74,7 @@ class _ProductCollectionScreenState extends State<ProductCollectionScreen> {
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text("Confirm"),
-                        content: Text(
+                        content: const Text(
                             "Are you sure you want to change the position of this item?"),
                         actions: [
                           TextButton(

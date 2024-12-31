@@ -8,7 +8,6 @@ import 'package:adminpannal/Screens/HomeLayout/productCollectionScreen.dart';
 import 'package:adminpannal/Screens/Dashboard/project_card.dart';
 import 'package:adminpannal/Screens/Dashboard/selection_bottom.dart';
 import 'package:adminpannal/Screens/Dashboard/upgrade_premium_card.dart';
-import 'package:adminpannal/Screens/Krishi%20News/krishi_news_images.dart';
 import 'package:adminpannal/Screens/Krishi%20News/krishi_news_screen.dart';
 import 'package:adminpannal/Screens/Log%20Out/logoutScreen.dart';
 import 'package:adminpannal/Screens/Others/others_screen.dart';
@@ -16,6 +15,7 @@ import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.
 import 'package:adminpannal/Screens/Sale/saleScreen.dart';
 import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
+import 'package:adminpannal/Screens/ksk_review/ksk_all_product_screen.dart';
 import 'package:adminpannal/Screens/ksk_review/ksk_all_review_screen.dart';
 import 'package:adminpannal/Screens/prouct_catagory/product_catagory_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
@@ -55,7 +55,7 @@ class _DashBoardState extends State<DashBoard> {
     const ProductBetweenBanners(),
     const SoilAndWaterTesting(),
     const SaleScreen(),
-    const KskAllReviewScreen(),
+    const KskAllProductScreen(),
     const ProductCatagoryScreen(),
     const AgriAdvisorScreen(),
     const NotificationScreen(),

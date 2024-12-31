@@ -71,7 +71,7 @@ class _HomeScreenLayoutState extends State<HomeScreenLayout> {
       });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Please enter a name'),
         ),
       );

@@ -99,7 +99,7 @@ class _ImageUploadScreenState extends State<ImageUploadScreen> {
               GestureDetector(
                 onTap: _pickImage,
                 child: _pickedFile != null
-                    ? Container(
+                    ? SizedBox(
                         height: size.height * .2,
                         width: size.height * .5,
                         child: Image.memory(_pickedFile!.files.single.bytes!))

@@ -1,5 +1,5 @@
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
-import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
+import 'package:adminpannal/Screens/Crops/crop_disease_section/controller/disease_controller.dart';
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
 import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
@@ -29,6 +29,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => CropProvider()),
         ChangeNotifierProvider(create: (_) => KskReviewController()),
         ChangeNotifierProvider(create: (_) => ProuductCatagoryController()),
+        ChangeNotifierProvider(create: (_) => DiseaseController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

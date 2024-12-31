@@ -1,13 +1,10 @@
 import 'dart:convert';
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:lottie/lottie.dart';
-import 'package:path/path.dart' as Path;
 import 'package:http/http.dart' as http;
 import '../../constants/app_constants.dart';
 

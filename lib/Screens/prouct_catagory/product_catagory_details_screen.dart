@@ -1,7 +1,6 @@
 import 'package:adminpannal/Screens/prouct_catagory/controller/prouduct_catagory_controller.dart';
 import 'package:adminpannal/Screens/prouct_catagory/model/product_catagory_model.dart';
 import 'package:adminpannal/Screens/prouct_catagory/widgets/add_image_dialog.dart';
-import 'package:adminpannal/Screens/prouct_catagory/widgets/add_product_catagory_dialog.dart';
 // import 'package:adminpannal/Screens/prouct_catagory/widgets/product_catagory_card.dart';
 import 'package:adminpannal/Screens/prouct_catagory/widgets/update_catagory_discription_dialog.dart';
 import 'package:adminpannal/constants/app_constants.dart';

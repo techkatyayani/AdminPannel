@@ -16,6 +16,8 @@ import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.
 import 'package:adminpannal/Screens/Sale/saleScreen.dart';
 import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
+import 'package:adminpannal/Screens/ksk_review/ksk_all_review_screen.dart';
+import 'package:adminpannal/Screens/prouct_catagory/product_catagory_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -55,6 +57,8 @@ class _DashBoardState extends State<DashBoard> {
     const ProductBetweenBanners(),
     const SoilAndWaterTesting(),
     const SaleScreen(),
+    const KskAllReviewScreen(),
+    const ProductCatagoryScreen(),
     const AgriAdvisorScreen(),
     const NotificationScreen(),
     const ImageUploadScreen(),
@@ -132,6 +136,16 @@ class _DashBoardState extends State<DashBoard> {
                               label: "KSK Sale",
                             ),
                             SelectionButtonData(
+                              activeIcon: Icons.note,
+                              icon: Icons.card_giftcard_outlined,
+                              label: "KSK Review",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: Icons.note,
+                              icon: EvaIcons.image,
+                              label: "Product Images",
+                            ),
+                            SelectionButtonData(
                               activeIcon: EvaIcons.headphones,
                               icon: EvaIcons.headphonesOutline,
                               label: "Agri Advisor",
@@ -182,7 +196,6 @@ class _DashBoardState extends State<DashBoard> {
                 ],
               ),
             ),
-
       body: ResponsiveBuilder(
         mobileBuilder: (context, constraints) {
           return SingleChildScrollView(
@@ -197,7 +210,6 @@ class _DashBoardState extends State<DashBoard> {
             ]),
           );
         },
-
         desktopBuilder: (context, constraints) {
           return Row(
             mainAxisSize: MainAxisSize.max,
@@ -283,6 +295,16 @@ class _DashBoardState extends State<DashBoard> {
                                       label: "KSK Sale",
                                     ),
                                     SelectionButtonData(
+                                      activeIcon: Icons.note,
+                                      icon: Icons.card_giftcard_outlined,
+                                      label: "KSK Review",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: Icons.note,
+                                      icon: EvaIcons.imageOutline,
+                                      label: "Product Images",
+                                    ),
+                                    SelectionButtonData(
                                       activeIcon: EvaIcons.headphones,
                                       icon: EvaIcons.headphonesOutline,
                                       label: "Agri Advisor",
@@ -333,7 +355,6 @@ class _DashBoardState extends State<DashBoard> {
                   ),
                 ),
               ),
-
               Flexible(
                 flex: 13,
                 child: SingleChildScrollView(

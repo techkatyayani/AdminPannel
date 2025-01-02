@@ -67,6 +67,7 @@ class DiseaseController extends ChangeNotifier {
       await symptomDocRef.update({
         symptomName: symptomNewValue,
       });
+      symptomDiscriptionController.clear();
 
       log("Successfully updated $symptomName for diseaseId $diseaseId and cropId $cropId");
     } catch (e) {
@@ -105,8 +106,8 @@ class DiseaseController extends ChangeNotifier {
     required String diseaseId,
     required String symptomId,
     required String symptomName,
-    required String symptomValue,
-    required List<dynamic> symptomNewValue,
+    required String oldSymptomValue, // the value to be replaced
+    required String newSymptomValue, // the new value
   }) async {
     try {
       // Get the Symptoms collection reference
@@ -116,13 +117,34 @@ class DiseaseController extends ChangeNotifier {
           .collection('Disease')
           .doc(diseaseId)
           .collection('Symptoms');
+
       var symptomDocRef = symptomsCollection.doc(symptomId);
-      symptomNewValue.remove(symptomValue);
-      await symptomDocRef.update({symptomName: symptomNewValue});
+
+      // Retrieve the current symptom values list
+      var snapshot = await symptomDocRef.get();
+      if (snapshot.exists) {
+        var symptomData = snapshot.data() as Map<String, dynamic>;
+        var symptomValues = List<String>.from(symptomData[symptomName] ?? []);
+
+        // Check if the old value exists and replace it
+        if (symptomValues.contains(oldSymptomValue)) {
+          // Replace the old value with the new value
+          int index = symptomValues.indexOf(oldSymptomValue);
+          symptomValues[index] = newSymptomValue;
+
+          // Update the document with the modified list
+          await symptomDocRef.update({symptomName: symptomValues});
+          log("Symptom $symptomName updated successfully for symptomId $symptomId");
+        } else {
+          log("Error: old symptom value not found.");
+        }
+      } else {
+        log("Error: Symptom document not found.");
+      }
+
       notifyListeners();
-      log("Symptom $symptomName deleted successfully for symptomId $symptomId");
     } catch (e) {
-      log("Error deleting symptom: $e");
+      log("Error updating symptom: $e");
     }
   }
 

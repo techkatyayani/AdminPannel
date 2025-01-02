@@ -52,13 +52,24 @@ class SystemLanguageCard extends StatelessWidget {
                       builder: (context) {
                         return Dialog(
                           child: Container(
-                            height: MediaQuery.of(context).size.width / 2,
-                            width: MediaQuery.of(context).size.width / 2,
+                            margin: const EdgeInsets.all(20),
+                            height: MediaQuery.of(context).size.width / 3,
+                            width: MediaQuery.of(context).size.width / 3,
                             child: Column(
                               children: [
-                                const Text('Update '),
+                                const SizedBox(height: 30),
+                                const Text(
+                                  'Add Text',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                    fontSize: 22,
+                                  ),
+                                ),
                                 const SizedBox(height: 30),
                                 TextFormField(
+                                  minLines: 5,
+                                  maxLines: 5,
                                   controller:
                                       provider.symptomDiscriptionController,
                                   decoration: InputDecoration(
@@ -75,6 +86,13 @@ class SystemLanguageCard extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 20),
                                 ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        const Color.fromARGB(255, 102, 84, 143),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(5),
+                                    ),
+                                  ),
                                   onPressed: () {
                                     provider.updateSyptom(
                                       cropId: cropId,
@@ -84,7 +102,7 @@ class SystemLanguageCard extends StatelessWidget {
                                     );
                                   },
                                   child: const Text(
-                                    'Update',
+                                    'Add',
                                   ),
                                 ),
                               ],
@@ -151,7 +169,86 @@ class SystemLanguageCard extends StatelessWidget {
               child: Row(
                 children: [
                   InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      provider.symptomDiscriptionController.text = text;
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return Dialog(
+                            child: Container(
+                              margin: const EdgeInsets.all(20),
+                              height: MediaQuery.of(context).size.width / 3,
+                              width: MediaQuery.of(context).size.width / 3,
+                              child: Column(
+                                children: [
+                                  const SizedBox(height: 30),
+                                  const Text(
+                                    'Update Text',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      fontSize: 22,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 30),
+                                  TextFormField(
+                                    minLines: 5,
+                                    maxLines: 5,
+                                    controller:
+                                        provider.symptomDiscriptionController,
+                                    decoration: InputDecoration(
+                                      hintText:
+                                          'Enter $symptomLanguage Symptom',
+                                      hintStyle:
+                                          TextStyle(color: Colors.grey[400]),
+                                      filled: true,
+                                      fillColor: Colors.grey[800],
+                                      border: OutlineInputBorder(
+                                        borderRadius: BorderRadius.circular(8),
+                                        borderSide: BorderSide.none,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 20),
+                                  ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color.fromARGB(
+                                          255, 102, 84, 143),
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(5),
+                                      ),
+                                    ),
+                                    onPressed: () {
+                                      // provider.updateSyptom(
+                                      //   cropId: cropId,
+                                      //   diseaseId: diseaseId,
+                                      //   symptomName: symptomTitle,
+                                      //   symptomNewValue: symptom,
+                                      // );
+                                      provider.editSymptom(
+                                        cropId: cropId,
+                                        diseaseId: diseaseId,
+                                        symptomId: symptomId,
+                                        symptomName: symptomTitle,
+                                        oldSymptomValue: text,
+                                        newSymptomValue: provider
+                                            .symptomDiscriptionController.text,
+                                      );
+                                      Navigator.of(context).pop();
+                                      provider.symptomDiscriptionController
+                                          .clear();
+                                    },
+                                    child: const Text(
+                                      'Update',
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(

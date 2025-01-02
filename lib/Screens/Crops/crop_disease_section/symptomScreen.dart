@@ -70,9 +70,21 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
                 ),
                 const SizedBox(width: 30),
                 Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       widget.diseaseName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    Text(
+                      "Disease Id: ${widget.diseaseId}",
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,

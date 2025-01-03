@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'package:adminpannal/Screens/ksk_review/model/product_model.dart';
 import 'package:adminpannal/Screens/ksk_review/model/product_review_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -8,69 +9,14 @@ import 'package:flutter/material.dart';
 class KskReviewController extends ChangeNotifier {
   FirebaseFirestore firebaseFirestore = FirebaseFirestore.instance;
   FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  List<ProductModel> allProducts = [];
 
   List<ProductReviewModel> allReviews = [];
-  List<String> allProducts = [];
-  List<ProductReviewModel> allapprovedReviews = [];
-  List<ProductReviewModel> allUnApprovedReviews = [];
+
+  List<ProductReviewModel> allFilteredReviews = [];
 
   bool isLoadingReviews = true;
   bool isLoadingProducts = true;
-
-  // Future<void> fetchAllReviewsFromAllProducts(bool showApproved) async {
-  //   try {
-  //     isLoadingReviews = true;
-  //     notifyListeners();
-
-  //     // Query the productReviews collection to get all products
-  //     final productSnapshot =
-  //         await FirebaseFirestore.instance.collection('productReviews').get();
-
-  //     if (productSnapshot.docs.isEmpty) {
-  //       log("No products found in 'productReviews'.");
-  //       allReviews = [];
-  //       isLoadingReviews = false;
-  //       notifyListeners();
-  //       return;
-  //     }
-
-  //     log("Found ${productSnapshot.docs.length} products.");
-  //     List<ProductReviewModel> allFetchedReviews = [];
-
-  //     for (var productDoc in productSnapshot.docs) {
-  //       try {
-  //         final reviewsSnapshot =
-  //             await productDoc.reference.collection('reviews').get();
-
-  //         if (reviewsSnapshot.docs.isNotEmpty) {
-  //           log("Product ${productDoc.id} has ${reviewsSnapshot.docs.length} reviews.");
-  //           List<ProductReviewModel> productReviews = reviewsSnapshot.docs
-  //               .map((doc) => ProductReviewModel.fromJson(doc.data()))
-  //               .toList();
-
-  //           allFetchedReviews.addAll(productReviews);
-  //         }
-  //       } catch (e) {
-  //         log("Failed to fetch reviews for product ${productDoc.id}: $e");
-  //       }
-  //     }
-
-  //     // Filter reviews based on approval status
-  //     allReviews = showApproved
-  //         ? allFetchedReviews.where((review) => review.isApproved!).toList()
-  //         : allFetchedReviews.where((review) => !review.isApproved!).toList();
-
-  //     log("Total reviews fetched: ${allFetchedReviews.length}");
-  //     log("Filtered reviews to display: ${allReviews.length}");
-
-  //     isLoadingReviews = false;
-  //     notifyListeners();
-  //   } catch (e) {
-  //     isLoadingReviews = false;
-  //     notifyListeners();
-  //     log("Failed to fetch all reviews: $e");
-  //   }
-  // }
 
   Future<void> getAllReviewForUser(String productId) async {
     try {
@@ -78,9 +24,9 @@ class KskReviewController extends ChangeNotifier {
       notifyListeners();
 
       final reviewCollection = FirebaseFirestore.instance
-          .collection('productReviews')
+          .collection('Product Reviews')
           .doc(productId)
-          .collection('reviews');
+          .collection('Reviews');
 
       final querySnapshot = await reviewCollection.get();
       List<ProductReviewModel> reviews = querySnapshot.docs
@@ -89,8 +35,7 @@ class KskReviewController extends ChangeNotifier {
 
       log("Fetched ${reviews.length} reviews for productId: $productId");
       allReviews = reviews;
-      allapprovedReviews =
-          reviews.where((review) => review.isApproved!).toList();
+      allFilteredReviews = allReviews;
       isLoadingReviews = false;
       notifyListeners();
     } catch (e) {
@@ -100,74 +45,14 @@ class KskReviewController extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchAllReviewsFromAllProducts(bool showApproved) async {
-    try {
-      isLoadingReviews = true;
-      notifyListeners();
-
-      // Query the productReviews collection to get all products
-      final productSnapshot =
-          await FirebaseFirestore.instance.collection('productReviews').get();
-
-      if (productSnapshot.docs.isEmpty) {
-        log("No products found in 'productReviews'.");
-        allReviews = [];
-        isLoadingReviews = false;
-        notifyListeners();
-        return;
-      }
-
-      log("Found ${productSnapshot.docs.length} products.");
-
-      // Fetch reviews for all products
-      List<ProductReviewModel> allFetchedReviews = [];
-
-      for (var productDoc in productSnapshot.docs) {
-        try {
-          // Fetch the 'reviews' subcollection for this product
-          final reviewsSnapshot =
-              await productDoc.reference.collection('reviews').get();
-
-          if (reviewsSnapshot.docs.isNotEmpty) {
-            log("Product ${productDoc.id} has ${reviewsSnapshot.docs.length} reviews.");
-
-            // Convert review documents to ProductReviewModel objects
-            List<ProductReviewModel> productReviews = reviewsSnapshot.docs
-                .map((doc) => ProductReviewModel.fromJson(doc.data()))
-                .toList();
-
-            allFetchedReviews.addAll(productReviews);
-          }
-        } catch (e) {
-          log("Failed to fetch reviews for product ${productDoc.id}: $e");
-        }
-      }
-
-      // Filter reviews based on approval status
-      allReviews = showApproved
-          ? allFetchedReviews.where((review) => review.isApproved!).toList()
-          : allFetchedReviews.where((review) => !review.isApproved!).toList();
-
-      log("Total reviews fetched: ${allFetchedReviews.length}");
-      log("Filtered reviews to display: ${allReviews.length}");
-
-      isLoadingReviews = false;
-      notifyListeners();
-    } catch (e) {
-      isLoadingReviews = false;
-      notifyListeners();
-      log("Failed to fetch all reviews: $e");
-    }
-  }
-
   Future<void> fetchAllProducts() async {
     try {
       // Query the productReviews collection to get all products
       final productSnapshot =
-          await FirebaseFirestore.instance.collection('productReviews').get();
+          await FirebaseFirestore.instance.collection('Product Reviews').get();
 
       if (productSnapshot.docs.isEmpty) {
-        log("No products found in 'productReviews'.");
+        log("No products found in 'Product Reviews'.");
         allProducts = [];
         isLoadingProducts = false;
         notifyListeners();
@@ -177,14 +62,21 @@ class KskReviewController extends ChangeNotifier {
       log("Found ${productSnapshot.docs.length} products.");
 
       // Fetch product data
-      List<String> fetchedProducts = [];
+      List<ProductModel> fetchedProducts = [];
 
       for (var productDoc in productSnapshot.docs) {
         try {
           // Convert the product document to a ProductModel
-          String productModel = productDoc.data.toString();
+          ProductModel productModel = ProductModel(
+            productId: productDoc['productId'], // Firestore field
+            productImage: productDoc['productImage'], // Firestore field
+            productName: productDoc['productName'], // Firestore field
+            variantId: productDoc['variantId'], // Firestore field
+            variantName: productDoc['variantName'], // Firestore field
+          );
 
           fetchedProducts.add(productModel);
+          log("Fetched product: ${productModel.productName}");
         } catch (e) {
           log("Failed to fetch product data for ${productDoc.id}: $e");
         }
@@ -201,6 +93,74 @@ class KskReviewController extends ChangeNotifier {
       isLoadingProducts = false;
       notifyListeners();
       log("Failed to fetch products: $e");
+    }
+  }
+
+  Future<void> filterReviews(String filterName) async {
+    try {
+      if (filterName == 'Approved') {
+        allFilteredReviews =
+            allReviews.where((review) => review.isApproved == true).toList();
+      } else if (filterName == 'Unapproved') {
+        allFilteredReviews =
+            allReviews.where((review) => review.isApproved == false).toList();
+      } else if (filterName == 'All') {
+        allFilteredReviews = allReviews.toList();
+      } else if (filterName == 'Top Rated') {
+        allFilteredReviews.sort((a, b) => double.parse(b.userRating ?? '0')
+            .compareTo(double.parse(a.userRating ?? '0')));
+      } else if (filterName == 'Lowest Rated') {
+        allFilteredReviews.sort((a, b) => double.parse(a.userRating ?? '0')
+            .compareTo(double.parse(b.userRating ?? '0')));
+      }
+
+      notifyListeners();
+    } catch (e) {
+      log("Error in filtering reviews: $e");
+    }
+  }
+
+  Future<void> toggleReviewApproval(String reviewId, String productId) async {
+    try {
+      if (reviewId.isEmpty || productId.isEmpty) {
+        log('Review Id or Product Id is Empty');
+        return;
+      }
+      final reviewDocRef = FirebaseFirestore.instance
+          .collection('Product Reviews')
+          .doc(productId)
+          .collection('Reviews')
+          .doc(reviewId);
+
+      final reviewDoc = await reviewDocRef.get();
+
+      if (!reviewDoc.exists) {
+        log("Review with ID $reviewId not found.");
+        return;
+      }
+
+      // Get the current 'isApproved' status and toggle it
+      bool currentApprovalStatus = reviewDoc['isApproved'] ?? false;
+      bool newApprovalStatus = !currentApprovalStatus;
+
+      // Update the 'isApproved' field in Firestore
+      await reviewDocRef.update({
+        'isApproved': newApprovalStatus,
+      });
+
+      // Update the local list of reviews
+      for (var review in allFilteredReviews) {
+        if (review.reviewId == reviewId) {
+          review.isApproved = newApprovalStatus;
+          break; // Exit the loop once the review is found
+        }
+      }
+
+      notifyListeners();
+
+      log("Review approval status for $reviewId updated to $newApprovalStatus");
+    } catch (e) {
+      log("Error toggling review approval: $e");
     }
   }
 }

@@ -1,29 +1,23 @@
-import 'dart:developer';
-
+import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
+import 'package:adminpannal/Screens/ksk_review/ksk_all_review_screen.dart';
+import 'package:adminpannal/Screens/ksk_review/model/product_model.dart';
 import 'package:adminpannal/Screens/prouct_catagory/controller/prouduct_catagory_controller.dart';
-import 'package:adminpannal/Screens/prouct_catagory/model/product_catagory_model.dart';
-import 'package:adminpannal/Screens/prouct_catagory/product_catagory_details_screen.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class ProductCatagoryCard extends StatelessWidget {
-  final ProductCatagoryModel productCatagoryModel;
-  const ProductCatagoryCard({super.key, required this.productCatagoryModel});
+class KskProductCard extends StatelessWidget {
+  final ProductModel productModel;
+  const KskProductCard({super.key, required this.productModel});
 
   @override
   Widget build(BuildContext context) {
-    List<String> images = [];
-    images.add(productCatagoryModel.imageEn);
-    images.add(productCatagoryModel.imageHi);
-    log(images.first);
-    return Consumer<ProuductCatagoryController>(
-        builder: (context, provider, child) {
+    return Consumer<KskReviewController>(builder: (context, provider, child) {
       return InkWell(
         onTap: () {
           Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ProductCatagoryDetailsScreen(
-              productCatagory: productCatagoryModel,
+            builder: (context) => KskAllReviewScreen(
+              productId: productModel.productId!,
             ),
           ));
         },
@@ -43,14 +37,14 @@ class ProductCatagoryCard extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       width: double.infinity,
-                      child: images.isNotEmpty
+                      child: productModel.productImage == null
                           ? ClipRRect(
                               borderRadius: const BorderRadius.only(
                                 topRight: Radius.circular(5),
                                 topLeft: Radius.circular(5),
                               ),
                               child: Image.network(
-                                images.first,
+                                productModel.productImage!,
                                 errorBuilder: (context, error, stackTrace) =>
                                     const Icon(
                                   Icons.image,
@@ -65,15 +59,16 @@ class ProductCatagoryCard extends StatelessWidget {
                     ),
                   ),
                   Container(
+                    padding: const EdgeInsets.all(5),
                     // color: Colors.redAccent,
                     height: 50,
                     alignment: Alignment.center,
                     child: Text(
-                      productCatagoryModel.title,
+                      productModel.productName ?? 'Unkwnown',
                       style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
+                        fontSize: 15,
                       ),
                     ),
                   ),
@@ -83,9 +78,7 @@ class ProductCatagoryCard extends StatelessWidget {
                 top: 10,
                 right: 10,
                 child: IconButton(
-                  onPressed: () {
-                    provider.deleteCategory(productCatagoryModel.collectionID);
-                  },
+                  onPressed: () {},
                   icon: const Icon(
                     Icons.delete,
                     color: Colors.red,

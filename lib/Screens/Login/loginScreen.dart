@@ -1,6 +1,7 @@
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -83,13 +84,19 @@ class _LoginScreenState extends State<LoginScreen> {
     setState(() {
       isLoading = true;
     });
+
     if (emailController.text == 'marketing900' && passwordController.text == 'm900') {
+
+      SharedPreferences pref = await SharedPreferences.getInstance();
+      await pref.setBool('LOGIN', true);
+
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => const DashBoard(),
         ),
       );
+
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

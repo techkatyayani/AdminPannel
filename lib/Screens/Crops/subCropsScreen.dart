@@ -478,7 +478,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                               child: SymptomsScreen(
                                 cropId: widget.cropId,
                                 diseaseName: diseaseData['Name'],
-                                diseaseId: snapshot.data.docs[index].id,
+                                diseaseId: snapshot.data.docs[index].commentId,
                               ),
                               type: PageTransitionType.topToBottom,
                             ),
@@ -548,7 +548,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                                   child: GestureDetector(
                                     onTap: () {
                                       _showUpdateDialog(
-                                        snapshot.data!.docs[index].id,
+                                        snapshot.data!.docs[index].commentId,
                                         snapshot.data!.docs[index]['Name'],
                                         snapshot.data!.docs[index]['Image'],
                                         snapshot.data!.docs[index]['id'],

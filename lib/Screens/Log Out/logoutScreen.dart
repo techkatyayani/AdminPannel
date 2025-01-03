@@ -2,6 +2,7 @@ import 'package:adminpannal/Screens/Login/loginScreen.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LogoutScreen extends StatelessWidget {
   const LogoutScreen({super.key});
@@ -33,7 +34,11 @@ class LogoutScreen extends StatelessWidget {
             ),
             TextButton(
               child: const Text('Logout'),
-              onPressed: () {
+              onPressed: () async {
+
+                SharedPreferences pref = await SharedPreferences.getInstance();
+                await pref.setBool('LOGIN', false);
+
                 Navigator.of(context).pushReplacement(MaterialPageRoute(
                   builder: (context) => const LoginScreen(),
                 )); // Dismiss the dialog

@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:adminpannal/Screens/Krishi%20News/krishi_news_screen.dart';
+import 'package:adminpannal/Screens/Krishi%20News/model/krishi_news_model.dart';
+import 'package:adminpannal/Screens/Krishi%20News/service/krishi_news_service.dart';
 import 'package:adminpannal/Utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -11,6 +14,8 @@ import 'package:flutter/foundation.dart';
 import 'dart:html' as html;
 
 class KrishiNewsProvider with ChangeNotifier {
+
+  final KrishiNewsService service = KrishiNewsService();
 
   final ImagePicker _picker = ImagePicker();
 
@@ -98,10 +103,13 @@ class KrishiNewsProvider with ChangeNotifier {
       String author = authorController.text.trim();
       String title = titleController.text.trim();
       String caption = captionController.text.trim();
+      String product = productController.text.trim();
+
 
       log('Author: $author');
       log('Title: $title');
       log('Caption: $caption');
+      log('Caption: $product');
       log('Media Type $mediaType');
 
       dynamic mediaFile;
@@ -143,7 +151,7 @@ class KrishiNewsProvider with ChangeNotifier {
         'mediaType': mediaType,
         'likedBy': [],
         'timestamp': Timestamp.fromDate(timestamp),
-        'product': 'Not Available',
+        'product': product,
       };
 
       await newPostRef.set(data);
@@ -178,6 +186,11 @@ class KrishiNewsProvider with ChangeNotifier {
     _postVideoBytes = null;
 
     notifyListeners();
+  }
+
+  Stream<List<KrishiNewsModel>> fetchPost(String mediaType) async* {
+    List<KrishiNewsModel> krishiNews = await service.fetchPost(mediaType);
+    yield krishiNews;
   }
 
 }

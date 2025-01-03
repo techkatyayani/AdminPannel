@@ -14,10 +14,12 @@ class _KskAllReviewScreenState extends State<KskAllReviewScreen> {
   @override
   void initState() {
     super.initState();
+
     // Provider.of<KskReviewController>(context, listen: false)
     //     .fetchAllReviewsFromAllProducts(false);
-    Provider.of<KskReviewController>(context, listen: false)
-        .getAllReviewForUser('9200286531880');
+
+    Provider.of<KskReviewController>(context, listen: false).getAllReviewForUser('9200286531880');
+
   }
 
   @override

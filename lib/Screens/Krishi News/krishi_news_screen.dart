@@ -177,6 +177,11 @@ class _KrishiNewsScreenState extends State<KrishiNewsScreen> with SingleTickerPr
                             hintText: 'Post Caption',
                           ),
 
+                          CustomPostTextField(
+                            controller: provider.productController,
+                            hintText: 'Product Id',
+                          ),
+
                           const SizedBox(height: 40),
 
                           Row(
@@ -280,4 +285,23 @@ Widget buildUploadIcon(BuildContext context, bool isVideo) {
       ],
     ),
   );
+}
+
+String formatDuration(DateTime postTime) {
+  Duration duration = DateTime.now().difference(postTime);
+  if (duration.inMinutes < 1) {
+    return '<1m ago';
+  } else if (duration.inMinutes < 60) {
+    return '${duration.inMinutes}m ago';
+  } else if (duration.inHours < 24) {
+    return '${duration.inHours}h ago';
+  } else if (duration.inDays < 7) {
+    return '${duration.inDays}d ago';
+  } else if (duration.inDays < 30) {
+    return '${(duration.inDays / 7).floor()}w ago';
+  } else if (duration.inDays < 365) {
+    return '${(duration.inDays / 30).floor()}mo ago';
+  } else {
+    return '${(duration.inDays / 365).floor()}y ago';
+  }
 }

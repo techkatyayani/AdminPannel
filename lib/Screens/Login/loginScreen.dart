@@ -85,7 +85,10 @@ class _LoginScreenState extends State<LoginScreen> {
       isLoading = true;
     });
 
-    if (emailController.text == 'marketing900' && passwordController.text == 'm900') {
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+
+    if ((email == 'marketing900' || email == 'prateek') && (password == 'm900' || password == 'prateek')) {
 
       SharedPreferences pref = await SharedPreferences.getInstance();
       await pref.setBool('LOGIN', true);

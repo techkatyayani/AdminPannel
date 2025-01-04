@@ -6,12 +6,12 @@ import 'package:adminpannal/Screens/Category/service/category_service.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
-
 import '../model/category.dart';
 
 class CategoryProvider with ChangeNotifier {
-
   CategoryService categoryService = CategoryService();
+
+  ImagePicker imagePicker = ImagePicker();
 
   Color getColorFromCode(String code) {
     return code != "" ? Color(int.parse('0x$code')) : boxColor;
@@ -21,107 +21,48 @@ class CategoryProvider with ChangeNotifier {
 
   List<List<Category>> get category => _category;
 
-  void removeCategory(int i1, int i2) {
-    _category[i1].removeAt(i2);
+  // Category Details
+
+  final TextEditingController categoryNameController = TextEditingController();
+  final TextEditingController collectionIdController = TextEditingController();
+  final TextEditingController positionController = TextEditingController();
+
+  final TextEditingController bengaliNameController = TextEditingController();
+  final TextEditingController englishNameController = TextEditingController();
+  final TextEditingController hindiNameController = TextEditingController();
+  final TextEditingController kannadaNameController = TextEditingController();
+  final TextEditingController malayalamNameController = TextEditingController();
+  final TextEditingController marathiNameController = TextEditingController();
+  final TextEditingController oriyaNameController = TextEditingController();
+  final TextEditingController tamilNameController = TextEditingController();
+  final TextEditingController teluguNameController = TextEditingController();
+
+  String _categoryColor1 = '';
+
+  String get categoryColor1 => _categoryColor1;
+
+  void setCategoryColor1(String code) {
+    _categoryColor1 = code;
     notifyListeners();
   }
 
-  void initCategoryData(List<Category> categories) {
-    initController(categories);
-    initCategoryColors(categories);
-    initCategoryImages(categories);
+  String _categoryColor2 = '';
 
+  String get categoryColor2 => _categoryColor2;
+
+  void setCategoryColor2(String code) {
+    _categoryColor2 = code;
     notifyListeners();
   }
 
-  final Map<String, TextController> _controllers = {};
+  String _categoryImageUrl = '';
 
-  Map<String, TextController> get controllers => _controllers;
+  String get categoryImageUrl => _categoryImageUrl;
 
-  void initController(List<Category> categories) {
-    _controllers.clear();
-
-    for (var category in categories) {
-      _controllers[category.categoryName] = TextController(
-        categoryNameController: TextEditingController(
-            text: category.categoryName),
-        collectionIdController: TextEditingController(
-            text: category.collectionId),
-        positionController: TextEditingController(text: category.position),
-      );
-    }
-  }
-
-  void addController(String categoryName, String key) {
-    if (!_controllers.containsKey(categoryName)) {
-      _controllers[categoryName] = TextController(
-        categoryNameController: TextEditingController(),
-        collectionIdController: TextEditingController(),
-        positionController: TextEditingController(),
-      );
-      notifyListeners();
-    }
-  }
-
-  void removeController(String categoryName) {
-    if (_controllers.containsKey(categoryName)) {
-      _controllers.remove(categoryName);
-      notifyListeners();
-    }
-  }
-
-  final Map<String, CategoryColor> _categoryColors = {};
-
-  Map<String, CategoryColor> get categoryColors => _categoryColors;
-
-  void initCategoryColors(List<Category> categories) {
-    _categoryColors.clear();
-
-    for (var category in categories) {
-      _categoryColors[category.categoryName] = CategoryColor(
-          color1: category.categoryColor1,
-          color2: category.categoryColor1
-      );
-    }
-  }
-
-  void setCategoryColor(String categoryName, int index, String colorCode) {
-    if (_categoryColors.containsKey(categoryName)) {
-      index == 1
-          ?
-      _categoryColors[categoryName]!.color1 = colorCode
-          :
-      _categoryColors[categoryName]!.color2 = colorCode;
-
-      notifyListeners();
-    }
-  }
-
-  void removeCategoryColor(String categoryName) {
-    if (_categoryColors.containsKey(categoryName)) {
-      _categoryColors.remove(categoryName);
-      notifyListeners();
-    }
-  }
-
-  final Map<String, String> _categoryImages = {};
-
-  Map<String, String> get categoryImages => _categoryImages;
-
-  void initCategoryImages(List<Category> categories) {
-    _categoryImages.clear();
-
-    for (var category in categories) {
-      _categoryImages[category.categoryName] = category.categoryImage;
-    }
-  }
-
-  void setCategoryImages(String categoryName, String path) {
-    _categoryImages[categoryName] = path;
+  void setCategoryImageUrl(String url) {
+    _categoryImageUrl = url;
     notifyListeners();
   }
-
-  ImagePicker imagePicker = ImagePicker();
 
   Uint8List? _pickedFile;
 
@@ -132,7 +73,56 @@ class CategoryProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> pickFile(String categoryName) async {
+  void setCategoryDetails(Category category) {
+    categoryNameController.text = category.categoryName;
+    collectionIdController.text = category.collectionId;
+    positionController.text = category.position;
+
+    bengaliNameController.text = category.nameBn;
+    englishNameController.text = category.nameEn;
+    hindiNameController.text = category.nameHi;
+
+    kannadaNameController.text = category.nameKn;
+    malayalamNameController.text = category.nameMl;
+    marathiNameController.text = category.nameMr;
+
+    oriyaNameController.text = category.nameOr;
+    tamilNameController.text = category.nameTa;
+    teluguNameController.text = category.nameBn;
+
+    _categoryColor1 = category.categoryColor1;
+    _categoryColor2 = category.categoryColor2;
+    _categoryImageUrl = category.categoryImage;
+
+    notifyListeners();
+  }
+
+  void resetCategoryDetails() {
+    categoryNameController.clear();
+    collectionIdController.clear();
+    positionController.clear();
+
+    bengaliNameController.clear();
+    englishNameController.clear();
+    hindiNameController.clear();
+
+    kannadaNameController.clear();
+    malayalamNameController.clear();
+    marathiNameController.clear();
+
+    oriyaNameController.clear();
+    tamilNameController.clear();
+    teluguNameController.clear();
+
+    _categoryColor1 = '';
+    _categoryColor2 = '';
+    _categoryImageUrl = '';
+    _pickedFile = null;
+
+    notifyListeners();
+  }
+
+  Future<void> pickFile() async {
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
       log('Image Picked..!!');
@@ -156,50 +146,63 @@ class CategoryProvider with ChangeNotifier {
   }
 
   Future<bool> saveCategory({
-    required int rowIndex,
-    required List<Category> categories
+    required int categoryIndex,
+    required int subCategoryIndex,
+    required String docId,
   }) async {
-    List<Category> updatedCategories = [];
+    int rowIndex = categoryIndex + 1;
 
-    for (var category in categories) {
-      String categoryName = category.categoryName;
-
-      Category data = Category(
-        collectionId: controllers[categoryName]!.collectionIdController.text
-            .trim(),
-        categoryName: controllers[categoryName]!.categoryNameController.text
-            .trim(),
-        categoryImage: categoryImages[categoryName]!,
-        categoryColor1: categoryColors[categoryName]!.color1.trim(),
-        categoryColor2: categoryColors[categoryName]!.color2.trim(),
-        position: controllers[categoryName]!.positionController.text.trim(),
-        docId: category.docId,
-      );
-
-      updatedCategories.add(data);
-    }
+    Category updatedCategory = Category(
+      collectionId: collectionIdController.text.trim(),
+      categoryName: categoryNameController.text.trim(),
+      categoryImage: categoryImageUrl,
+      categoryColor1: categoryColor1,
+      categoryColor2: categoryColor2,
+      position: positionController.text.trim(),
+      docId: docId,
+      nameBn: bengaliNameController.text.trim(),
+      nameEn: englishNameController.text.trim(),
+      nameHi: hindiNameController.text.trim(),
+      nameKn: kannadaNameController.text.trim(),
+      nameMl: malayalamNameController.text.trim(),
+      nameMr: marathiNameController.text.trim(),
+      nameOr: oriyaNameController.text.trim(),
+      nameTa: tamilNameController.text.trim(),
+      nameTl: teluguNameController.text.trim(),
+    );
 
     bool isSaved = await categoryService.saveCategory(
-        rowIndex: rowIndex, categories: updatedCategories);
+        rowIndex: rowIndex, category: updatedCategory);
 
     if (isSaved) {
-      _category[rowIndex - 1] = updatedCategories;
+      _category[categoryIndex][subCategoryIndex] = updatedCategory;
       notifyListeners();
     }
 
     return isSaved;
   }
 
-
   // Add Category
 
-  TextEditingController categoryNameController = TextEditingController();
-  TextEditingController collectionIdController = TextEditingController();
-  TextEditingController positionController = TextEditingController();
+  TextEditingController addCategoryNameController = TextEditingController();
+  TextEditingController addCollectionIdController = TextEditingController();
+  TextEditingController addPositionController = TextEditingController();
 
-  Uint8List? _categoryImage;
+  final TextEditingController addBengaliNameController = TextEditingController();
+  final TextEditingController addEnglishNameController = TextEditingController();
+  final TextEditingController addHindiNameController = TextEditingController();
 
-  Uint8List? get categoryImage => _categoryImage;
+  final TextEditingController addKannadaNameController = TextEditingController();
+  final TextEditingController addMalayalamNameController = TextEditingController();
+  final TextEditingController addMarathiNameController = TextEditingController();
+
+  final TextEditingController addOriyaNameController = TextEditingController();
+  final TextEditingController addTamilNameController = TextEditingController();
+  final TextEditingController addTeluguNameController = TextEditingController();
+
+  Uint8List? _addCategoryImage;
+
+  Uint8List? get addCategoryImage => _addCategoryImage;
 
   String _color1 = '';
 
@@ -222,67 +225,82 @@ class CategoryProvider with ChangeNotifier {
   Future<void> pickCategoryImage() async {
     XFile? file = await imagePicker.pickImage(source: ImageSource.gallery);
     if (file != null) {
-      _categoryImage = await file.readAsBytes();
+      _addCategoryImage = await file.readAsBytes();
       notifyListeners();
     }
   }
 
   void clearCategoryAddDialog() {
-    categoryNameController.clear();
-    collectionIdController.clear();
-    positionController.clear();
-    _categoryImage = null;
+    addCategoryNameController.clear();
+    addCollectionIdController.clear();
+    addPositionController.clear();
+
+    addBengaliNameController.clear();
+    addEnglishNameController.clear();
+    addHindiNameController.clear();
+
+    addKannadaNameController.clear();
+    addMalayalamNameController.clear();
+    addMarathiNameController.clear();
+
+    addOriyaNameController.clear();
+    addTamilNameController.clear();
+    addTeluguNameController.clear();
+
+    _addCategoryImage = null;
     _color1 = '';
     _color2 = '';
     notifyListeners();
   }
 
-  Future<bool> addCategory(int rowIndex) async {
+  Future<bool> addCategory(int categoryIndex) async {
+    int rowIndex = categoryIndex + 1;
 
-    String categoryName = categoryNameController.text.trim();
-    String collectionId = collectionIdController.text.trim();
-    String position = positionController.text.trim();
+    String categoryName = addCategoryNameController.text.trim();
+    String collectionId = addCollectionIdController.text.trim();
+    String position = addPositionController.text.trim();
 
-    log('Category Name = $categoryName');
-    log('Collection Id = $collectionId');
-    log('Position = $position');
-    log('Color1 = $color1');
-    log('Color2 = $color2');
-    log('File = ${categoryImage == null ? 'No' : 'Yes'}');
-    log('Row Index = $rowIndex');
+    String nameBn = addBengaliNameController.text.trim();
+    String nameEn = addEnglishNameController.text.trim();
+    String nameHi = addHindiNameController.text.trim();
+
+    String nameKn = addKannadaNameController.text.trim();
+    String nameMl = addMalayalamNameController.text.trim();
+    String nameMr = addMarathiNameController.text.trim();
+
+    String nameOr = addOriyaNameController.text.trim();
+    String nameTa = addTamilNameController.text.trim();
+    String nameTl = addTeluguNameController.text.trim();
+
+    Category newCategory = Category(
+      collectionId: collectionId,
+      categoryName: categoryName,
+      position: position,
+      categoryImage: '',
+      categoryColor1: categoryColor1,
+      categoryColor2: categoryColor2,
+      docId: '',
+      nameBn: nameBn,
+      nameEn: nameEn,
+      nameHi: nameHi,
+      nameKn: nameKn,
+      nameMl: nameMl,
+      nameMr: nameMr,
+      nameOr: nameOr,
+      nameTa: nameTa,
+      nameTl: nameTl
+    );
 
     Category? category = await categoryService.addCategory(
-      categoryName: categoryName,
-      collectionId: collectionId,
-      position: position,
-      color1: color1,
-      color2: color2,
-      file: categoryImage,
-      rowIndex: rowIndex
+      category: newCategory,
+      file: addCategoryImage,
+      rowIndex: rowIndex,
     );
 
     if (category != null) {
-      _category[rowIndex - 1].add(category);
+      _category[categoryIndex].add(category);
     }
 
     return category != null ? true : false;
   }
-
-
-}
-
-class TextController {
-  final TextEditingController categoryNameController;
-  final TextEditingController collectionIdController;
-  final TextEditingController positionController;
-
-  TextController(
-      {required this.categoryNameController, required this.collectionIdController, required this.positionController});
-}
-
-class CategoryColor {
-  String color1;
-  String color2;
-
-  CategoryColor({required this.color1, required this.color2});
 }

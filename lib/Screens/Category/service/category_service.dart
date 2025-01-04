@@ -37,21 +37,24 @@ class CategoryService {
 
   Future<bool> saveCategory({
     required int rowIndex,
-    required List<Category> categories
+    required Category category
   }) async {
     try {
       log('Saving Category to doc category-row-$rowIndex...');
 
       CollectionReference<Map<String, dynamic>> collectionReference = firestore
-          .collection('Category Row').doc('category-row-$rowIndex').collection(
-          'categories');
+          .collection('Category Row')
+          .doc('category-row-$rowIndex')
+          .collection('categories');
 
-      for (var category in categories) {
-        log('Setting data ${category.toJson()} in Doc id ${category.docId}');
-        String? id = category.docId != '' ? category.docId : null;
-        await collectionReference.doc(id).set(category.toJson());
-        log('Saved :)');
-      }
+
+      log('Setting data ${category.toJson()} in Doc id ${category.docId}');
+
+      String? id = category.docId != '' ? category.docId : null;
+
+      await collectionReference.doc(id).set(category.toJson());
+
+      log('Saved :)');
 
       return true;
     } catch (e, stace) {
@@ -61,18 +64,18 @@ class CategoryService {
   }
 
   Future<Category?> addCategory({
-    required String categoryName,
-    required String collectionId,
-    required String position,
-    required String color1,
-    required String color2,
+    required Category category,
     required dynamic file,
     required int rowIndex,
   }) async {
     try {
+
       log('Adding Category to doc category-row-$rowIndex...');
 
-      CollectionReference<Map<String, dynamic>> collectionReference = firestore.collection('Category Row').doc('category-row-$rowIndex').collection('categories');
+      CollectionReference<Map<String, dynamic>> collectionReference = firestore
+          .collection('Category Row')
+          .doc('category-row-$rowIndex')
+          .collection('categories');
 
       String? downloadUrl = await uploadImage(file);
 
@@ -85,19 +88,11 @@ class CategoryService {
 
       String docId = documentReference.id;
 
-      Category category = Category(
-        collectionId: collectionId,
-        categoryName: categoryName,
-        categoryImage: downloadUrl,
-        categoryColor1: color1,
-        categoryColor2: color2,
-        position: position,
-        docId: docId
-      );
+      Category newCategory = category.copyWith(categoryImage: downloadUrl, docId: docId);
 
-      await documentReference.set(category.toJson());
+      await documentReference.set(newCategory.toJson());
 
-      return category;
+      return newCategory;
 
     } catch (e, stace) {
       log('Error adding category - $e\n$stace');
@@ -111,7 +106,9 @@ class CategoryService {
           .now()
           .millisecondsSinceEpoch
           .toString();
+
       final storagePath = 'dynamic_category_images/$fileName';
+
       Reference storageRef = storage.ref().child(storagePath);
 
       log('Uploading media file to Firebase Storage...');

@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:adminpannal/Screens/Category/category_detail_screen.dart';
 import 'package:adminpannal/Screens/Category/controller/category_provider.dart';
+import 'package:adminpannal/Screens/Category/row_category_screen.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -53,9 +54,11 @@ class _CategoryScreenState extends State<CategoryScreen> {
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Padding(
-                  padding: EdgeInsets.symmetric(vertical: 10),
-                  child: CircularProgressIndicator(
-                    color: Colors.white,
+                  padding: EdgeInsets.symmetric(vertical: 50),
+                  child: Center(
+                    child: CircularProgressIndicator(
+                      color: Colors.white,
+                    ),
                   ),
                 );
               }
@@ -99,15 +102,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
                     child: GestureDetector(
                       onTap: () {
 
-                        provider.initCategoryData(categories);
+                        // provider.initCategoryData(categories);
 
-                        for (var category in categories) {
-                          log('Category Data - ${category.toJson()}');
-                        }
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => RowCategoryScreen(categoryIndex: index)),
+                        );
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDetailScreen(
-                          index: index
-                        )));
+                        // Navigator.push(context, MaterialPageRoute(builder: (context) => CategoryDetailScreen(
+                        //   index: index
+                        // )));
                       },
                       child: Text(
                         'Category Row ${index+1}',
@@ -123,6 +127,65 @@ class _CategoryScreenState extends State<CategoryScreen> {
               );
             }
           ),
+
+          const SizedBox(height: 25),
+
+          Container(
+            width: double.maxFinite,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: const Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      'NOTE',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red
+                      ),
+                    ),
+                  ],
+                ),
+
+                SizedBox(height: 15),
+
+                Text(
+                  '1. The First Row should contains categories like Fertilizers, Pesticides, Insecticides, Herbicides or Fungicides',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black
+                  ),
+                ),
+
+                SizedBox(height: 8),
+
+                Text(
+                  '2. The Second and Third Row may contains any type of category like Offers, Seasonal Products, etc.',
+                  style: TextStyle(
+                    fontSize: 18,
+                    color: Colors.black
+                  ),
+                ),
+
+                SizedBox(height: 8),
+
+                Text(
+                  '3. The Collection ID must be entered in proper format (e.g. - 456492089640)',
+                  style: TextStyle(
+                      fontSize: 18,
+                      color: Colors.black
+                  ),
+                )
+              ],
+            ),
+          )
         ],
       ),
     );

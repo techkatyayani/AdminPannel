@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:adminpannal/Screens/Category/controller/category_provider.dart';
 import 'package:adminpannal/Screens/Category/model/category.dart';
@@ -12,13 +11,16 @@ import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
-import '../Krishi News/krishi_news_screen.dart';
-
 class CategoryDetailScreen extends StatefulWidget {
 
-  final int index;
+  final int categoryIndex;
+  final int subCategoryIndex;
 
-  const CategoryDetailScreen({super.key, required this.index});
+  const CategoryDetailScreen({
+    super.key,
+    required this.categoryIndex,
+    required this.subCategoryIndex,
+  });
 
   @override
   State<CategoryDetailScreen> createState() => _CategoryDetailScreenState();
@@ -32,6 +34,7 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: const Text(
           'Category Details',
           style: TextStyle(
@@ -40,454 +43,525 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
             color: Colors.white
           ),
         ),
+        actions: [
+          SizedBox(
+            width: MediaQuery.of(context).size.width * 0.4,
+            child: const Text(
+              'Category Name refers to unique key for category, it should be in english language only',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.white
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          )
+        ],
       ),
+
       body: Form(
         key: formKey,
         child: Consumer<CategoryProvider>(
           builder: (BuildContext context, CategoryProvider provider, Widget? child) {
+
+            Category category = provider.category[widget.categoryIndex][widget.subCategoryIndex];
+
+            String categoryName = category.categoryName;
+
+            Color color1 = provider.getColorFromCode(provider.categoryColor1);
+            Color color2 = provider.getColorFromCode(provider.categoryColor2);
+
             return SingleChildScrollView(
               child: Column(
                 children: [
-                  ListView.builder(
-                      padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 10),
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: provider.category[widget.index].length,
-                      itemBuilder: (context, index) {
+                  Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                        Category category = provider.category[widget.index][index];
-                        String categoryName = category.categoryName;
-
-                        Color color1 = provider.getColorFromCode(provider.categoryColors[categoryName]?.color1 ?? '');
-                        Color color2 = provider.getColorFromCode(provider.categoryColors[categoryName]?.color2 ?? '');
-
-                        return Container(
-                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-                          margin: const EdgeInsets.only(bottom: 10),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
+                          // Category Name
+                          Text(
+                            categoryName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: krishiPrimaryColor
+                            ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
 
-                              // Category Name
-                              Text(
-                                categoryName,
-                                style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: krishiPrimaryColor
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Column(
+                                  children: [
+
+                                    // Category Name
+                                    _customDetailRow(
+                                      key: 'Category Name',
+                                      controller: provider.categoryNameController,
+                                    ),
+
+                                    const SizedBox(height: 15),
+
+                                    // Collection ID
+                                    _customDetailRow(
+                                      key: 'Collection ID',
+                                      controller: provider.collectionIdController,
+                                    ),
+                                  ],
                                 ),
                               ),
 
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Column(
-                                      children: [
+                              const SizedBox(width: 10),
 
-                                        // Category Name
-                                        _customDetailRow(
-                                          key: 'Category Name',
-                                          controller: provider.controllers[categoryName]!.categoryNameController,
-                                        ),
-
-                                        const SizedBox(height: 15),
-
-                                        // Collection ID
-                                        _customDetailRow(
-                                          key: 'Collection ID',
-                                          controller: provider.controllers[categoryName]!.collectionIdController,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 10),
-
-                                  SizedBox(
-                                    width: MediaQuery.of(context).size.width * 0.2,
-                                    height: MediaQuery.of(context).size.height * 0.2,
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        showDialog(
-                                          context: context,
-                                          builder: (context) {
-                                            return Dialog(
-                                              backgroundColor: Colors.white,
-                                              child: Container(
-                                                width: MediaQuery.of(context).size.width * 0.4,
-                                                padding: const EdgeInsets.all(20),
-                                                decoration: BoxDecoration(
-                                                  color: Colors.white,
-                                                  borderRadius: BorderRadius.circular(10),
-                                                ),
-                                                child: Column(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-
-                                                    const SizedBox(height: 25),
-
-                                                    const Text(
-                                                      'Select Image',
-                                                      style: TextStyle(
-                                                        fontSize: 20,
-                                                        fontWeight: FontWeight.bold,
-                                                        color: Colors.black
-                                                      ),
-                                                    ),
-
-                                                    const SizedBox(height: 25),
-
-                                                    Consumer<CategoryProvider>(
-                                                      builder: (BuildContext context, CategoryProvider provider, Widget? child) {
-                                                        return GestureDetector(
-                                                          onTap: () async {
-                                                            await provider.pickFile(categoryName);
-                                                          },
-                                                          child: Padding(
-                                                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                                                            child: provider.pickedFile != null
-                                                                ?
-                                                            ClipRRect(
-                                                              borderRadius: BorderRadius.circular(10),
-                                                              child: Image.memory(
-                                                                provider.pickedFile!,
-                                                                width: double.maxFinite,
-                                                                errorBuilder: (context, error, stace) {
-                                                                  return const Icon(
-                                                                    Icons.error,
-                                                                    color: boxColor,
-                                                                    size: 50,
-                                                                  );
-                                                                },
-                                                              ),
-                                                            )
-                                                                :
-                                                            Container(
-                                                              padding: const EdgeInsets.symmetric(vertical: 25),
-                                                              decoration: BoxDecoration(
-                                                                color: krishiFontColorPallets[2],
-                                                                borderRadius: BorderRadius.circular(10),
-                                                                border: const Border.fromBorderSide(
-                                                                  BorderSide(
-                                                                    color: boxColor,
-                                                                    width: 2,
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                              alignment: Alignment.center,
-                                                              child: const Column(
-                                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons.cloud_upload_outlined,
-                                                                    color: boxColor,
-                                                                    size: 50,
-                                                                  ),
-
-                                                                  SizedBox(height: 20),
-
-                                                                  Text(
-                                                                    'Upload Image',
-                                                                    style: TextStyle(
-                                                                        fontSize: 16,
-                                                                        color: boxColor,
-                                                                        fontWeight: FontWeight.bold
-                                                                    ),
-                                                                  )
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        );
-                                                      },
-                                                    ),
-
-                                                    const SizedBox(height: 50),
-
-                                                    Row(
-                                                      mainAxisAlignment: MainAxisAlignment.end,
-                                                      children: [
-                                                        TextButton(
-                                                            onPressed: () {
-                                                              Navigator.pop(context);
-                                                            },
-                                                            child: const Text(
-                                                              'Cancel',
-                                                              style: TextStyle(
-                                                                fontSize: 16,
-                                                                fontWeight: FontWeight.bold,
-                                                                color: Colors.red,
-                                                              ),
-                                                            )
-                                                        ),
-
-                                                        const SizedBox(width: 5),
-
-                                                        TextButton(
-                                                          onPressed: () async {
-
-                                                            Utils.showLoadingBox(context: context, title: 'Saving Image..');
-
-                                                            String? path = await provider.uploadFile();
-
-                                                            Navigator.pop(context);
-
-                                                            if (path == null) {
-                                                              Navigator.pop(context);
-                                                              Utils.showSnackBar(context: context, message: 'Error uploading image..!!');
-                                                            } else {
-                                                              provider.setCategoryImages(categoryName, path ?? '');
-                                                              Navigator.pop(context);
-                                                            }
-                                                          },
-                                                          child: const Text(
-                                                            'Upload',
-                                                            style: TextStyle(
-                                                              fontSize: 16,
-                                                              fontWeight: FontWeight.bold,
-                                                              color: Colors.black,
-                                                            ),
-                                                          )
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            );
-                                          }
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.2,
+                                height: MediaQuery.of(context).size.height * 0.2,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    showUploadImageDialog();
+                                  },
+                                  child: provider.categoryImageUrl != ''
+                                      ?
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.network(
+                                      provider.categoryImageUrl,
+                                      width: double.maxFinite,
+                                      errorBuilder: (context, error, stace) {
+                                        return const Icon(
+                                          Icons.error,
+                                          color: boxColor,
+                                          size: 50,
                                         );
                                       },
-                                      child: category.categoryImage != ''
-                                          ?
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(10),
-                                        child: Image.network(
-                                          category.categoryImage,
-                                          width: double.maxFinite,
-                                          errorBuilder: (context, error, stace) {
-                                            return const Icon(
-                                              Icons.error,
-                                              color: boxColor,
-                                              size: 50,
-                                            );
-                                          },
-                                        ),
-                                      )
-                                          :
-                                      Container(
-                                        width: double.maxFinite,
-                                        decoration: BoxDecoration(
-                                          color: krishiFontColorPallets[2],
-                                          borderRadius: BorderRadius.circular(10),
-                                          border: const Border.fromBorderSide(
-                                            BorderSide(
-                                              color: boxColor,
-                                              width: 2,
-                                            ),
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: const Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            Icon(
-                                              Icons.cloud_upload_outlined,
-                                              color: boxColor,
-                                              size: 50,
-                                            ),
-
-                                            SizedBox(height: 20),
-
-                                            Text(
-                                              'Upload Image',
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  color: boxColor,
-                                                  fontWeight: FontWeight.bold
-                                              ),
-                                            )
-                                          ],
+                                    ),
+                                  )
+                                      :
+                                  Container(
+                                    width: double.maxFinite,
+                                    decoration: BoxDecoration(
+                                      color: krishiFontColorPallets[2],
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: const Border.fromBorderSide(
+                                        BorderSide(
+                                          color: boxColor,
+                                          width: 2,
                                         ),
                                       ),
                                     ),
-                                  )
-                                ],
+                                    alignment: Alignment.center,
+                                    child: const Column(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        Icon(
+                                          Icons.cloud_upload_outlined,
+                                          color: boxColor,
+                                          size: 50,
+                                        ),
+
+                                        SizedBox(height: 20),
+
+                                        Text(
+                                          'Upload Image',
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: boxColor,
+                                              fontWeight: FontWeight.bold
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Row(
+                            children: [
+
+                              // Position
+                              Expanded(
+                                child: _customDetailRow(
+                                  key: 'Position',
+                                  controller: provider.positionController,
+                                  inputFormatters: [
+                                    FilteringTextInputFormatter.digitsOnly,
+                                  ]
+                                ),
+                              ),
+
+                              const SizedBox(width: 100),
+
+                              const Text(
+                                'Gradient Colors',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color:  Colors.black,
+                                ),
                               ),
 
                               const SizedBox(width: 25),
 
-                              Row(
-                                children: [
-
-                                  // Position
-                                  Expanded(
-                                    child: _customDetailRow(
-                                        key: 'Position',
-                                        controller: provider.controllers[categoryName]!.positionController,
-                                        inputFormatters: [
-                                          FilteringTextInputFormatter.digitsOnly,
-                                        ]
+                              // Gradient Color 1
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                        width: 25,
+                                        height: 25,
+                                        color: color1
                                     ),
-                                  ),
 
-                                  const SizedBox(width: 100),
-
-                                  const Text(
-                                    'Gradient Colors',
-                                    style: TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold,
-                                      color:  Colors.black,
-                                    ),
-                                  ),
-
-                                  const SizedBox(width: 25),
-
-                                  // Gradient Color 1
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 5),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                            width: 25,
-                                            height: 25,
-                                            color: color1
-                                        ),
-
-                                        TextButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return CustomColorPicker(
-                                                      pickerColor: color1,
-                                                      onColorChanged: (color) {
-                                                        provider.setCategoryColor(categoryName, 1, color.toHexString());
-                                                      }
-                                                  );
-                                                },
+                                    TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return CustomColorPicker(
+                                                  pickerColor: color1,
+                                                  onColorChanged: (color) {
+                                                    provider.setCategoryColor1(color.toHexString());
+                                                  }
                                               );
                                             },
-                                            child: Text(
-                                              'Gradient Color 1',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: color1,
-                                              ),
-                                            )
-                                        ),
-                                      ],
+                                          );
+                                        },
+                                        child: Text(
+                                          'Gradient Color 1',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: color1,
+                                          ),
+                                        )
                                     ),
-                                  ),
+                                  ],
+                                ),
+                              ),
 
-                                  const SizedBox(width: 50),
+                              const SizedBox(width: 50),
 
-                                  // Gradient Color 2
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(vertical: 5),
-                                    child: Row(
-                                      children: [
-                                        Container(
-                                            width: 25,
-                                            height: 25,
-                                            color: color2
-                                        ),
+                              // Gradient Color 2
+                              Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 5),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 25,
+                                      height: 25,
+                                      color: color2
+                                    ),
 
-                                        TextButton(
-                                            onPressed: () {
-                                              showDialog(
-                                                context: context,
-                                                builder: (context) {
-                                                  return CustomColorPicker(
-                                                      pickerColor: color2,
-                                                      onColorChanged: (color) {
-                                                        provider.setCategoryColor(categoryName, 2, color.toHexString());
-                                                      }
-                                                  );
-                                                },
+                                    TextButton(
+                                        onPressed: () {
+                                          showDialog(
+                                            context: context,
+                                            builder: (context) {
+                                              return CustomColorPicker(
+                                                  pickerColor: color2,
+                                                  onColorChanged: (color) {
+                                                    provider.setCategoryColor2(color.toHexString());
+                                                  }
                                               );
                                             },
-                                            child: Text(
-                                              'Gradient Color 2',
-                                              style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.bold,
-                                                color: color2,
-                                              ),
-                                            )
-                                        ),
-                                      ],
+                                          );
+                                        },
+                                        child: Text(
+                                          'Gradient Color 2',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: color2,
+                                          ),
+                                        )
                                     ),
-                                  ),
+                                  ],
+                                ),
+                              ),
 
-                                  const SizedBox(width: 50),
-                                ],
-                              )
+                              const SizedBox(width: 50),
                             ],
                           ),
-                        );
-                      }
+
+                          const SizedBox(height: 15),
+
+                          const Text(
+                            'Multi Language Category Name',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                              color: boxColor
+                            ),
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          CustomPostTextField(
+                            controller: provider.bengaliNameController,
+                            hintText: 'Bengali',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.englishNameController,
+                            hintText: 'English',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.hindiNameController,
+                            hintText: 'Hindi',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.kannadaNameController,
+                            hintText: 'Kannada',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.malayalamNameController,
+                            hintText: 'Malayalam',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.marathiNameController,
+                            hintText: 'Marathi',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.oriyaNameController,
+                            hintText: 'Oriya',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.tamilNameController,
+                            hintText: 'Tamil',
+                          ),
+
+                          CustomPostTextField(
+                            controller: provider.teluguNameController,
+                            hintText: 'Telugu',
+                          ),
+
+                          const SizedBox(width: 15),
+                        ],
+                      ),
+                    ),
                   ),
 
-                  const SizedBox(height: 20),
+                  const SizedBox(height: 25),
 
                   InkWell(
                     onTap: () async {
                       if (formKey.currentState!.validate()) {
-                        Utils.showLoadingBox(context: context, title: 'Saving Category...');
-                        bool isSaved = await provider.saveCategory(rowIndex: widget.index + 1, categories: provider.category[widget.index]);
+                        Utils.showLoadingBox(context: context, title: 'Saving Category Details...');
+
+                        bool isSaved = await provider.saveCategory(
+                          categoryIndex: widget.categoryIndex,
+                          subCategoryIndex: widget.subCategoryIndex,
+                          docId: category.docId,
+                        );
+
                         if (isSaved) {
                           Navigator.pop(context);
                           Navigator.pop(context);
                         }
-                      } else {
+
+                      }
+                      else {
                         log('Not Validated..!');
                       }
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 50),
                       decoration: BoxDecoration(
-                        color: Colors.orange,
-                        borderRadius: BorderRadius.circular(25)
+                          color: Colors.orange,
+                          borderRadius: BorderRadius.circular(25)
                       ),
                       child: const Text(
                         'SAVE',
                         style: TextStyle(
-                          fontSize: 18,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600
+                            fontSize: 18,
+                            color: Colors.white,
+                            fontWeight: FontWeight.w600
                         ),
                       ),
                     ),
                   ),
+
+                  const SizedBox(height: 25),
                 ],
               ),
             );
           },
         ),
       ),
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          showAddCategoryDialog();
-        },
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: const BoxDecoration(
-            color: krishiPrimaryColor,
-            shape: BoxShape.circle
-          ),
-          child: const Icon(
-            Icons.add,
-            color: Colors.white,
-          ),
-        ),
-      ),
+    );
+  }
+
+  void showUploadImageDialog() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Dialog(
+            backgroundColor: Colors.white,
+            child: Consumer<CategoryProvider>(
+              builder: (BuildContext context, CategoryProvider provider, Widget? child) {
+                return Container(
+                  width: MediaQuery.of(context).size.width * 0.4,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+
+                      const SizedBox(height: 25),
+
+                      const Text(
+                        'Select Image',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black
+                        ),
+                      ),
+
+                      const SizedBox(height: 25),
+
+                      GestureDetector(
+                        onTap: () async {
+                          await provider.pickFile();
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: provider.pickedFile != null
+                              ?
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Image.memory(
+                              provider.pickedFile!,
+                              width: double.maxFinite,
+                              height: 100,
+                              errorBuilder: (context, error, stace) {
+                                return const Icon(
+                                  Icons.error,
+                                  color: boxColor,
+                                  size: 50,
+                                );
+                              },
+                            ),
+                          )
+                              :
+                          Container(
+                            padding: const EdgeInsets.symmetric(vertical: 25),
+                            decoration: BoxDecoration(
+                              color: krishiFontColorPallets[2],
+                              borderRadius: BorderRadius.circular(10),
+                              border: const Border.fromBorderSide(
+                                BorderSide(
+                                  color: boxColor,
+                                  width: 2,
+                                ),
+                              ),
+                            ),
+                            alignment: Alignment.center,
+                            child: const Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  Icons.cloud_upload_outlined,
+                                  color: boxColor,
+                                  size: 50,
+                                ),
+
+                                SizedBox(height: 20),
+
+                                Text(
+                                  'Upload Image',
+                                  style: TextStyle(
+                                      fontSize: 16,
+                                      color: boxColor,
+                                      fontWeight: FontWeight.bold
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(height: 50),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                              onPressed: () {
+                                provider.removePickedFile();
+                                Navigator.pop(context);
+                              },
+                              child: const Text(
+                                'Cancel',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.red,
+                                ),
+                              )
+                          ),
+
+                          const SizedBox(width: 5),
+
+                          TextButton(
+                              onPressed: () async {
+
+                                Utils.showLoadingBox(context: context, title: 'Saving Image..');
+
+                                String? path = await provider.uploadFile();
+
+                                Navigator.pop(context);
+
+                                if (path == null) {
+                                  Navigator.pop(context);
+                                  Utils.showSnackBar(context: context, message: 'Error uploading image..!!');
+                                }
+                                else {
+                                  provider.setCategoryImageUrl(path);
+                                  Navigator.pop(context);
+                                  Utils.showSnackBar(context: context, message: 'Image uploaded successfully. Press Save button to apply changes :)');
+                                }
+                              },
+                              child: const Text(
+                                'Upload',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black,
+                                ),
+                              )
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          );
+        }
     );
   }
 
@@ -552,247 +626,5 @@ class _CategoryDetailScreenState extends State<CategoryDetailScreen> {
     );
   }
 
-  void showAddCategoryDialog() {
-    final formKey = GlobalKey<FormState>();
-    showDialog(
-        context: context,
-        builder: (context) {
-          return Form(
-            key: formKey,
-            child: Dialog(
-              backgroundColor: Colors.white,
-              child: Consumer<CategoryProvider>(
-                builder: (BuildContext context, CategoryProvider provider, Widget? child) {
-
-                  Color color1 = provider.getColorFromCode(provider.color1);
-                  Color color2 = provider.getColorFromCode(provider.color2);
-
-                  return Container(
-                    height: MediaQuery.of(context).size.height * 0.9,
-                    width: MediaQuery.of(context).size.width * 0.75,
-                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                    decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(10)
-                    ),
-                    child: SingleChildScrollView(
-                      child: Column(
-                        children: [
-                          const Text(
-                            'Add Category',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black
-                            ),
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          GestureDetector(
-                            onTap: provider.pickCategoryImage,
-                            child: provider.categoryImage == null
-                                ?
-                            buildUploadIcon(context, false)
-                                :
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.memory(
-                                provider.categoryImage!,
-                                width: double.maxFinite,
-                                height: MediaQuery.of(context).size.height * 0.25,
-                              ),
-                            ),
-                          ),
-
-                          const SizedBox(height: 10),
-
-                          CustomPostTextField(
-                            controller: provider.categoryNameController,
-                            hintText: 'Category Name',
-                            width: 150,
-                          ),
-
-                          CustomPostTextField(
-                            controller: provider.collectionIdController,
-                            hintText: 'Collection ID',
-                            width: 150,
-                          ),
-
-                          CustomPostTextField(
-                            controller: provider.positionController,
-                            hintText: 'Position',
-                            width: 150,
-                            inputFormatter: [
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                          ),
-
-                          const SizedBox(height: 20),
-
-                          Row(
-                            children: [
-
-                              // Gradient Color 1
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                      width: 25,
-                                      height: 25,
-                                      color: color1
-                                    ),
-
-                                    TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return CustomColorPicker(
-                                                pickerColor: color1,
-                                                onColorChanged: (color) {
-                                                  provider.setColor1(color.toHexString());
-                                                }
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Text(
-                                          'Gradient Color 1',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: color1,
-                                          ),
-                                        )
-                                    ),
-                                  ],
-                                ),
-                              ),
-
-                              const SizedBox(width: 50),
-
-                              // Gradient Color 2
-                              Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 5),
-                                child: Row(
-                                  children: [
-                                    Container(
-                                        width: 25,
-                                        height: 25,
-                                        color: color2
-                                    ),
-
-                                    TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                            context: context,
-                                            builder: (context) {
-                                              return CustomColorPicker(
-                                                  pickerColor: color2,
-                                                  onColorChanged: (color) {
-                                                    provider.setColor2(color.toHexString());
-                                                  }
-                                              );
-                                            },
-                                          );
-                                        },
-                                        child: Text(
-                                          'Gradient Color 2',
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.bold,
-                                            color: color2,
-                                          ),
-                                        )
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          const SizedBox(height: 40),
-
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              _customButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  provider.clearCategoryAddDialog();
-                                },
-                                btnText: 'Cancel',
-                                textColor: Colors.black
-                              ),
-
-                              const SizedBox(width: 30),
-
-                              _customButton(
-                                onPressed: () async {
-                                  if (formKey.currentState!.validate()) {
-                                    if ( provider.color1 != '' && provider.color2 != '') {
-                                      if (provider.categoryImage != null) {
-
-                                        Utils.showLoadingBox(context: context, title: 'Adding Category...');
-
-                                        bool isAdded = await provider.addCategory(widget.index + 1);
-
-                                        Navigator.pop(context);
-
-                                        if (isAdded) {
-                                          provider.clearCategoryAddDialog();
-                                          Navigator.pop(context);
-                                          Navigator.pop(context);
-
-                                          Utils.showSnackBar(context: context, message: 'Category Added Successfully :)');
-                                        }
-                                      } else {
-                                        Utils.showSnackBar(context: context, message: 'Please add category image..!!');
-                                      }
-                                    } else {
-                                      Utils.showSnackBar(context: context, message: 'Please add gradient color..!!');
-                                    }
-                                  }
-                                },
-                                btnText: 'Add',
-                                textColor: krishiPrimaryColor
-                              ),
-                            ],
-                          ),
-
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
-          );
-        }
-    );
-  }
-
-  Widget _customButton({
-    required VoidCallback onPressed,
-    required String btnText,
-    required Color textColor,
-  }) {
-    return TextButton(
-        onPressed: onPressed,
-        style: TextButton.styleFrom(
-          backgroundColor: Colors.white,
-        ),
-        child: Text(
-          btnText,
-          style: TextStyle(
-              fontSize: 18,
-              color: textColor,
-              fontWeight: textColor == Colors.black ? FontWeight.normal : FontWeight.bold
-          ),
-        )
-    );
-  }
 
 }

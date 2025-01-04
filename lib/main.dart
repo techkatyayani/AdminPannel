@@ -1,5 +1,6 @@
 import 'package:adminpannal/Screens/Category/controller/category_provider.dart';
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
+import 'package:adminpannal/Screens/Crops/crop_disease_section/controller/disease_controller.dart';
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
 import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
@@ -63,6 +64,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => CategoryProvider()),
         ChangeNotifierProvider(create: (_) => KskReviewController()),
         ChangeNotifierProvider(create: (_) => ProuductCatagoryController()),
+        ChangeNotifierProvider(create: (_) => DiseaseController()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

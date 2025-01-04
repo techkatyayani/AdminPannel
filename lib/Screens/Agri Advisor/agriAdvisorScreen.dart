@@ -42,8 +42,9 @@ class _AgriAdvisorScreenState extends State<AgriAdvisorScreen> {
                   Navigator.push(
                     context,
                     PageTransition(
-                        child: const AgriAdvisorDetailScreen(),
-                        type: PageTransitionType.fade),
+                      child: const AgriAdvisorDetailScreen(),
+                      type: PageTransitionType.fade
+                    ),
                   );
                 },
                 child: Padding(
@@ -121,7 +122,7 @@ class _AgriAdvisorScreenState extends State<AgriAdvisorScreen> {
                             ),
                             Expanded(
                               child: Text(
-                                "${AgriData['startTime']} - ${AgriData['endTime']}",
+                                "${AgriData['start_time']} - ${AgriData['end_time']}",
                                 style: const TextStyle(fontSize: 18),
                               ),
                             ),

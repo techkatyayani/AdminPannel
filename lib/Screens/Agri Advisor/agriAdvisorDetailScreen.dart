@@ -1,6 +1,7 @@
+import 'dart:developer';
+
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 class AgriAdvisorDetailScreen extends StatefulWidget {
@@ -12,7 +13,9 @@ class AgriAdvisorDetailScreen extends StatefulWidget {
 }
 
 class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
+
   final _formKey = GlobalKey<FormState>();
+
   final _meetUrlController = TextEditingController();
   final _startTimeController = TextEditingController();
   final _endTimeController = TextEditingController();
@@ -20,12 +23,36 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
   final _actualFeesController = TextEditingController();
   bool isLive = false;
   bool isPaid = false;
+
   bool isLoading = false;
+  bool isFetching = false;
+
+  List<int> times = [];
+
+  int? selectedStartTime;
+  int? selectedEndTime;
 
   @override
   void initState() {
     super.initState();
+    setState(() {
+      isFetching = true;
+    });
+
+    generatedTimes();
+
     fetchAgriData();
+
+    setState(() {
+      isFetching = false;
+    });
+  }
+
+  void generatedTimes() {
+    for (int i=0; i<24; i++) {
+      times.add(i);
+    }
+    setState(() {});
   }
 
   @override
@@ -50,20 +77,26 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
         if (document != null) {
           setState(() {
             _meetUrlController.text = document['meetUrl'];
-            _startTimeController.text = document['startTime'];
-            _endTimeController.text = document['endTime'];
-            _discountedFeesController.text =
-                document['discountPrice'].toString();
+
+            // _startTimeController.text = document['startTime'];
+            // _endTimeController.text = document['endTime'];
+
+            String startTime = document['start_time'].toString();
+            String endTime = document['end_time'].toString();
+
+            selectedStartTime = int.tryParse(startTime);
+            selectedEndTime = int.tryParse(endTime);
+
+            _discountedFeesController.text = document['discountPrice'].toString();
             _actualFeesController.text = document['totalPrice'].toString();
             isPaid = document['isRazorpay'];
             isLive = document['isAvailable'];
           });
         }
       }
-    } catch (e) {
-      if (kDebugMode) {
-        print('Error fetching data: $e');
-      }
+    }
+    catch (e) {
+      log('Error fetching data: $e');
     }
   }
 
@@ -94,7 +127,17 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                       style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 26),
                     ),
+
                     const SizedBox(height: krishiSpacing * 2),
+
+                    isFetching
+                        ?
+                    const Center(
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                      ),
+                    )
+                        :
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -103,7 +146,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 20),
                         ),
+
                         const SizedBox(height: krishiSpacing / 3),
+
                         TextFormField(
                           controller: _meetUrlController,
                           decoration: const InputDecoration(
@@ -117,7 +162,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                             return null;
                           },
                         ),
+
                         const SizedBox(height: krishiSpacing),
+
                         Row(
                           children: [
                             Expanded(
@@ -130,7 +177,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
+
                                   const SizedBox(height: krishiSpacing / 3),
+
                                   TextFormField(
                                     controller: _discountedFeesController,
                                     decoration: const InputDecoration(
@@ -151,7 +200,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                 ],
                               ),
                             ),
+
                             const SizedBox(width: krishiSpacing),
+
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -162,7 +213,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
+
                                   const SizedBox(height: krishiSpacing / 3),
+
                                   TextFormField(
                                     controller: _actualFeesController,
                                     decoration: const InputDecoration(
@@ -185,7 +238,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                             ),
                           ],
                         ),
+
                         const SizedBox(height: krishiSpacing),
+
                         Row(
                           children: [
                             Expanded(
@@ -198,24 +253,24 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
+
                                   const SizedBox(height: krishiSpacing / 3),
-                                  TextFormField(
-                                    controller: _startTimeController,
-                                    decoration: const InputDecoration(
-                                      hintText: "Start Time",
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter start time';
+
+                                  _customTimeDropDown(
+                                      hintText: 'Select Start Time',
+                                      value: selectedStartTime,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedStartTime = value!;
+                                        });
                                       }
-                                      return null;
-                                    },
                                   ),
                                 ],
                               ),
                             ),
+
                             const SizedBox(width: krishiSpacing),
+
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -226,26 +281,26 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20),
                                   ),
+
                                   const SizedBox(height: krishiSpacing / 3),
-                                  TextFormField(
-                                    controller: _endTimeController,
-                                    decoration: const InputDecoration(
-                                      hintText: "End Time",
-                                      border: OutlineInputBorder(),
-                                    ),
-                                    validator: (value) {
-                                      if (value == null || value.isEmpty) {
-                                        return 'Please enter end time';
+
+                                  _customTimeDropDown(
+                                      hintText: 'Select End Time',
+                                      value: selectedEndTime,
+                                      onChanged: (value) {
+                                        setState(() {
+                                          selectedEndTime = value!;
+                                        });
                                       }
-                                      return null;
-                                    },
                                   ),
                                 ],
                               ),
                             ),
                           ],
                         ),
+
                         const SizedBox(height: krishiSpacing),
+
                         Row(
                           children: [
                             Expanded(
@@ -296,7 +351,9 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                             ),
                           ],
                         ),
+
                         const SizedBox(height: krishiSpacing * 2),
+
                         Align(
                           alignment: Alignment.center,
                           child: ElevatedButton(
@@ -318,19 +375,27 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                 setState(() {
                                   isLoading = true;
                                 });
+
                                 try {
                                   await FirebaseFirestore.instance
                                       .collection('Agri Doctor')
                                       .doc('100ms')
                                       .update({
+
                                     'meetUrl': _meetUrlController.text,
-                                    'startTime': _startTimeController.text,
-                                    'endTime': _endTimeController.text,
-                                    'discountPrice': int.parse(
-                                        _discountedFeesController.text),
-                                    'totalPrice':
-                                        int.parse(_actualFeesController.text),
+
+                                    'startTime': selectedStartTime.toString(),
+                                    'start_time': selectedStartTime.toString(),
+
+                                    'endTime': selectedEndTime.toString(),
+                                    'end_time': selectedEndTime.toString(),
+
+                                    'discountPrice': int.parse(_discountedFeesController.text),
+
+                                    'totalPrice': int.parse(_actualFeesController.text),
+
                                     'isRazorpay': isPaid,
+
                                     'isAvailable': isLive,
                                   });
 
@@ -340,9 +405,10 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
                                           "Agri Advisor Data Update Successfully"),
                                     ),
                                   );
+
                                   Navigator.pop(context);
                                 } catch (e) {
-                                  print('Error updating data: $e');
+                                  log('Error updating data: $e');
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
                                       content: Text(
@@ -366,6 +432,59 @@ class _AgriAdvisorDetailScreenState extends State<AgriAdvisorDetailScreen> {
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _customTimeDropDown({
+    required String hintText,
+    required int? value,
+    required void Function(int?) onChanged,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      decoration: const BoxDecoration(
+        border: Border.fromBorderSide(
+          BorderSide(
+            color: Colors.white,
+          )
+        )
+      ),
+      child: Expanded(
+        child: DropdownButton<int>(
+          hint: Text(
+            hintText,
+            style: const TextStyle(
+              fontSize: 16,
+              color: Colors.white
+            ),
+          ),
+          style: const TextStyle(
+            fontSize: 16,
+            color: Colors.white
+          ),
+          isExpanded: true,
+          icon: const Icon(
+            Icons.arrow_drop_down_sharp,
+            color: Colors.white,
+          ),
+          dropdownColor: boxColor,
+          underline: const SizedBox(),
+          value: value,
+          onChanged: onChanged,
+          items: times.map((int time) {
+            return DropdownMenuItem<int>(
+              value: time,
+              child: Text(
+                time.toString(),
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+            );
+          }).toList(),
         ),
       ),
     );

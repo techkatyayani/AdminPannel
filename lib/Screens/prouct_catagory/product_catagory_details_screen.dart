@@ -99,6 +99,15 @@ class _ProductCatagoryDetailsScreenState
                                 ),
                                 const SizedBox(height: 10),
                                 Text(
+                                  "Prodcut ID: ${providr.productCatagoryModel!.productID}",
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 10),
+                                Text(
                                   "Color Hex: ${providr.productCatagoryModel!.colorHex}",
                                   style: const TextStyle(
                                     color: Colors.white,

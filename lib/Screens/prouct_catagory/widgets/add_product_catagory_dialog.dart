@@ -53,6 +53,20 @@ class _AddProductCatagoryDialogState extends State<AddProductCatagoryDialog> {
               ),
               const SizedBox(height: 20),
               TextFormField(
+                controller: provider.productIDController,
+                decoration: InputDecoration(
+                  hintText: 'Enter Product Id',
+                  hintStyle: TextStyle(color: Colors.grey[400]),
+                  filled: true,
+                  fillColor: Colors.grey[800],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
                 controller: provider.colorHexController,
                 decoration: InputDecoration(
                   hintText: 'Enter Color Hex',

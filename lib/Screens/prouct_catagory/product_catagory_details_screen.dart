@@ -44,15 +44,15 @@ class _ProductCatagoryDetailsScreenState
           ),
         ),
       ),
-      body: pro.isLoadingCatagory
-          ? const Center(
-              child: CircularProgressIndicator(),
-            )
-          : Column(
-              children: [
-                Consumer<ProuductCatagoryController>(
-                    builder: (context, providr, child) {
-                  return Stack(
+      body: Consumer<ProuductCatagoryController>(
+          builder: (context, providr, child) {
+        return providr.isLoadingCatagory
+            ? const Center(
+                child: CircularProgressIndicator(),
+              )
+            : Column(
+                children: [
+                  Stack(
                     children: [
                       Container(
                         height: MediaQuery.of(context).size.height / 5,
@@ -137,175 +137,182 @@ class _ProductCatagoryDetailsScreenState
                         ),
                       ),
                     ],
-                  );
-                }),
-                Container(
-                  padding: const EdgeInsets.all(30),
-                  child: Consumer<ProuductCatagoryController>(
-                    builder: (context, provider, child) {
-                      // List of maps containing images and their corresponding languages
-                      final imagesAndLanguages = [
-                        if (provider.productCatagoryModel!.imageEn.isNotEmpty)
-                          {
-                            'image': provider.productCatagoryModel!.imageEn,
-                            'language': 'English'
-                          },
-                        if (provider.productCatagoryModel!.imageHi.isNotEmpty)
-                          {
-                            'image': provider.productCatagoryModel!.imageHi,
-                            'language': 'Hindi'
-                          },
-                        if (provider.productCatagoryModel!.imageMal.isNotEmpty)
-                          {
-                            'image': provider.productCatagoryModel!.imageMal,
-                            'language': 'Malayalam'
-                          },
-                        if (provider.productCatagoryModel!.imageTam.isNotEmpty)
-                          {
-                            'image': provider.productCatagoryModel!.imageTam,
-                            'language': 'Tamil'
-                          },
-                      ];
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(30),
+                    child: Consumer<ProuductCatagoryController>(
+                      builder: (context, provider, child) {
+                        // List of maps containing images and their corresponding languages
+                        final imagesAndLanguages = [
+                          if (provider.productCatagoryModel!.imageEn.isNotEmpty)
+                            {
+                              'image': provider.productCatagoryModel!.imageEn,
+                              'language': 'English'
+                            },
+                          if (provider.productCatagoryModel!.imageHi.isNotEmpty)
+                            {
+                              'image': provider.productCatagoryModel!.imageHi,
+                              'language': 'Hindi'
+                            },
+                          if (provider
+                              .productCatagoryModel!.imageMal.isNotEmpty)
+                            {
+                              'image': provider.productCatagoryModel!.imageMal,
+                              'language': 'Malayalam'
+                            },
+                          if (provider
+                              .productCatagoryModel!.imageTam.isNotEmpty)
+                            {
+                              'image': provider.productCatagoryModel!.imageTam,
+                              'language': 'Tamil'
+                            },
+                        ];
 
-                      return imagesAndLanguages.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'No Images Available',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
+                        return imagesAndLanguages.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  'No Images Available',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                            )
-                          : GridView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              gridDelegate:
-                                  const SliverGridDelegateWithFixedCrossAxisCount(
-                                mainAxisSpacing: 10,
-                                crossAxisSpacing: 10,
-                                crossAxisCount: 8,
-                              ),
-                              itemCount: imagesAndLanguages.length +
-                                  1, // +1 for the "add image" icon
-                              itemBuilder: (context, index) {
-                                if (index == imagesAndLanguages.length) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AddImageDialog(
-                                            collectionId: widget
-                                                .productCatagory.collectionID,
-                                          );
-                                        },
-                                      );
-                                    },
-                                    child: Container(
+                              )
+                            : GridView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                gridDelegate:
+                                    const SliverGridDelegateWithFixedCrossAxisCount(
+                                  mainAxisSpacing: 10,
+                                  crossAxisSpacing: 10,
+                                  crossAxisCount: 8,
+                                ),
+                                itemCount: imagesAndLanguages.length +
+                                    1, // +1 for the "add image" icon
+                                itemBuilder: (context, index) {
+                                  if (index == imagesAndLanguages.length) {
+                                    return GestureDetector(
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AddImageDialog(
+                                              collectionId: widget
+                                                  .productCatagory.collectionID,
+                                            );
+                                          },
+                                        );
+                                      },
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromARGB(
+                                              255, 102, 84, 143),
+                                          borderRadius:
+                                              BorderRadius.circular(8),
+                                        ),
+                                        child: const Icon(
+                                          Icons.add,
+                                          size: 30,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    );
+                                  } else {
+                                    final imageDetail =
+                                        imagesAndLanguages[index];
+                                    final image = imageDetail['image'];
+                                    final language = imageDetail['language'];
+
+                                    return Container(
                                       decoration: BoxDecoration(
                                         color: const Color.fromARGB(
                                             255, 102, 84, 143),
                                         borderRadius: BorderRadius.circular(8),
                                       ),
-                                      child: const Icon(
-                                        Icons.add,
-                                        size: 30,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  );
-                                } else {
-                                  final imageDetail = imagesAndLanguages[index];
-                                  final image = imageDetail['image'];
-                                  final language = imageDetail['language'];
-
-                                  return Container(
-                                    decoration: BoxDecoration(
-                                      color: const Color.fromARGB(
-                                          255, 102, 84, 143),
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    width: double.infinity,
-                                    child: Stack(
-                                      children: [
-                                        Column(
-                                          children: [
-                                            Expanded(
-                                              child: image!.isNotEmpty
-                                                  ? ClipRRect(
-                                                      borderRadius:
-                                                          const BorderRadius
-                                                              .only(
-                                                        topRight:
-                                                            Radius.circular(5),
-                                                        topLeft:
-                                                            Radius.circular(5),
-                                                      ),
-                                                      child: Image.network(
-                                                        image,
-                                                        fit: BoxFit.cover,
-                                                        errorBuilder: (context,
-                                                                error,
-                                                                stackTrace) =>
-                                                            const Icon(
-                                                          Icons.image,
-                                                          color: Colors.white,
+                                      width: double.infinity,
+                                      child: Stack(
+                                        children: [
+                                          Column(
+                                            children: [
+                                              Expanded(
+                                                child: image!.isNotEmpty
+                                                    ? ClipRRect(
+                                                        borderRadius:
+                                                            const BorderRadius
+                                                                .only(
+                                                          topRight:
+                                                              Radius.circular(
+                                                                  5),
+                                                          topLeft:
+                                                              Radius.circular(
+                                                                  5),
                                                         ),
+                                                        child: Image.network(
+                                                          image,
+                                                          fit: BoxFit.cover,
+                                                          errorBuilder: (context,
+                                                                  error,
+                                                                  stackTrace) =>
+                                                              const Icon(
+                                                            Icons.image,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      )
+                                                    : const Icon(
+                                                        Icons.image,
+                                                        color: Colors.white,
                                                       ),
-                                                    )
-                                                  : const Icon(
-                                                      Icons.image,
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Container(
+                                                alignment: Alignment.center,
+                                                width: double.infinity,
+                                                color: boxColor,
+                                                height: 40,
+                                                child: Text(
+                                                  language ?? 'Unknown',
+                                                  style: const TextStyle(
                                                       color: Colors.white,
-                                                    ),
-                                            ),
-                                            const SizedBox(height: 5),
-                                            Container(
-                                              alignment: Alignment.center,
-                                              width: double.infinity,
-                                              color: boxColor,
-                                              height: 40,
-                                              child: Text(
-                                                language ?? 'Unknown',
-                                                style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontWeight:
-                                                        FontWeight.bold),
+                                                      fontSize: 18,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Positioned(
+                                            right: 10,
+                                            top: 10,
+                                            child: IconButton(
+                                              onPressed: () {
+                                                provider
+                                                    .deleteImageFromCategory(
+                                                  widget.productCatagory
+                                                      .collectionID,
+                                                  language!,
+                                                  image,
+                                                );
+                                              },
+                                              icon: const Icon(
+                                                Icons.delete,
+                                                color: Colors.red,
                                               ),
                                             ),
-                                          ],
-                                        ),
-                                        Positioned(
-                                          right: 10,
-                                          top: 10,
-                                          child: IconButton(
-                                            onPressed: () {
-                                              provider.deleteImageFromCategory(
-                                                widget.productCatagory
-                                                    .collectionID,
-                                                language!,
-                                                image,
-                                              );
-                                            },
-                                            icon: const Icon(
-                                              Icons.delete,
-                                              color: Colors.red,
-                                            ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                }
-                              },
-                            );
-                    },
-                  ),
-                )
-              ],
-            ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
+                              );
+                      },
+                    ),
+                  )
+                ],
+              );
+      }),
     );
   }
 }

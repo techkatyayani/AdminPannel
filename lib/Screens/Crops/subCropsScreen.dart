@@ -1,6 +1,5 @@
 import 'package:adminpannal/Screens/Crops/cropCalenderScreen.dart';
 import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
-import 'package:adminpannal/Screens/Crops/crop_disease_section/symptomScreen.dart';
 import 'package:adminpannal/Screens/Crops/crop_disease_section/widgets/disease_builder.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -9,7 +8,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
 class SubCropsScreen extends StatefulWidget {

@@ -15,6 +15,7 @@ import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.
 import 'package:adminpannal/Screens/Sale/saleScreen.dart';
 import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
+import 'package:adminpannal/Screens/Youtube/youtube_videos_screen.dart';
 import 'package:adminpannal/Screens/ksk_review/ksk_all_product_screen.dart';
 import 'package:adminpannal/Screens/ksk_review/ksk_all_review_screen.dart';
 import 'package:adminpannal/Screens/prouct_catagory/product_catagory_screen.dart';
@@ -23,6 +24,7 @@ import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../Category/category_screen.dart';
 import '../Notification/notification_screen.dart';
@@ -50,6 +52,7 @@ class _DashBoardState extends State<DashBoard> {
   List<Widget> screens = [
     const KrishiNewsScreen(),
     const CategoryScreen(),
+    const YoutubeVideosScreen(),
     const BannerScreen(),
     const CropScreen(),
     const ProductCollectionScreen(),
@@ -104,6 +107,11 @@ class _DashBoardState extends State<DashBoard> {
                               activeIcon: EvaIcons.grid,
                               icon: EvaIcons.gridOutline,
                               label: "Banner Images",
+                            ),
+                            SelectionButtonData(
+                              activeIcon: FontAwesomeIcons.youtube,
+                              icon: FontAwesomeIcons.squareYoutube,
+                              label: "Youtube Links",
                             ),
                             SelectionButtonData(
                               activeIcon: Icons.energy_savings_leaf,
@@ -257,6 +265,11 @@ class _DashBoardState extends State<DashBoard> {
                                       activeIcon: Icons.category,
                                       icon: Icons.category_outlined,
                                       label: "Categories",
+                                    ),
+                                    SelectionButtonData(
+                                      activeIcon: FontAwesomeIcons.youtube,
+                                      icon: FontAwesomeIcons.squareYoutube,
+                                      label: "Youtube Links",
                                     ),
                                     SelectionButtonData(
                                       activeIcon: EvaIcons.grid,

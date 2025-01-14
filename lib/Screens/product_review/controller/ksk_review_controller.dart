@@ -1,11 +1,12 @@
 import 'dart:developer';
-import 'package:adminpannal/Screens/ksk_review/model/product_model.dart';
-import 'package:adminpannal/Screens/ksk_review/model/product_review_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import '../model/product_model.dart';
+import '../model/product_review_model.dart';
 
 class KskReviewController extends ChangeNotifier {
 
@@ -319,11 +320,11 @@ class KskReviewController extends ChangeNotifier {
     }
   }
 
-  Future<void> deleteReview(String reviewId, String productId) async {
+  Future<bool> deleteReview(String reviewId, String productId) async {
     try {
       if (reviewId.isEmpty || productId.isEmpty) {
         log('Review Id or Product Id is Empty');
-        return;
+        return false;
       }
       final reviewDocRef = FirebaseFirestore.instance
           .collection('Product Reviews')
@@ -342,10 +343,14 @@ class KskReviewController extends ChangeNotifier {
         log("Review Deleted :)");
 
         notifyListeners();
+
+        return true;
       }
 
+      return false;
     } catch (e) {
       log("Error toggling review approval: $e");
+      return false;
     }
   }
 }

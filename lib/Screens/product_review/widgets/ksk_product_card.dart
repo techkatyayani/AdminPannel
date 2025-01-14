@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-import 'package:adminpannal/Screens/ksk_review/model/product_model.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
+import '../model/product_model.dart';
 import '../product_review_screen.dart';
 
 class KskProductCard extends StatelessWidget {
@@ -85,8 +85,8 @@ class KskProductCard extends StatelessWidget {
             ),
 
             Positioned(
-              top: 5,
-              right: 5,
+              top: 0,
+              right: 0,
               child: IconButton(
                 onPressed: () {},
                 icon: const Icon(

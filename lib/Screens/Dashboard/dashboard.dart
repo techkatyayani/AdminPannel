@@ -16,7 +16,6 @@ import 'package:adminpannal/Screens/Sale/saleScreen.dart';
 import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/Screens/Youtube/youtube_videos_screen.dart';
-import 'package:adminpannal/Screens/ksk_review/all_review_screen.dart';
 import 'package:adminpannal/Screens/prouct_catagory/product_catagory_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -27,6 +26,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../Category/category_screen.dart';
 import '../Notification/notification_screen.dart';
+import '../product_review/all_review_screen.dart';
 
 int screenIndex = 0;
 

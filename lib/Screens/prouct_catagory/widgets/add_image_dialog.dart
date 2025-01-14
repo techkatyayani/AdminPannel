@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:adminpannal/Screens/ksk_review/widgets/cutom_dropdown_button.dart';
+import 'package:adminpannal/Screens/product_review/widgets/cutom_dropdown_button.dart';
 import 'package:adminpannal/Screens/prouct_catagory/controller/prouduct_catagory_controller.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';

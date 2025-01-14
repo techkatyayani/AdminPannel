@@ -1,12 +1,13 @@
-import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
-import 'package:adminpannal/Screens/ksk_review/model/product_review_model.dart';
-import 'package:adminpannal/Screens/ksk_review/widgets/cutom_dropdown_button.dart';
-import 'package:adminpannal/Screens/ksk_review/widgets/other_user_review_card.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../constants/app_constants.dart';
+import 'controller/ksk_review_controller.dart';
+import 'model/product_review_model.dart';
 import 'widgets/add_review_dialog.dart';
+import 'widgets/cutom_dropdown_button.dart';
+import 'widgets/other_user_review_card.dart';
 
 class ProductReviewScreen extends StatefulWidget {
 

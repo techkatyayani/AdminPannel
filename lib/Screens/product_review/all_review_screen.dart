@@ -1,7 +1,9 @@
-import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
-import 'package:adminpannal/Screens/ksk_review/widgets/ksk_product_card.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'controller/ksk_review_controller.dart';
+import 'widgets/ksk_product_card.dart';
 
 class AllReviewScreen extends StatefulWidget {
   const AllReviewScreen({super.key});
@@ -71,9 +73,31 @@ class _AllReviewScreenState extends State<AllReviewScreen> {
                         crossAxisSpacing: 15,
                         crossAxisCount: 6,
                       ),
-                      itemCount: provider.allProducts.length,
+                      itemCount: provider.allProducts.length + 1,
                       itemBuilder: (context, index) {
+
+                        if (index  == provider.allProducts.length) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white70,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.all(10),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'To add review for new product, first add a review for that product from KSK App',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          );
+                        }
+
                         final product = provider.allProducts[index];
+
                         return KskProductCard(productModel: product);
                       },
                     );

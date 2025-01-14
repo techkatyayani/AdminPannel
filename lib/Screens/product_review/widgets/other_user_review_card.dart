@@ -1,10 +1,11 @@
-import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
+import 'package:adminpannal/Utils/utils.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../controller/ksk_review_controller.dart';
 import '../model/product_review_model.dart';
 
 class OtherUserReviewCard extends StatelessWidget {
@@ -187,8 +188,19 @@ class OtherUserReviewCard extends StatelessWidget {
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  onPressed: () {
-                    provider.deleteReview(review.reviewId ?? '', review.productId ?? '');
+                  onPressed: () async {
+                    Utils.showLoadingBox(context: context, title: 'Deleting Review..');
+
+                    bool isDeleted = await provider.deleteReview(review.reviewId ?? '', review.productId ?? '');
+
+                    Navigator.pop(context);
+
+                    if (isDeleted) {
+                      Utils.showSnackBar(context: context, message: 'Review Deleted Successfully');
+                    } else {
+                      Utils.showSnackBar(context: context, message: 'Something Went Wrong while deleting product review..!!');
+                    }
+
                   },
                   child: const Text(
                     'Delete',

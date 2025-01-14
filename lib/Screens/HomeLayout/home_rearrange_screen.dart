@@ -5,15 +5,15 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
 
-class ProductCollectionScreen extends StatefulWidget {
-  const ProductCollectionScreen({super.key});
+class HomeRearrangeScreen extends StatefulWidget {
+  const HomeRearrangeScreen({super.key});
 
   @override
-  State<ProductCollectionScreen> createState() =>
-      _ProductCollectionScreenState();
+  State<HomeRearrangeScreen> createState() =>
+      _HomeRearrangeScreenState();
 }
 
-class _ProductCollectionScreenState extends State<ProductCollectionScreen> {
+class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
   List<DocumentSnapshot>? _docs; // Store the documents in a list
 
   @override

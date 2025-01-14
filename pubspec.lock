@@ -840,6 +840,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.1"
+  simple_star_rating:
+    dependency: "direct main"
+    description:
+      name: simple_star_rating
+      sha256: "0d1ef4f87e9368a77db6dd35bf4a46fe349615b560556bffa4074936da19b9b3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.3"
   sky_engine:
     dependency: transitive
     description: flutter

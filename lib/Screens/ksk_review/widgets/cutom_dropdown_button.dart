@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 
 class CustomDropDownMenu extends StatefulWidget {
+
   final List<String> items;
   final String? initialValue;
   final ValueChanged<String?> onChanged;
   final String hint;
   final Color backgroundColor;
   final Color textColor;
-  double? width;
+  final double? width;
 
-  CustomDropDownMenu({
+  const CustomDropDownMenu({
     super.key,
     required this.items,
     this.width,

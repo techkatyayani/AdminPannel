@@ -47,54 +47,42 @@
 //     };
 //   }
 // }
+
 class ProductReviewModel {
   String? reviewId;
   String? productId;
+  String? userId;
   String? userName;
-  String? userEmail;
-  String? userPhoneNumber;
+  String? userProfileImage;
   List<String>? reviewImage;
   String? userRating;
   String? userReview;
   bool? isApproved;
+  int? timestamp;
 
-  // Constructor
   ProductReviewModel({
     this.productId,
     this.reviewId,
+    this.userId,
     this.userName,
-    this.userEmail,
-    this.userPhoneNumber,
     this.reviewImage,
     this.userRating,
     this.userReview,
     this.isApproved,
+    this.userProfileImage,
+    this.timestamp,
   });
 
-  // fromJson constructor for creating a ProductReviewModel instance from a JSON Map
   ProductReviewModel.fromJson(Map<String, dynamic> json) {
-    reviewId = json['id'];
-    productId = json['id'];
-    userName = json['username'];
-    userEmail = json['userEmail'];
-    userPhoneNumber = json['userId'];
+    reviewId = json['id'] ?? '';
+    productId = json['productId'] ?? '';
+    userId = json['userId'] ?? '';
+    userName = json['username'] ?? '';
     reviewImage = List<String>.from(json['reviewImage'] ?? []);
-    userRating = json['rating'];
-    userReview = json['review'];
+    userRating = json['rating'] ?? '';
+    userReview = json['review'] ?? '';
     isApproved = json['isApproved'] ?? false;
+    userProfileImage = json['userProfileImage'] ?? '';
+    timestamp = json['timestamp'] ?? -1;
   }
-
-  // Map<String, dynamic> toJson() {
-  //   return {
-  //     'reviewId': reviewId,
-  //     'productId': productId,
-  //     'userName': userName,
-  //     'userEmail': userEmail,
-  //     'userPhoneNumber': userPhoneNumber,
-  //     'reviewImage': reviewImage,
-  //     'userRating': userRating,
-  //     'userReview': userReview,
-  //     'isApproved': isApproved,
-  //   };
-  // }
 }

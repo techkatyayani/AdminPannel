@@ -2,23 +2,19 @@ import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../model/product_review_model.dart';
+
 class OtherUserReviewCard extends StatelessWidget {
-  final String userName;
-  final String rating;
-  final String review;
-  final String productId;
-  final String reviewId;
-  final bool isApproved;
-  const OtherUserReviewCard(
-      {super.key,
-      required this.userName,
-      required this.rating,
-      required this.review,
-      required this.productId,
-      required this.reviewId,
-      required this.isApproved});
+
+  final ProductReviewModel review;
+
+  const OtherUserReviewCard({
+    super.key,
+    required this.review,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,69 +28,138 @@ class OtherUserReviewCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
-                  child: Row(
-                    children: [
-                      const CircleAvatar(
-                        radius: 40,
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 40,
+                      backgroundColor: Colors.white,
+                      child: Image.network(
+                        review.userProfileImage ?? '',
+                        fit: BoxFit.fill,
+                        errorBuilder: (context, error, stace) {
+                          return Image.asset(
+                            'assets/images/Default User Image.png',
+                            fit: BoxFit.fill,
+                          );
+                        },
                       ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            userName,
-                            style: const TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
+                    ),
+
+                    const SizedBox(width: 15),
+
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+
+                        Text(
+                          review.userName.toString(),
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          const Text(
-                            'Verified Buyer',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.green,
-                            ),
+                        ),
+
+                        const SizedBox(height: 5),
+
+                        Text(
+                          review.userId != null ? review.userId == 'Katyayani Organics' ? 'Katyayani Organics' : 'Verified User' : '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.green,
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                        ),
+
+                        const SizedBox(height: 5),
+
+                        Text(
+                          review.timestamp != null ? DateFormat('dd MMM yyyy hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(review.timestamp!)) : '',
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
+
                 RatingBar.builder(
-                  itemSize: 20,
-                  initialRating: double.tryParse(rating) ?? 0,
+                  itemSize: 25,
+                  initialRating: double.tryParse(review.userRating ?? '') ?? 0,
                   minRating: 1,
                   direction: Axis.horizontal,
                   allowHalfRating: true,
                   itemCount: 5,
                   ignoreGestures: true,
                   onRatingUpdate: (value) {},
-                  itemBuilder: (context, _) => const Icon(
-                    Icons.star,
-                    color: Colors.amber,
-                  ),
+                  itemBuilder: (context, _) {
+                    return const Icon(
+                      Icons.star,
+                      color: Colors.amber,
+                    );
+                  },
                 ),
               ],
             ),
-            const SizedBox(height: 10),
-            Container(
-              padding: const EdgeInsets.only(left: 20, right: 20),
-              child: Text(
-                review,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
+
+            const SizedBox(height: 15),
+
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        review.userReview ?? '',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      if (review.reviewImage != null)
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: review.reviewImage!.map((image) {
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 15),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(5),
+                                  child: Image.network(
+                                    image,
+                                    fit: BoxFit.fill,
+                                    width: MediaQuery.of(context).size.width * 0.15,
+                                    errorBuilder: (_, e, s) {
+                                      return const Icon(
+                                        Icons.error,
+                                        color: Colors.white,
+                                      );
+                                    },
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        )
+                    ],
+                  ),
+                ),
+
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
                     fixedSize: const Size(120, 40),
@@ -104,23 +169,27 @@ class OtherUserReviewCard extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    provider.toggleReviewApproval(reviewId, productId);
+                    provider.toggleReviewApproval(review.reviewId ?? '', review.productId ?? '');
                   },
                   child: Text(
-                    !isApproved ? 'Approve' : 'Disapprove',
+                    (review.isApproved ?? true) ? 'Disapprove' : 'Approve',
                     style: const TextStyle(color: Colors.white),
                   ),
                 ),
+
                 const SizedBox(width: 20),
+
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: isApproved ? Colors.green : Colors.red,
+                    backgroundColor: Colors.red,
                     fixedSize: const Size(120, 40),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(5),
                     ),
                   ),
-                  onPressed: () {},
+                  onPressed: () {
+                    provider.deleteReview(review.reviewId ?? '', review.productId ?? '');
+                  },
                   child: const Text(
                     'Delete',
                     style: TextStyle(color: Colors.white),
@@ -128,84 +197,6 @@ class OtherUserReviewCard extends StatelessWidget {
                 ),
               ],
             ),
-            // Container(
-            //   height: 100,
-            //   child: ListView(
-            //     scrollDirection: Axis.horizontal,
-            //     children: [
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //       Container(
-            //         margin: const EdgeInsets.only(right: 10),
-            //         color: const Color.fromARGB(255, 224, 222, 222),
-            //         height: 100,
-            //         width: 100,
-            //         child: const Icon(
-            //           Icons.image,
-            //           color: Colors.white,
-            //         ),
-            //       ),
-            //     ],
-            //   ),
-            // ),
           ],
         ),
       );

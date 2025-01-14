@@ -3,14 +3,14 @@ import 'package:adminpannal/Screens/ksk_review/widgets/ksk_product_card.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class KskAllProductScreen extends StatefulWidget {
-  const KskAllProductScreen({super.key});
+class AllReviewScreen extends StatefulWidget {
+  const AllReviewScreen({super.key});
 
   @override
-  State<KskAllProductScreen> createState() => _KskAllProductScreenState();
+  State<AllReviewScreen> createState() => _AllReviewScreenState();
 }
 
-class _KskAllProductScreenState extends State<KskAllProductScreen> {
+class _AllReviewScreenState extends State<AllReviewScreen> {
   @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -30,7 +30,7 @@ class _KskAllProductScreenState extends State<KskAllProductScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.all(20),
+            padding: const EdgeInsets.only(right: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -54,7 +54,9 @@ class _KskAllProductScreenState extends State<KskAllProductScreen> {
               ],
             ),
           ),
+
           const SizedBox(height: 20),
+
           Consumer<KskReviewController>(
             builder: (context, provider, child) {
               return provider.isLoadingProducts
@@ -64,10 +66,9 @@ class _KskAllProductScreenState extends State<KskAllProductScreen> {
                   : GridView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
+                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                        mainAxisSpacing: 15,
+                        crossAxisSpacing: 15,
                         crossAxisCount: 6,
                       ),
                       itemCount: provider.allProducts.length,

@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:adminpannal/Screens/Krishi%20News/krishi_news_screen.dart';
 import 'package:adminpannal/Screens/Krishi%20News/model/krishi_news_model.dart';
 import 'package:adminpannal/Screens/Krishi%20News/service/krishi_news_service.dart';
 import 'package:adminpannal/Utils/utils.dart';
@@ -178,6 +177,7 @@ class KrishiNewsProvider with ChangeNotifier {
     // authorController.clear();
     titleController.clear();
     captionController.clear();
+    productController.clear();
 
     _postImage = null;
     _postImageBytes = null;

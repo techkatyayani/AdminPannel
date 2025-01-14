@@ -17,7 +17,6 @@ import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dar
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/Screens/Youtube/youtube_videos_screen.dart';
 import 'package:adminpannal/Screens/ksk_review/ksk_all_product_screen.dart';
-import 'package:adminpannal/Screens/ksk_review/ksk_all_review_screen.dart';
 import 'package:adminpannal/Screens/prouct_catagory/product_catagory_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';

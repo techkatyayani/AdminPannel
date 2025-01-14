@@ -5,6 +5,7 @@ import 'package:adminpannal/Screens/prouct_catagory/model/product_catagory_model
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProuductCatagoryController extends ChangeNotifier {
@@ -56,6 +57,7 @@ class ProuductCatagoryController extends ChangeNotifier {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController collectionIdController = TextEditingController();
+  TextEditingController productIDController = TextEditingController();
   TextEditingController colorHexController = TextEditingController();
   bool isLoadingAddcatagory = false;
 
@@ -73,14 +75,15 @@ class ProuductCatagoryController extends ChangeNotifier {
       final collectionId = docRef.id;
 
       String title = titleController.text.trim();
+      String productId = productIDController.text.trim();
       String colorHex = colorHexController.text.trim();
 
       // Validate inputs
-      if (title.isEmpty || colorHex.isEmpty) {
+      if (title.isEmpty || colorHex.isEmpty || productId.isEmpty) {
         isLoadingAddcatagory = false;
         notifyListeners();
 
-        throw Exception("Title and Color Hex must not be empty.");
+        throw Exception("Title , productID,  Color Hex must not be empty.");
       }
 
       // Map to store image download URLs
@@ -108,6 +111,7 @@ class ProuductCatagoryController extends ChangeNotifier {
 
       // Create the ProductCategoryModel
       final newCategory = ProductCatagoryModel(
+        productID: productId,
         collectionID: collectionId,
         colorHex: colorHex,
         imageEn: imageUrls['English'] ?? '',
@@ -133,7 +137,10 @@ class ProuductCatagoryController extends ChangeNotifier {
   }
 
   Future<void> addImageToCategory(
-      String collectionId, String language, String imagePath) async {
+    String collectionId,
+    String language,
+    String imagePath,
+  ) async {
     try {
       // Generate a unique filename
       final fileName = '$language-${DateTime.now().millisecondsSinceEpoch}';
@@ -194,42 +201,6 @@ class ProuductCatagoryController extends ChangeNotifier {
       notifyListeners();
     }
   }
-
-  // Future<void> deleteImageFromCategory(
-  //     String collectionId, String language) async {
-  //   try {
-  //     log('Deleting the $language from $collectionId');
-  //     final storage = FirebaseStorage.instance;
-  //     final firestore = FirebaseFirestore.instance;
-
-  //     // Construct the path to the image in Firebase Storage
-  //     final storageRef =
-  //         storage.ref().child('ProductCategoryImages/$collectionId/$language');
-
-  //     // Try to delete the image from Firebase Storage
-  //     await storageRef.delete();
-  //     log('Image deleted successfully from Firebase Storage.');
-
-  //     // Now update Firestore to remove the image URL or set it to null/empty
-  //     await firestore
-  //         .collection('/DynamicSection/Categories/categories_data')
-  //         .doc(collectionId)
-  //         .update({
-  //       language: FieldValue
-  //           .delete(), // This will remove the image URL from Firestore
-  //     });
-
-  //     log('Image URL removed from Firestore.');
-  //   } catch (e) {
-  //     log('Error deleting image: $e');
-  //     // Handle the case where the file does not exist or there's another error
-  //     if (e is FirebaseException && e.code == 'object-not-found') {
-  //       log('The image to delete does not exist in Firebase Storage.');
-  //     } else {
-  //       log('Unexpected error: $e');
-  //     }
-  //   }
-  // }
 
   final Map<String, String> languageFieldMapping = {
     'Hindi': 'imageHi',
@@ -346,7 +317,7 @@ class ProuductCatagoryController extends ChangeNotifier {
       }
 
       log('All images deleted successfully from Firebase Storage.');
-      await fetchAllProductCategories(); // Refresh categories after deletion
+      await fetchAllProductCategories();
     } catch (e) {
       log('Error deleting category: $e');
       // Handle specific error cases (e.g., document not found, storage errors)

@@ -1,4 +1,5 @@
 class ProductCatagoryModel {
+  final String productID;
   final String collectionID;
   final String colorHex;
   final String imageEn;
@@ -8,6 +9,7 @@ class ProductCatagoryModel {
   final String title;
 
   ProductCatagoryModel({
+    required this.productID,
     required this.collectionID,
     required this.colorHex,
     required this.imageEn,
@@ -19,6 +21,7 @@ class ProductCatagoryModel {
 
   factory ProductCatagoryModel.fromJson(Map<String, dynamic> json) {
     return ProductCatagoryModel(
+      productID: json['productID'] ?? '',
       collectionID: json['collectionID'] ?? '',
       colorHex: json['colorHex'] ?? '#FFFFFF',
       imageEn: json['imageEn'] ?? '',
@@ -32,6 +35,7 @@ class ProductCatagoryModel {
   Map<String, dynamic> toJson() {
     return {
       'collectionID': collectionID,
+      'productID': productID,
       'colorHex': colorHex,
       'imageEn': imageEn,
       'imageHi': imageHi,

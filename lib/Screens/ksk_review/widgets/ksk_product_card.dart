@@ -1,7 +1,6 @@
 import 'package:adminpannal/Screens/ksk_review/controller/ksk_review_controller.dart';
 import 'package:adminpannal/Screens/ksk_review/ksk_all_review_screen.dart';
 import 'package:adminpannal/Screens/ksk_review/model/product_model.dart';
-import 'package:adminpannal/Screens/prouct_catagory/controller/prouduct_catagory_controller.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

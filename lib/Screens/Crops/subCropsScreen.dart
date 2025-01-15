@@ -1,5 +1,3 @@
-import 'package:adminpannal/Screens/Crops/cropCalenderScreen.dart';
-import 'package:adminpannal/Screens/Crops/edit_crop_details.dart';
 import 'package:adminpannal/Screens/Crops/crop_disease_section/widgets/disease_builder.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
@@ -10,9 +8,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:page_transition/page_transition.dart';
 
+import 'cropCalenderScreen.dart';
+
 class SubCropsScreen extends StatefulWidget {
+
   final String cropName;
   final String cropId;
+
   const SubCropsScreen({
     super.key,
     required this.cropName,
@@ -30,8 +32,7 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
 
   @override
   void initState() {
-    print(widget.cropId);
-    print(widget.cropName);
+
     super.initState();
     _nameController = TextEditingController();
     _imageUrlController = TextEditingController();
@@ -77,10 +78,62 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.cropName),
+        scrolledUnderElevation: 0,
+        actions: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  child: CropCalanderScreen(
+                      cropName: widget.cropName,
+                      cropId: widget.cropId,
+                      language: "English"),
+                  type: PageTransitionType.fade,
+                ),
+              );
+            },
+            child: const Text(
+              "Crop Calendar English",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 15),
+
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                PageTransition(
+                  child: CropCalanderScreen(
+                      cropName: widget.cropName,
+                      cropId: widget.cropId,
+                      language: "Hindi"),
+                  type: PageTransitionType.fade,
+                ),
+              );
+            },
+            child: const Text(
+              "Crop Calendar Hindi",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+          ),
+
+          const SizedBox(width: 15),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+
             StreamBuilder(
                 stream: FirebaseFirestore.instance
                     .collection('product')
@@ -223,75 +276,43 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
                   }
                 }),
 
+            const SizedBox(height: 25),
+
             Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 30, vertical: krishiSpacing),
+              padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) =>
-                                  EditCropDetails(cropId: widget.cropId)));
-                    },
-                    child: const Text(
-                      "Crop Details",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+
+                  Container(
+                    width: 25,
+                    height: 1.25,
+                    color: Colors.white,
+                  ),
+
+                  const SizedBox(width: 10),
+
+                  Text(
+                    '${widget.cropName} Crop Diseases',
+                    style: const TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          child: CropCalanderScreen(
-                              cropName: widget.cropName,
-                              cropId: widget.cropId,
-                              language: "English"),
-                          type: PageTransitionType.fade,
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "Crop Calendar English",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        PageTransition(
-                          child: CropCalanderScreen(
-                              cropName: widget.cropName,
-                              cropId: widget.cropId,
-                              language: "Hindi"),
-                          type: PageTransitionType.fade,
-                        ),
-                      );
-                    },
-                    child: const Text(
-                      "Crop Calendar Hindi",
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
+
+                  const SizedBox(width: 10),
+
+                  Flexible(
+                    child: Container(
+                      height: 1.25,
+                      color: Colors.white,
                     ),
                   ),
                 ],
               ),
             ),
+
+            const SizedBox(height: 15),
 
             DiseaseBuilder(
               cropId: widget.cropId,

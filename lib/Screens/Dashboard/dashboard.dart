@@ -40,7 +40,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 0;
+  int screenIndex = 4;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -165,10 +165,8 @@ class _DashBoardState extends State<DashBoard> {
     return Scaffold(
       key: scaffoldKey,
       drawer: (ResponsiveBuilder.isDesktop(context))
-          ?
-      null
-          :
-      Drawer(
+          ? null
+          : Drawer(
               child: Column(
                 children: [
                   Expanded(
@@ -195,12 +193,9 @@ class _DashBoardState extends State<DashBoard> {
                             setState(() {
                               screenIndex = index;
                             });
-                            Navigator.of(context)
-                                .pop(); // Automatically close drawer
-                            log("index : $index | label : ${value.label}");
+                            Navigator.of(context).pop();
                           },
-                          initialSelected:
-                              screenIndex, // Set initial selected index
+                          initialSelected: screenIndex,
                         ),
                         const Divider(thickness: 1),
                         const SizedBox(height: krishiSpacing),
@@ -272,8 +267,8 @@ class _DashBoardState extends State<DashBoard> {
                                     setState(() {
                                       screenIndex = index;
                                     });
-                                    log("index : $index | label : ${value.label}");
                                   },
+                                  initialSelected: screenIndex,
                                 ),
                                 const Divider(thickness: 1),
                                 const SizedBox(height: krishiSpacing),

@@ -21,23 +21,28 @@ class DiseaseCard extends StatelessWidget {
     required this.diseaseImage,
   });
 
+  navigateToSymptomsScreen(BuildContext context) {
+    Navigator.push(
+      context,
+      PageTransition(
+        child: SymptomsScreen(
+          diseaseImage: diseaseImage,
+          cropId: cropId,
+          diseaseName: diseaseName,
+          diseaseId: diseaseId,
+        ),
+        type: PageTransitionType.topToBottom,
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+
     return Consumer<DiseaseController>(builder: (context, provider, child) {
       return GestureDetector(
         onTap: () {
-          Navigator.push(
-            context,
-            PageTransition(
-              child: SymptomsScreen(
-                diseaseImage: diseaseImage,
-                cropId: cropId,
-                diseaseName: diseaseName,
-                diseaseId: diseaseId,
-              ),
-              type: PageTransitionType.topToBottom,
-            ),
-          );
+          navigateToSymptomsScreen(context);
         },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -99,6 +104,9 @@ class DiseaseCard extends StatelessWidget {
                   right: 0,
                   child: GestureDetector(
                     onTap: () {
+
+                      navigateToSymptomsScreen(context);
+
                       // _showUpdateDialog(
                       //   snapshot.data!.docs[index].id,
                       //   snapshot.data!.docs[index]['Name'],

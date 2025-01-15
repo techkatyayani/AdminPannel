@@ -23,8 +23,7 @@ class _CropDispositionState extends State<CropDisposition> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: SingleChildScrollView(
           child: StreamBuilder(
-            stream:
-                FirebaseFirestore.instance.collection("product").snapshots(),
+            stream: FirebaseFirestore.instance.collection("product").snapshots(),
             builder:
                 (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {

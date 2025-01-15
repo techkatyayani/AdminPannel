@@ -194,41 +194,18 @@ class _LoginScreenState extends State<LoginScreen> {
             color: const Color(0xFFD6E2EA),
             child: Column(
               children: [
-                SizedBox(height: height * .05),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      SizedBox(width: 20),
-                      Column(
-                        children: [
-                          // Container(
-                          //   padding: const EdgeInsets.all(10),
-                          //   decoration: BoxDecoration(
-                          //     color: krishiPrimaryColor,
-                          //     borderRadius: BorderRadius.circular(10),
-                          //   ),
-                          //   child: Image.asset('assets/images/KSK Logo.png',
-                          //       height: 100),
-                          // ),
-                          // const SizedBox(height: 4),
-                          Align(
-                            alignment: Alignment.center,
-                            child: Text(
-                              "Krishi Seva Kendra\nAdmin Login",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 30),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
+
+                SizedBox(height: height * 0.05),
+
+                const Text(
+                  "Krishi Seva Kendra\nAdmin Login",
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30),
+                  textAlign: TextAlign.center,
                 ),
+
                 SizedBox(
                   height: height * .4,
                   width: width * .4,
@@ -252,9 +229,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     },
                   ),
                 ),
+
                 Padding(
-                  padding: EdgeInsets.only(
-                      left: width * .2, right: width * .2, bottom: width * .05),
+                  padding: EdgeInsets.only(left: width * 0.2, right: width * 0.2, bottom: width * 0.05),
                   child: Container(
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -289,7 +266,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 8),
+
+                        const SizedBox(height: 15),
+
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.grey[200],
@@ -328,7 +307,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             },
                           ),
                         ),
-                        const SizedBox(height: 32),
+
+                        const SizedBox(height: 30),
+
                         SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: 64,

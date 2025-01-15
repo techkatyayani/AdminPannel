@@ -26,6 +26,7 @@ class CropCalanderScreen extends StatefulWidget {
 }
 
 class _CropCalanderScreenState extends State<CropCalanderScreen> {
+  
   Future<void> deleteImage(String docId) async {
     final collectionName =
         widget.language == 'English' ? 'CropCalendar' : 'HindiCropCalendar';
@@ -142,7 +143,9 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
+    
+    final height = MediaQuery.of(context).size.height;
+    
     return Scaffold(
       appBar: AppBar(
         title: Text("${widget.cropName} Crop Calendar ${widget.language}"),
@@ -177,6 +180,7 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
           )
         ],
       ),
+      
       body: StreamBuilder<QuerySnapshot>(
         stream: widget.language == 'English'
             ? FirebaseFirestore.instance
@@ -192,11 +196,13 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
-          } else if (snapshot.connectionState == ConnectionState.waiting) {
+          }
+          else if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (snapshot.data!.docs.isEmpty) {
+          }
+          else if (snapshot.data!.docs.isEmpty) {
             return Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -230,156 +236,187 @@ class _CropCalanderScreenState extends State<CropCalanderScreen> {
                 ],
               ),
             );
-          } else {
+          }
+          else {
             if (snapshot.hasData) {
+              
               List<QueryDocumentSnapshot> documents = snapshot.data!.docs;
-              documents.sort(
-                  (a, b) => int.parse(a['Id']).compareTo(int.parse(b['Id'])));
+              
+              documents.sort((a, b) => int.parse(a['Id']).compareTo(int.parse(b['Id'])));
+              
               return GridView.builder(
                 scrollDirection: Axis.vertical,
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   crossAxisCount: 5,
-                  mainAxisExtent: size.height * .55,
+                  crossAxisSpacing: 20,
+                  mainAxisSpacing: 20,
+                  mainAxisExtent: height * 0.33,
                 ),
                 itemCount: documents.length,
                 itemBuilder: (BuildContext context, int index) {
                   final calenderData = documents[index];
+
                   bool isLastItem = index == documents.length - 1;
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 40),
-                    child: Stack(
-                      children: [
-                        Center(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              SizedBox(
-                                height: size.width * .2,
-                                child: Image.network(
-                                  calenderData['ImageUrl'],
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              const SizedBox(height: 4),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      PageTransition(
-                                          child: CropCalendarImageUpdate(
-                                            id: widget.cropId,
-                                            products: (calenderData.data()
-                                                        as Map<String, dynamic>)
-                                                    .containsKey('products')
-                                                ? calenderData['products']
-                                                : [],
-                                            language: widget.language,
-                                            calendarId: calenderData.id,
-                                          ),
-                                          type: PageTransitionType.fade));
-                                },
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 24, vertical: 8),
-                                  decoration: BoxDecoration(
-                                      color: krishiPrimaryColor,
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: const Text(
-                                    "Update Product",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
+
+                  return Stack(
+                    children: [
+                      Center(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            
+                            Flexible(
+                              child: Image.network(
+                                calenderData['ImageUrl'],
+                                loadingBuilder: (context, child, event) {
+
+                                  if (event == null) {
+                                    return child;
+                                  }
+
+                                  return const Center(
+                                    child: CircularProgressIndicator(
+                                      color: Colors.white,
                                     ),
+                                  );
+                                },
+                                errorBuilder: (context, error, stace) {
+                                  return const Center(
+                                    child: Icon(
+                                      Icons.error,
+                                      color: Colors.white,
+                                    ),
+                                  );
+                                },
+                              ),
+                            ),
+
+                            const SizedBox(height: 5),
+
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                    context,
+                                    PageTransition(
+                                        child: CropCalendarImageUpdate(
+                                          id: widget.cropId,
+                                          products: (calenderData.data()
+                                                      as Map<String, dynamic>)
+                                                  .containsKey('products')
+                                              ? calenderData['products']
+                                              : [],
+                                          language: widget.language,
+                                          calendarId: calenderData.id,
+                                        ),
+                                        type: PageTransitionType.fade));
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 24, vertical: 8),
+                                decoration: BoxDecoration(
+                                    color: krishiPrimaryColor,
+                                    borderRadius: BorderRadius.circular(10)),
+                                child: const Text(
+                                  "Update Product",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
                                   ),
                                 ),
                               ),
-                              const SizedBox(height: 6),
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                spacing: 2.0,
-                                runSpacing: 2.0,
-                                children: [
-                                  if ((calenderData.data()
-                                          as Map<String, dynamic>)
-                                      .containsKey('products'))
-                                    ...calenderData['products']
-                                        .map<Widget>(
-                                            (product) => Text("$product, "))
-                                        .toList(),
-                                  if (!(calenderData.data()
-                                              as Map<String, dynamic>)
-                                          .containsKey('products') ||
-                                      (calenderData['products']
-                                              as List<dynamic>)
-                                          .isEmpty)
-                                    const Text("No products available"),
-                                ],
+                            ),
+
+                            const SizedBox(height: 6),
+
+                            Wrap(
+                              alignment: WrapAlignment.center,
+                              spacing: 2,
+                              runSpacing: 2,
+                              children: [
+                                if ((calenderData.data()
+                                        as Map<String, dynamic>)
+                                    .containsKey('products'))
+                                  ...calenderData['products']
+                                      .map<Widget>(
+                                          (product) => Text("$product, "))
+                                      .toList(),
+                                if (!(calenderData.data()
+                                            as Map<String, dynamic>)
+                                        .containsKey('products') ||
+                                    (calenderData['products']
+                                            as List<dynamic>)
+                                        .isEmpty)
+                                  const Text("No products available"),
+                              ],
+                            ),
+
+                            Text(
+                              calenderData['Id'],
+                              style: const TextStyle(
+                                  fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Positioned(
+                        right: 0,
+                        child: GestureDetector(
+                          onTap: () {
+                            updateImage(calenderData.id);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 24, vertical: 8),
+                            decoration: const BoxDecoration(
+                              color: Colors.black87,
+                              borderRadius: BorderRadius.only(
+                                bottomLeft: Radius.circular(20),
                               ),
-                              Text(
-                                calenderData['Id'],
-                                style: const TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                            ),
+                            child: const Text(
+                              "Update Image",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
+                            ),
                           ),
                         ),
+                      ),
+
+                      if (isLastItem)
                         Positioned(
-                          right: 0,
+                          left: 0,
+                          top: 0,
                           child: GestureDetector(
                             onTap: () {
-                              updateImage(calenderData.id);
+                              showDeleteConfirmationDialog(context,
+                                  calenderData['ImageUrl'], calenderData.id);
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 8),
-                              decoration: const BoxDecoration(
-                                color: Colors.black87,
-                                borderRadius: BorderRadius.only(
-                                  bottomLeft: Radius.circular(20),
+                                  horizontal: 14, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.red.withOpacity(0.8),
+                                borderRadius: const BorderRadius.only(
+                                  bottomRight: Radius.circular(20),
                                 ),
                               ),
                               child: const Text(
-                                "Update Image",
+                                "Delete",
                                 style: TextStyle(
+                                  color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
                           ),
                         ),
-                        if (isLastItem)
-                          Positioned(
-                            left: 0,
-                            top: 0,
-                            child: GestureDetector(
-                              onTap: () {
-                                showDeleteConfirmationDialog(context,
-                                    calenderData['ImageUrl'], calenderData.id);
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 8),
-                                decoration: BoxDecoration(
-                                  color: Colors.red.withOpacity(0.8),
-                                  borderRadius: const BorderRadius.only(
-                                    bottomRight: Radius.circular(20),
-                                  ),
-                                ),
-                                child: const Text(
-                                  "Delete",
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
+                    ],
                   );
                 },
               );
-            } else {
+            }
+            else {
               return const Center(
                 child: Text('No data'),
               );

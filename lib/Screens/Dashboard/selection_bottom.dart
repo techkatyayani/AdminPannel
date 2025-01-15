@@ -16,6 +16,11 @@ class SelectionButtonData {
 }
 
 class SelectionButton extends StatefulWidget {
+
+  final int initialSelected;
+  final List<SelectionButtonData> data;
+  final Function(int index, SelectionButtonData value) onSelected;
+
   const SelectionButton({
     this.initialSelected = 0,
     required this.data,
@@ -23,21 +28,19 @@ class SelectionButton extends StatefulWidget {
     super.key,
   });
 
-  final int initialSelected;
-  final List<SelectionButtonData> data;
-  final Function(int index, SelectionButtonData value) onSelected;
-
   @override
   State<SelectionButton> createState() => _SelectionButtonState();
 }
 
 class _SelectionButtonState extends State<SelectionButton> {
-  late int selected;
+  int selected = 0;
 
   @override
   void initState() {
     super.initState();
-    selected = widget.initialSelected;
+    setState(() {
+      selected = widget.initialSelected;
+    });
   }
 
   @override

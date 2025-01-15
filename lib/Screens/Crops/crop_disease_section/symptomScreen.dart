@@ -99,14 +99,15 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
   }
 
   List<String> languages = [
+    'Bengali',
     'English',
     'Hindi',
     'Kannada',
-    'Telugu',
-    'Tamil',
-    'Bengali',
+    'Malayalam',
     'Marathi',
     'Odia',
+    'Tamil',
+    'Telugu',
   ];
 
 }

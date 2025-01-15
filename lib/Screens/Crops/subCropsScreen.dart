@@ -1,4 +1,4 @@
-import 'package:adminpannal/Screens/Crops/crop_disease_section/widgets/disease_builder.dart';
+import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,9 +6,12 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:lottie/lottie.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 import 'cropCalenderScreen.dart';
+import 'widgets/disease_card.dart';
 
 class SubCropsScreen extends StatefulWidget {
 
@@ -26,50 +29,13 @@ class SubCropsScreen extends StatefulWidget {
 }
 
 class _SubCropsScreenState extends State<SubCropsScreen> {
-  late TextEditingController _nameController;
-  late TextEditingController _imageUrlController;
-  late TextEditingController _idController;
+
+  late CropProvider provider;
 
   @override
   void initState() {
-
     super.initState();
-    _nameController = TextEditingController();
-    _imageUrlController = TextEditingController();
-    _idController = TextEditingController();
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _imageUrlController.dispose();
-    _idController.dispose();
-    super.dispose();
-  }
-
-  void _updateTopImage(String imageName) async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.image,
-      allowMultiple: false,
-    );
-
-    if (result != null) {
-      Reference ref = FirebaseStorage.instance
-          .ref()
-          .child('product_images')
-          .child('${widget.cropId}$imageName.jpg');
-      Uint8List uint8List = result.files.single.bytes!;
-      UploadTask uploadTask = ref.putData(uint8List);
-      TaskSnapshot snapshot = await uploadTask;
-      String imageUrl = await snapshot.ref.getDownloadURL();
-
-      await FirebaseFirestore.instance
-          .collection('product')
-          .doc(widget.cropId)
-          .update({
-        imageName: imageUrl,
-      });
-    }
+    provider = Provider.of<CropProvider>(context, listen: false);
   }
 
   @override
@@ -314,10 +280,50 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
 
             const SizedBox(height: 15),
 
-            DiseaseBuilder(
-              cropId: widget.cropId,
-              size: size,
-            )
+            StreamBuilder(
+              stream: FirebaseFirestore.instance
+                  .collection('product')
+                  .doc(widget.cropId)
+                  .collection('Disease')
+                  .snapshots(),
+              builder: (BuildContext context, AsyncSnapshot snapshot) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                else if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(
+                    child: Lottie.asset(
+                      'assets/images/loading.json',
+                      height: 140,
+                    ),
+                  );
+                }
+                else {
+                  return GridView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: ResponsiveBuilder.isDesktop(context) ? 6 : 2,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemCount: snapshot.data.docs.length,
+                    itemBuilder: (BuildContext context, int index) {
+
+                      Map<String, dynamic> diseaseData = snapshot.data!.docs[index].data();
+
+                      diseaseData['docId'] = snapshot.data!.docs[index].id;
+
+                      return DiseaseCard(
+                        cropId: widget.cropId,
+                        diseaseData: diseaseData,
+                        size: size,
+                        provider: provider,
+                      );
+                    },
+                  );
+                }
+              },
+            ),
 
             // StreamBuilder(
             //   stream: FirebaseFirestore.instance
@@ -469,5 +475,30 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> _updateTopImage(String imageName) async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null) {
+      Reference ref = FirebaseStorage.instance
+          .ref()
+          .child('product_images')
+          .child('${widget.cropId}$imageName.jpg');
+      Uint8List uint8List = result.files.single.bytes!;
+      UploadTask uploadTask = ref.putData(uint8List);
+      TaskSnapshot snapshot = await uploadTask;
+      String imageUrl = await snapshot.ref.getDownloadURL();
+
+      await FirebaseFirestore.instance
+          .collection('product')
+          .doc(widget.cropId)
+          .update({
+        imageName: imageUrl,
+      });
+    }
   }
 }

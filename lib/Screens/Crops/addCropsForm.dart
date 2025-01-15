@@ -11,28 +11,36 @@ class AddCropsForm extends StatefulWidget {
 }
 
 class _AddCropsFormState extends State<AddCropsForm> {
+
   final _formKey = GlobalKey<FormState>();
-  late TextEditingController _cropnameController;
-  Uint8List? _selectedImageBytes;
-  Uint8List? _selectedBannerImageBytes;
+
+  late TextEditingController _cropNameController;
+  Uint8List? _selectedCropImageBytes;
+
+  Uint8List? _selectedEnglishBannerImageBytes;
+  Uint8List? _selectedHindiBannerImageBytes;
+
   final List<Uint8List?> _diseaseImages = [];
   final List<TextEditingController> _diseaseControllers = [];
-  final List<TextEditingController> _idControllers = [];
+  final List<TextEditingController> _collectionIdControllers = [];
+
   final List<List<TextEditingController>> _symptomControllersList = [];
 
   @override
   void initState() {
     super.initState();
-    _cropnameController = TextEditingController();
+    _cropNameController = TextEditingController();
+
     _diseaseControllers.add(TextEditingController());
-    _idControllers.add(TextEditingController());
+    _collectionIdControllers.add(TextEditingController());
     _diseaseImages.add(null);
+
     _symptomControllersList.add([TextEditingController()]);
   }
 
   @override
   void dispose() {
-    _cropnameController.dispose();
+    _cropNameController.dispose();
     for (var controller in _diseaseControllers) {
       controller.dispose();
     }
@@ -52,7 +60,7 @@ class _AddCropsFormState extends State<AddCropsForm> {
 
     if (result != null) {
       setState(() {
-        _selectedImageBytes = result.files.single.bytes;
+        _selectedCropImageBytes = result.files.single.bytes;
       });
     }
   }
@@ -65,7 +73,7 @@ class _AddCropsFormState extends State<AddCropsForm> {
 
     if (result != null) {
       setState(() {
-        _selectedBannerImageBytes = result.files.single.bytes;
+        _selectedEnglishBannerImageBytes = result.files.single.bytes;
       });
     }
   }
@@ -86,7 +94,7 @@ class _AddCropsFormState extends State<AddCropsForm> {
   void _addDisease() {
     setState(() {
       _diseaseControllers.add(TextEditingController());
-      _idControllers.add(TextEditingController());
+      _collectionIdControllers.add(TextEditingController());
       _diseaseImages.add(null);
       _symptomControllersList.add([TextEditingController()]);
     });
@@ -113,7 +121,7 @@ class _AddCropsFormState extends State<AddCropsForm> {
   }
 
   void _submitForm() {
-    if (_selectedImageBytes == null || _selectedBannerImageBytes == null) {
+    if (_selectedCropImageBytes == null || _selectedEnglishBannerImageBytes == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please select crop image and banner image.'),
@@ -122,7 +130,9 @@ class _AddCropsFormState extends State<AddCropsForm> {
       return;
     }
 
-    if (_formKey.currentState!.validate()) {}
+    if (_formKey.currentState!.validate()) {
+
+    }
   }
 
   @override
@@ -130,7 +140,8 @@ class _AddCropsFormState extends State<AddCropsForm> {
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Enter Crop Details'),
+        scrolledUnderElevation: 0,
+        title: const Text('Add Crop'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -150,11 +161,14 @@ class _AddCropsFormState extends State<AddCropsForm> {
                     "Crop Details",
                     style: TextStyle(fontSize: size.width * .014),
                   ),
+
                   const Divider(),
+
                   const SizedBox(height: 16),
+
                   KrishiTextField(
-                    controller: _cropnameController,
-                    width: size.width * .4,
+                    controller: _cropNameController,
+                    width: size.width * 0.4,
                     hintText: 'Enter Crop Name',
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -163,19 +177,20 @@ class _AddCropsFormState extends State<AddCropsForm> {
                       return null;
                     },
                   ),
+
                   const SizedBox(height: 16),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       KrishiImagePicker(
                         onTap: _pickImage,
-                        selectedImageBytes: _selectedImageBytes,
+                        selectedImageBytes: _selectedCropImageBytes,
                         title: 'Crop Image',
                       ),
                       const SizedBox(width: 20),
                       KrishiImagePicker(
                         onTap: _pickBannerImage,
-                        selectedImageBytes: _selectedBannerImageBytes,
+                        selectedImageBytes: _selectedEnglishBannerImageBytes,
                         title: 'Crop Banner Image',
                       ),
                     ],
@@ -217,7 +232,7 @@ class _AddCropsFormState extends State<AddCropsForm> {
                                 ),
                                 const SizedBox(height: krishiSpacing),
                                 KrishiTextField(
-                                  controller: _idControllers[index],
+                                  controller: _collectionIdControllers[index],
                                   width: size.width * .4,
                                   hintText: 'Enter Id ${index + 1}',
                                   validator: (value) {

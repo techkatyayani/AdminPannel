@@ -1,4 +1,5 @@
 import 'package:adminpannal/Screens/Crops/addCropsForm.dart';
+import 'package:adminpannal/Screens/Crops/add_crop_section/add_crop_screen.dart';
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/Screens/Crops/cropDisposition.dart';
 import 'package:adminpannal/Screens/Crops/subCropsScreen.dart';
@@ -64,8 +65,6 @@ class _CropScreenState extends State<CropScreen> {
                   ),
                 ),
 
-                // const Spacer(),
-
                 const SizedBox(width: 20),
 
                 ElevatedButton(
@@ -73,7 +72,8 @@ class _CropScreenState extends State<CropScreen> {
                     Navigator.push(
                       context,
                       PageTransition(
-                        child: const AddCropsForm(),
+                        // child: const AddCropsForm(),
+                        child: const AddCropScreen(),
                         type: PageTransitionType.fade,
                       ),
                     );

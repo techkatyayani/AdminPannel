@@ -28,7 +28,7 @@ class _KrishiNewsScreenState extends State<KrishiNewsScreen> with SingleTickerPr
 
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
-      log('Current Tab Index: ${_tabController.index}');
+      // log('Current Tab Index: ${_tabController.index}');
       setState(() {});
     });
   }

@@ -1,4 +1,7 @@
+import 'dart:developer';
+
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
+import 'package:adminpannal/Screens/crop_stage/crop_stage_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -46,6 +49,28 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
         title: Text(widget.cropName),
         scrolledUnderElevation: 0,
         actions: [
+          ElevatedButton(
+          onPressed: () {
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => CropStageScreen(
+                cropName: widget.cropName,
+                cropId: widget.cropId,
+              ))
+            );
+          },
+          child: const Text(
+            "Crop Stages",
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
+        ),
+
+          const SizedBox(width: 15),
+
           ElevatedButton(
             onPressed: () {
               Navigator.push(

@@ -18,7 +18,7 @@ class KrishiNewsService {
 
           // Create KrishiNewsModel instance
 
-          log('Doc Data - ${doc.data()}');
+          // log('Doc Data - ${doc.data()}');
 
           Map<String, dynamic> data = doc.data();
 

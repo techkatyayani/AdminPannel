@@ -46,6 +46,8 @@ dependencies:
   flutter_rating_bar: ^4.0.1
   font_awesome_flutter: ^10.8.0
   simple_star_rating: ^0.0.3
+  video_player: ^2.9.2
+  iconsax: ^0.0.8
 
 dev_dependencies:
   flutter_lints: ^3.0.0

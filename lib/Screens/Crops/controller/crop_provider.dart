@@ -1,12 +1,10 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
-import 'package:adminpannal/Utils/utils.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class CropProvider with ChangeNotifier {
@@ -15,6 +13,158 @@ class CropProvider with ChangeNotifier {
 
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
+
+
+  /// ADD CROP
+
+  TextEditingController newCropNameController = TextEditingController();
+
+  TextEditingController totalDurationOfNewCrop = TextEditingController();
+
+  TextEditingController newDiseaseNameController = TextEditingController();
+  TextEditingController newCropCollectionIdController = TextEditingController();
+
+  Uint8List? _selectedCropImage;
+  Uint8List? get selectedCropImage => _selectedCropImage;
+  void setSelectedCropImage(Uint8List? image) {
+    _selectedCropImage = image;
+    notifyListeners();
+  }
+
+  Uint8List? _selectedEnglishBannerImage;
+  Uint8List? get selectedEnglishBannerImage => _selectedEnglishBannerImage;
+  void setSelectedEnglishBannerImage(Uint8List? image) {
+    _selectedEnglishBannerImage = image;
+    notifyListeners();
+  }
+
+  Uint8List? _selectedHindiBannerImage;
+  Uint8List? get selectedHindiBannerImage => _selectedHindiBannerImage;
+  void setSelectedHindiBannerImage(Uint8List? image) {
+    _selectedHindiBannerImage = image;
+    notifyListeners();
+  }
+
+  Uint8List? _selectedDiseaseImage;
+  Uint8List? get selectedDiseaseImage => _selectedDiseaseImage;
+  void setSelectedDiseaseImage(Uint8List? image) {
+    _selectedDiseaseImage = image;
+    notifyListeners();
+  }
+
+  final List<Map<String, dynamic>> _diseaseDetails = [];
+  List<Map<String, dynamic>> get diseaseDetails => _diseaseDetails;
+  void addDiseaseDetails(Map<String, dynamic> data) {
+    _diseaseDetails.add(data);
+
+    newDiseaseNameController.clear();
+    newCropCollectionIdController.clear();
+    setSelectedDiseaseImage(null);
+
+    notifyListeners();
+  }
+  void removeDiseaseDetails(int index) {
+    _diseaseDetails.removeAt(index);
+    notifyListeners();
+  }
+
+  void resetAddCropScreen() {
+    newCropNameController.clear();
+    totalDurationOfNewCrop.clear();
+    _selectedCropImage = null;
+    _selectedEnglishBannerImage = null;
+    _selectedHindiBannerImage = null;
+
+    _selectedDiseaseImage = null;
+    newDiseaseNameController.clear();
+    newCropCollectionIdController.clear();
+
+    _diseaseDetails.clear();
+
+    notifyListeners();
+  }
+
+  Future<Uint8List?> pickImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+      allowMultiple: false,
+    );
+
+    if (result != null) {
+      Uint8List? image = result.files.single.bytes;
+      return image;
+    }
+
+    return null;
+  }
+
+  Future<bool> addNewCrop() async {
+    try {
+      log('Saving Crop Data...');
+
+      final ref = firestore.collection('product');
+
+      log('Getting Existing Crop Length...');
+      final existingCrops = await ref.get();
+
+      int length = existingCrops.docs.length;
+
+      log('Uploading Crop Details Images...');
+      List<String?> urls = await Future.wait([
+        uploadImage(file: selectedCropImage!, path: 'Crops'),
+        uploadImage(file: selectedEnglishBannerImage!, path: 'Crop Banners'),
+        uploadImage(file: selectedHindiBannerImage!, path: 'Crop Banners'),
+      ]);
+
+      Map<String, dynamic> cropData = {
+        'Image': urls[0].toString(),
+        'Name': newCropNameController.text.trim(),
+        'image2': urls[1].toString(),
+        'hindiimage2': urls[2].toString(),
+        'index': length + 1,
+        'totalDuration': totalDurationOfNewCrop.text.trim(),
+      };
+
+      log('Saving Crop Details..');
+      final docRef = ref.doc();
+
+      await docRef.set(cropData);
+
+      String id = docRef.id;
+
+      log('Crop Doc Created with id = $id');
+
+      final diseaseRef = docRef.collection('Disease');
+
+      for (var disease in diseaseDetails) {
+        log('Extracting Disease Image...');
+        Uint8List image = disease['image'];
+
+        log('Uploading Disease Image...');
+        String? url = await uploadImage(file: image, path: 'Crop Disease');
+
+        Map<String, dynamic> diseaseData = {
+          'Image': url ?? '',
+          'Name': disease['name'] ?? '',
+          'id': disease['collectionId'] ?? '',
+        };
+
+        log('Saving Disease Details...');
+        await diseaseRef.add(diseaseData);
+      }
+
+      log('New Crop Added Successfully :)');
+      resetAddCropScreen();
+
+      return true;
+
+    } catch (e, s) {
+      log('Error adding new crops..!!\n$e\n$s');
+      return false;
+    }
+  }
+
+  /// LANGUAGE FIELDS
 
   final TextEditingController bengaliNameController = TextEditingController();
   final TextEditingController englishNameController = TextEditingController();

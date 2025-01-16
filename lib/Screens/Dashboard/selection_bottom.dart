@@ -139,7 +139,7 @@ class _Button extends StatelessWidget {
             width: 30,
             padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
-              color: krishiNotifColor,
+              color: krishiNotificationColor,
               borderRadius: BorderRadius.circular(15),
             ),
             alignment: Alignment.center,

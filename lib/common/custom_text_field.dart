@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class CustomTextField extends StatelessWidget {
   final TextEditingController controller;
@@ -8,6 +9,10 @@ class CustomTextField extends StatelessWidget {
   final bool hasOutlineBorder;
   final TextFieldTheme theme;
 
+  final List<TextInputFormatter>? inputFormatters;
+
+  final Widget? suffix;
+
   const CustomTextField({
     super.key,
     required this.controller,
@@ -16,6 +21,8 @@ class CustomTextField extends StatelessWidget {
     this.enabled = true,
     this.hasOutlineBorder = false,
     this.theme = TextFieldTheme.light,
+    this.inputFormatters,
+    this.suffix,
   });
 
   @override
@@ -36,6 +43,8 @@ class CustomTextField extends StatelessWidget {
           fontWeight: FontWeight.bold,
           color: theme == TextFieldTheme.light ? Colors.white : Colors.black,
         ),
+        inputFormatters: inputFormatters,
+
         decoration: InputDecoration(
 
           hintText: hintText,
@@ -51,6 +60,12 @@ class CustomTextField extends StatelessWidget {
             fontWeight: FontWeight.w500,
             color: theme == TextFieldTheme.light ? Colors.white70 : Colors.black87,
           ),
+
+          suffixIcon: Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: suffix,
+          ),
+          suffixIconConstraints: const BoxConstraints(),
 
           border: outlineInputBorder(),
           enabledBorder: outlineInputBorder(),

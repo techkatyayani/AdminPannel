@@ -138,7 +138,7 @@ class _ReleaseTimeText extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: krishiNotifColor,
+        color: krishiNotificationColor,
         borderRadius: BorderRadius.circular(10),
       ),
       padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2.5),

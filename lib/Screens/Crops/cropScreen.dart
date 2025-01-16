@@ -107,7 +107,9 @@ class _CropScreenState extends State<CropScreen> {
 
               List<DocumentSnapshot<Map<String, dynamic>>> docs = snapshot.data!.docs;
 
-              docs.sort((a, b) => int.parse(a['index']).compareTo(int.parse(b['index'])));
+              docs.sort((a, b) {
+                return (int.tryParse(a['index']) ?? 0).compareTo((int.tryParse(b['index']) ?? 0));
+              });
 
               return Padding(
                 padding: const EdgeInsets.only(

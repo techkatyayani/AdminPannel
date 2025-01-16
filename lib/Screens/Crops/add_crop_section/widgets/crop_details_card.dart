@@ -1,6 +1,5 @@
-import 'dart:typed_data';
-
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
+import 'package:adminpannal/Utils/utils.dart';
 import 'package:adminpannal/common/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +12,8 @@ class CropDetailsCard extends StatelessWidget {
   final VoidCallback onNext;
 
   const CropDetailsCard({super.key, required this.onNext});
+
+  final String message = "Enter basic crop details first. To add more details by language, complete the 'Add Crop' form, then edit as needed";
 
   @override
   Widget build(BuildContext context) {
@@ -104,11 +105,43 @@ class CropDetailsCard extends StatelessWidget {
             ),
 
             Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
+                Flexible(
+                  child: Text(
+                    // 'You can add only basic details of crop. To enter more details based on language please first fill add crop form then edit required details for respective crop.',
+                    message,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white70
+                    ),
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+
                 TextButton.icon(
-                  onPressed: onNext,
+                  onPressed: () {
+
+                    if (provider.newCropNameController.text.isEmpty) {
+                      Utils.showSnackBar(context: context, message: 'Please enter crop name..!!');
+                      return;
+                    }
+                    else if (provider.totalDurationOfNewCrop.text.isEmpty) {
+                      Utils.showSnackBar(context: context, message: 'Please enter total duration of crop..!!');
+                      return;
+                    } else if (provider.selectedCropImage == null) {
+                      Utils.showSnackBar(context: context, message: 'Please select Crop Image..!!');
+                      return;
+                    } else if (provider.selectedEnglishBannerImage == null ||provider.selectedHindiBannerImage == null ) {
+                      Utils.showSnackBar(context: context, message: 'Please select Crop Banner Images..!!');
+                      return;
+                    }
+
+                    onNext.call();
+                  },
                   label: const Text(
                     'Next',
                     style: TextStyle(

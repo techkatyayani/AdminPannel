@@ -26,9 +26,8 @@ class _KrishiNewsScreenState extends State<KrishiNewsScreen> with SingleTickerPr
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 2, vsync: this);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
     _tabController.addListener(() {
-      // log('Current Tab Index: ${_tabController.index}');
       setState(() {});
     });
   }
@@ -61,13 +60,13 @@ class _KrishiNewsScreenState extends State<KrishiNewsScreen> with SingleTickerPr
                   physics: const NeverScrollableScrollPhysics(),
                   tabs: const [
                     Tab(
-                        icon: Icon(Icons.image),
-                        text: "Images"
+                      icon: Icon(Icons.image),
+                      text: "Images"
                     ),
 
                     Tab(
-                        icon: Icon(Icons.video_library),
-                        text: "Videos"
+                      icon: Icon(Icons.video_library),
+                      text: "Videos"
                     ),
                   ],
                 ),

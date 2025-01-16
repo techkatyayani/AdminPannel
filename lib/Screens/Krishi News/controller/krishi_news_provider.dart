@@ -193,4 +193,8 @@ class KrishiNewsProvider with ChangeNotifier {
     yield krishiNews;
   }
 
+  Future<bool> deletePost(String postId) async {
+    return await service.deletePost(postId);
+  }
+
 }

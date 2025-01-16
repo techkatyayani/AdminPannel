@@ -1,5 +1,4 @@
 import 'package:adminpannal/Screens/Crops/crop_disease_section/widgets/system_language_card.dart';
-import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -47,8 +46,7 @@ class _SymptomsScreenState extends State<SymptomsScreen> {
           if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           }
-          else if (snapshot.connectionState ==
-              ConnectionState.waiting) {
+          else if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(
               child: Lottie.asset(
                 'assets/images/loading.json',

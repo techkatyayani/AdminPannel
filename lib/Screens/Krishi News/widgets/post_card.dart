@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
 import 'package:adminpannal/Screens/Krishi%20News/model/krishi_news_model.dart';
+import 'package:adminpannal/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -10,11 +12,15 @@ class PostCard extends StatefulWidget {
 
   final KrishiNewsModel post;
   final String mediaType;
+  final KrishiNewsProvider provider;
+  final VoidCallback onDeleted;
 
   const PostCard({
     super.key,
     required this.post,
     required this.mediaType,
+    required this.provider,
+    required this.onDeleted,
   });
 
   @override
@@ -31,26 +37,25 @@ class _PostCardState extends State<PostCard> {
   void initState() {
     super.initState();
     if (widget.mediaType == 'video') {
+
       videoPlayerController = VideoPlayerController.networkUrl(
           Uri.parse(widget.post.mediaUrl)
-      )
-        ..initialize().then((_) {
-          setState(() {});
-        }).catchError((e, s) {
-          log('Error initializing video - $e\n$s');
-        })
-        ..setLooping(true);
+      )..initialize().then((_) {
+        setState(() {});
+      }).catchError((e, s) {
+        log('Error initializing video - $e\n$s');
+      })..setLooping(false);
 
-      // Listen to video player state changes
+
       videoPlayerController.addListener(() {
 
         bool isCompleted = videoPlayerController.value.isCompleted;
 
-        setState(() {
-          if (isCompleted) {
+        if (isCompleted) {
+          setState(() {
             play = false;
-          }
-        });
+          });
+        }
       });
     }
   }
@@ -79,7 +84,6 @@ class _PostCardState extends State<PostCard> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-
             postAuthorCard(),
 
             widget.mediaType == 'image'
@@ -89,7 +93,6 @@ class _PostCardState extends State<PostCard> {
             buildVideo(),
 
             aboutPostCard(),
-
           ],
         ),
       ),
@@ -126,27 +129,23 @@ class _PostCardState extends State<PostCard> {
 
   Widget buildVideo() {
 
-    if (!videoPlayerController.value.isInitialized) {
-      return const Center(
-        child: CircularProgressIndicator(
-          color: Colors.white,
-        ),
-      );
-    }
+    final height = MediaQuery.of(context).size.height * 0.6 - 10;
 
     return GestureDetector(
       onTap: () {
-
         log('Clicked :)');
 
         if (videoPlayerController.value.isInitialized) {
+
           if (play) {
             videoPlayerController.pause();
             play = false;
+
             log('Video Paused');
           } else {
             videoPlayerController.play();
             play = true;
+
             log('Video Started Playing');
           }
 
@@ -156,31 +155,47 @@ class _PostCardState extends State<PostCard> {
           log('Video Not Initialized..!!');
         }
       },
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          SizedBox(
-            height: 175,
-            child: VideoPlayer(
-              videoPlayerController,
-            ),
-          ),
+      child: !videoPlayerController.value.isInitialized
+          ?
+      const Center(
+        child: CircularProgressIndicator(
+          color: Colors.white,
+        ),
+      )
+          :
+      SizedBox(
+        height: height,
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
 
-          if (!play)
-            Positioned.fill(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.black26,
-                  // borderRadius: BorderRadius.circular(10),
-                ),
-                child: const Icon(
-                  Icons.play_circle_fill,
-                  size: 64,
-                  color: Colors.white,
-                ),
+            AbsorbPointer(
+              absorbing: true,
+              child: VideoPlayer(
+                videoPlayerController,
               ),
             ),
-        ],
+
+            if (!play)
+              FittedBox(
+                fit: BoxFit.cover,
+                child: Container(
+                  constraints: BoxConstraints(
+                    minHeight: height,
+                    minWidth: (height / 2) + 20
+                  ),
+                  decoration: const BoxDecoration(
+                    color: Colors.black26,
+                  ),
+                  child: const Icon(
+                    Icons.play_circle_fill,
+                    size: 64,
+                    color: Colors.white,
+                  ),
+                ),
+              )
+          ],
+        ),
       ),
     );
   }
@@ -234,10 +249,39 @@ class _PostCardState extends State<PostCard> {
 
           const Spacer(),
 
-          const Icon(
-            Icons.more_vert,
-            color: Colors.black,
-            size: 20,
+          IconButton(
+            onPressed: () {
+              Utils.showConfirmBox(
+                context: context,
+                message: 'Are you sure to delete this post permanently..??',
+                onConfirm: () async {
+
+                  Navigator.pop(context);
+
+                  Utils.showLoadingBox(context: context, title: 'Deleting ${widget.post.title} Post..');
+
+                  bool isDeleted = await widget.provider.deletePost(widget.post.id);
+
+                  Navigator.pop(context);
+
+                  if (isDeleted) {
+                    Utils.showSnackBar(context: context, message: '${widget.post.title} Post deleted successfully :)');
+                    widget.onDeleted.call();
+                  } else {
+                    Utils.showSnackBar(context: context, message: 'Error deleting ${widget.post.title} Post..!!');
+                  }
+                },
+                onCancel: () {
+                  Navigator.pop(context);
+                },
+                confirmText: 'Delete'
+              );
+            },
+            icon: const Icon(
+              Icons.delete,
+              color: Colors.red,
+              size: 20,
+            ),
           ),
         ],
       ),
@@ -276,7 +320,7 @@ class _PostCardState extends State<PostCard> {
 
             const SizedBox(width: 20,),
 
-            // Comments
+            // Comments Count
             IconButton(
               onPressed: () {},
               icon: Icon(
@@ -299,6 +343,7 @@ class _PostCardState extends State<PostCard> {
                 color: Colors.black,
               ),
             ),
+
           ],
         ),
 

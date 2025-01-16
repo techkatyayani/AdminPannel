@@ -1,8 +1,6 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:video_player/video_player.dart';
 
 import 'controller/krishi_news_provider.dart';
 import 'widgets/post_card.dart';
@@ -78,7 +76,7 @@ class _KrishiNewsVideosState extends State<KrishiNewsVideos> {
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
 
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
+                crossAxisCount: 2,
                 crossAxisSpacing: 10,
                 mainAxisSpacing: 10,
               ),
@@ -91,6 +89,10 @@ class _KrishiNewsVideosState extends State<KrishiNewsVideos> {
                 return PostCard(
                   mediaType: 'video',
                   post: post,
+                  provider: provider,
+                  onDeleted: () {
+                    setState(() {});
+                  },
                 );
               }
           );

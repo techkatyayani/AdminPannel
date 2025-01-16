@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/Utils/utils.dart';
 import 'package:adminpannal/common/custom_text_field.dart';
@@ -15,6 +13,8 @@ class DiseaseDetailsCard extends StatelessWidget {
   final VoidCallback onBack;
 
   const DiseaseDetailsCard({super.key, required this.onBack});
+
+  final String message = "Please add disease details. Symptoms based on language shall be added in disease details after the crop is created";
 
   @override
   Widget build(BuildContext context) {
@@ -151,16 +151,17 @@ class DiseaseDetailsCard extends StatelessWidget {
                     name: details['name'] ?? '',
                     image: details['image'] ?? '',
                     collectionId: details['collectionId'] ?? '',
+                    onDelete: () {
+                      provider.removeDiseaseDetails(index);
+                    }
                   );
                 }
               ),
             ),
 
-            const Spacer(),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextButton.icon(
                   onPressed: onBack,
@@ -176,6 +177,20 @@ class DiseaseDetailsCard extends StatelessWidget {
                   icon: const Icon(
                     Icons.arrow_back_sharp,
                     color: Colors.white,
+                  ),
+                ),
+
+                Flexible(
+                  child: Text(
+                    // 'Please add Disease Details. You can add disease details only, try to add respective disease symptoms after completing the crop creation process.',
+                    message,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.white70
+                    ),
+                    maxLines: 5,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ),
 
@@ -209,7 +224,7 @@ class DiseaseDetailsCard extends StatelessWidget {
                       color: Colors.white
                     ),
                   ),
-                )
+                ),
               ],
             ),
           ],
@@ -223,6 +238,7 @@ class DiseaseDetailsCard extends StatelessWidget {
     required String name,
     required String collectionId,
     required Uint8List? image,
+    required VoidCallback onDelete,
   }) {
     return Card(
       color: canvasColor,
@@ -310,7 +326,17 @@ class DiseaseDetailsCard extends StatelessWidget {
                   color: Colors.white,
                 ),
               ),
-            )
+            ),
+
+            const Spacer(),
+
+            IconButton(
+              onPressed: onDelete,
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+              )
+            ),
           ],
         ),
       ),

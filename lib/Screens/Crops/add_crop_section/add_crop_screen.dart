@@ -2,6 +2,7 @@ import 'dart:typed_data';
 
 import 'package:adminpannal/Screens/Crops/add_crop_section/widgets/crop_details_card.dart';
 import 'package:adminpannal/Screens/Crops/add_crop_section/widgets/disease_details_card.dart';
+import 'package:adminpannal/Utils/utils.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -30,38 +31,61 @@ class _AddCropScreenState extends State<AddCropScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        title: const Text(
-          'Add Crop',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white
+    return PopScope(
+      canPop: false,
+      child: Scaffold(
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          leading: IconButton(
+            onPressed: () {
+              Utils.showConfirmBox(
+                context: context,
+                message: 'Are you sure to discard crop form..!! Your crop details will be lost.',
+                onConfirm:  () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                },
+                onCancel: () {
+                  Navigator.pop(context);
+                },
+                confirmText: 'Exit'
+              );
+            },
+            icon: const Icon(
+              Icons.arrow_back_sharp,
+              color: Colors.white,
+            )
+          ),
+          title: const Text(
+            'Add Crop',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.white
+            ),
           ),
         ),
-      ),
-      body: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-        padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
-        color: boxColor,
-        child: PageView(
-          scrollDirection: Axis.horizontal,
-          physics: const NeverScrollableScrollPhysics(),
-          controller: pageController,
-          children: [
-            CropDetailsCard(
-              onNext: () {
-                pageController.jumpToPage(1);
-              },
-            ),
-            DiseaseDetailsCard(
-              onBack: () {
-                pageController.jumpToPage(0);
-              },
-            ),
-          ],
-        )
+        body: Container(
+          margin: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+          padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
+          color: boxColor,
+          child: PageView(
+            scrollDirection: Axis.horizontal,
+            physics: const NeverScrollableScrollPhysics(),
+            controller: pageController,
+            children: [
+              CropDetailsCard(
+                onNext: () {
+                  pageController.jumpToPage(1);
+                },
+              ),
+              DiseaseDetailsCard(
+                onBack: () {
+                  pageController.jumpToPage(0);
+                },
+              ),
+            ],
+          )
+        ),
       ),
     );
   }

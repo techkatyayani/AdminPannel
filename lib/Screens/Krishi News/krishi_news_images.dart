@@ -88,6 +88,10 @@ class _KrishiNewsImagesState extends State<KrishiNewsImages> {
             return PostCard(
               mediaType: 'image',
               post: post,
+              provider: provider,
+              onDeleted: () {
+                setState(() {});
+              },
             );
           }
         );

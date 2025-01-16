@@ -213,7 +213,8 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
                               },
                               onCancel: () {
                                 Navigator.pop(context);
-                              }
+                              },
+                              confirmText: 'Delete'
                             );
                           },
                           icon: const Icon(

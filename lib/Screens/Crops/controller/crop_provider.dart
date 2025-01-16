@@ -121,7 +121,7 @@ class CropProvider with ChangeNotifier {
         'Name': newCropNameController.text.trim(),
         'image2': urls[1].toString(),
         'hindiimage2': urls[2].toString(),
-        'index': length + 1,
+        'index': (length + 1).toString(),
         'totalDuration': totalDurationOfNewCrop.text.trim(),
       };
 
@@ -137,6 +137,9 @@ class CropProvider with ChangeNotifier {
       final diseaseRef = docRef.collection('Disease');
 
       for (var disease in diseaseDetails) {
+
+        final diseaseDocRef = diseaseRef.doc();
+
         log('Extracting Disease Image...');
         Uint8List image = disease['image'];
 
@@ -150,7 +153,13 @@ class CropProvider with ChangeNotifier {
         };
 
         log('Saving Disease Details...');
-        await diseaseRef.add(diseaseData);
+        await diseaseDocRef.set(diseaseData);
+
+        await diseaseDocRef.collection('Symptoms').add({
+          'englishSymptoms': [
+            ''
+          ],
+        });
       }
 
       log('New Crop Added Successfully :)');

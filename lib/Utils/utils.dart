@@ -69,6 +69,8 @@ class Utils {
     required String message,
     required VoidCallback onConfirm,
     required VoidCallback onCancel,
+    required String confirmText,
+    Color? color,
   }) {
     showDialog(
       context: context,
@@ -110,12 +112,12 @@ class Utils {
 
                     TextButton(
                       onPressed: onConfirm,
-                      child: const Text(
-                        'Delete',
+                      child: Text(
+                        confirmText,
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.red
+                          color: color ?? Colors.red
                         ),
                       )
                     )

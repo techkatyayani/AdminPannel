@@ -6,12 +6,14 @@ class SelectionButtonData {
   final IconData icon;
   final String label;
   final int? totalNotif;
+  final bool isNew;
 
   SelectionButtonData({
     required this.activeIcon,
     required this.icon,
     required this.label,
     this.totalNotif,
+    this.isNew = false,
   });
 }
 
@@ -60,7 +62,7 @@ class _SelectionButtonState extends State<SelectionButton> {
                 selected = index;
               });
             },
-            data: data,
+            data: data
           ),
         );
       }).toList(),
@@ -69,15 +71,16 @@ class _SelectionButtonState extends State<SelectionButton> {
 }
 
 class _Button extends StatelessWidget {
+
+  final bool selected;
+  final SelectionButtonData data;
+  final Function() onPressed;
+
   const _Button({
     required this.selected,
     required this.data,
     required this.onPressed,
   });
-
-  final bool selected;
-  final SelectionButtonData data;
-  final Function() onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -94,16 +97,41 @@ class _Button extends StatelessWidget {
           child: Row(
             children: [
               _icon((!selected) ? data.icon : data.activeIcon, context),
+
               const SizedBox(width: krishiSpacing / 2),
+
               Expanded(child: _labelText(data.label, context)),
+
               if (data.totalNotif != null)
                 Padding(
                   padding: const EdgeInsets.only(left: krishiSpacing / 2),
                   child: _notif(data.totalNotif!),
-                )
+                ),
+
+              if (data.isNew)
+                _newIcon(),
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _newIcon() {
+    return Container(
+      width: 12,
+      height: 12,
+      margin: const EdgeInsets.only(right: 5),
+      decoration: BoxDecoration(
+        color: Colors.orange.shade400,
+        shape: BoxShape.circle,
+        boxShadow: const [
+          BoxShadow(
+            color: Colors.white,
+            blurRadius: 8,
+            spreadRadius: 1
+          )
+        ]
       ),
     );
   }

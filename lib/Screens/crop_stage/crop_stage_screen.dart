@@ -1,9 +1,15 @@
+import 'dart:typed_data';
+
 import 'package:adminpannal/Screens/crop_stage/controller/crop_stage_provider.dart';
 import 'package:adminpannal/Screens/crop_stage/model/crop_stage_model.dart';
+import 'package:adminpannal/Screens/crop_stage/widgets/add_activity_dialog.dart';
+import 'package:adminpannal/Utils/utils.dart';
+import 'package:adminpannal/common/image_upload_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
+import 'widgets/add_stage_dialog.dart';
 import 'widgets/crop_activity_card.dart';
 
 class CropStageScreen extends StatefulWidget {
@@ -44,25 +50,6 @@ class _CropStageScreenState extends State<CropStageScreen> {
             color: Colors.white,
           ),
         ),
-        actions: [
-          ElevatedButton(
-            onPressed: () {},
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.orange,
-              foregroundColor: Colors.white,
-            ),
-            child: const Text(
-              'Save Changes',
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.white
-              ),
-            )
-          ),
-
-          const SizedBox(width: 15),
-        ],
       ),
       body: Consumer<CropStageProvider>(
         builder: (BuildContext context, CropStageProvider provider, Widget? child) {
@@ -75,42 +62,26 @@ class _CropStageScreenState extends State<CropStageScreen> {
           }
 
           if (provider.stages.isEmpty) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-
-                  IconButton(
-                    onPressed: () {},
-                    icon: const Icon(
-                      Icons.add_circle_outline,
-                      size: 45,
-                      color: Colors.white70,
-                    )
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  const Text(
-                    'No Stages Found..!!\nTap to Add Stage',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white70
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+            return const Center(
+              child: Text(
+                'No Stages Found..!!\n\nTap + to Add Stage',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white70
+                ),
+                textAlign: TextAlign.center,
               ),
             );
           }
 
           return ListView.builder(
+            physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
             itemCount: provider.stages.length,
-            itemBuilder: (context, index) {
+            itemBuilder: (context, stageIndex) {
 
-              Stage stage = provider.stages[index];
+              Stage stage = provider.stages[stageIndex];
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -134,9 +105,74 @@ class _CropStageScreenState extends State<CropStageScreen> {
                           ),
                         ),
 
-                        GestureDetector(
-                          onTap: () {
+                        InkWell(
+                          onTap: () async {
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              builder: (context) {
+                                return Consumer<CropStageProvider>(
+                                  builder: (BuildContext context, CropStageProvider provider, Widget? child) {
+                                    return ImageUploadDialog(
+                                        pickedImage: provider.pickedStageIcon,
+                                        imageUrl: stage.stageIcon == '' ? null : stage.stageIcon,
+                                        onTap: () async {
+                                          Uint8List? image = await provider.pickImage();
+                                          if (image != null) {
+                                            provider.setPickedStageIcon(image);
+                                          }
+                                        },
+                                        onUpload: () async {
+                                          if (provider.pickedStageIcon != null) {
 
+                                            Utils.showLoadingBox(context: context, title: 'Uploading Image...');
+
+                                            String imageId = DateTime.now().millisecondsSinceEpoch.toString();
+
+                                            String? url = await provider.uploadImage(
+                                                file: provider.pickedStageIcon!,
+                                                path: 'crop_stage_activities/${widget.cropId}/${stage.stageId}_$imageId'
+                                            );
+
+                                            Navigator.pop(context);
+
+                                            if (url != null) {
+
+                                              Utils.showLoadingBox(context: context, title: 'Saving Image...');
+
+                                              bool isSaved = await provider.updateStageImage(
+                                                cropId: widget.cropId,
+                                                stageId: stage.stageId,
+                                                imageUrl: url,
+                                              );
+
+                                              Navigator.pop(context);
+                                              Navigator.pop(context);
+
+                                              if (isSaved) {
+                                                Utils.showSnackBar(context: context, message: 'Image Saved Successfully..!!');
+                                              } else {
+                                                Utils.showSnackBar(context: context, message: 'An error occured while saving image..!!');
+                                              }
+
+                                            } else {
+                                              Navigator.pop(context);
+                                              Utils.showSnackBar(context: context, message: 'An error occured while uploading image..!!');
+                                            }
+                                          } else {
+                                            Navigator.pop(context);
+                                            Utils.showSnackBar(context: context, message: 'Please select image to upload..!!');
+                                          }
+                                        },
+                                        onCancel: () {
+                                          Navigator.pop(context);
+                                          provider.setPickedStageIcon(null);
+                                        }
+                                    );
+                                  },
+                                );
+                              }
+                            );
                           },
                           child: Container(
                             padding: const EdgeInsets.all(8),
@@ -181,9 +217,18 @@ class _CropStageScreenState extends State<CropStageScreen> {
                           child: Row(
                             children: [
                               customAddIcon(
-                                onTap: () {},
+                                onTap: () {
+                                  showAddActivityDialog(
+                                    context: context,
+                                    cropId: widget.cropId,
+                                    stageId: stage.stageId,
+                                    activityId: 'activity_${stage.activities.length + 1}',
+                                    showDurationField: true,
+                                  );
+                                },
                                 width: MediaQuery.of(context).size.width * 0.2,
                                 height: MediaQuery.of(context).size.width * 0.1 + 110,
+                                hideColor: true
                               ),
                             ],
                           ),
@@ -198,6 +243,7 @@ class _CropStageScreenState extends State<CropStageScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
 
+                            // Activity Duration
                             Text(
                               'Duration - ${activities.duration} Days',
                               style: const TextStyle(
@@ -218,15 +264,24 @@ class _CropStageScreenState extends State<CropStageScreen> {
 
                                   if (activityIndex == activities.activity.length) {
                                     return customAddIcon(
-                                      onTap: () {},
+                                      onTap: () {
+                                        showAddActivityDialog(
+                                          context: context,
+                                          cropId: widget.cropId,
+                                          stageId: stage.stageId,
+                                          activityId: 'activity_${index+1}',
+                                          showDurationField: false,
+                                        );
+                                      },
                                       width: MediaQuery.of(context).size.width * 0.2,
                                       height: MediaQuery.of(context).size.width * 0.1,
                                     );
                                   }
 
                                   return CropActivityCard(
+                                    cropId: widget.cropId,
+                                    stageId: stage.stageId,
                                     activity: activities.activity[activityIndex],
-                                    showDescription: false,
                                   );
                                 },
                               ),
@@ -243,6 +298,22 @@ class _CropStageScreenState extends State<CropStageScreen> {
           );
         },
       ),
+      floatingActionButton: IconButton(
+        onPressed: () {
+          showAddStageDialog(
+            context: context,
+            cropId: widget.cropId,
+          );
+        },
+        style: IconButton.styleFrom(
+          backgroundColor: Colors.orange,
+          foregroundColor: Colors.white,
+        ),
+        icon: const Icon(
+          Icons.add,
+          color: Colors.white,
+        )
+      ),
     );
   }
 
@@ -250,6 +321,7 @@ class _CropStageScreenState extends State<CropStageScreen> {
     required VoidCallback onTap,
     required double width,
     required double height,
+    bool hideColor = false,
   }) {
     return SizedBox(
       width: width,
@@ -261,13 +333,19 @@ class _CropStageScreenState extends State<CropStageScreen> {
           width: width,
           height: height,
           decoration: BoxDecoration(
-            color: Colors.grey.shade200,
+            color: hideColor ? Colors.transparent : Colors.grey.shade200,
             borderRadius: BorderRadius.circular(10),
+            border: Border.fromBorderSide(
+              BorderSide(
+                color: !hideColor ? Colors.transparent : Colors.grey.shade200,
+                width: !hideColor ? 2 : 0,
+              ),
+            )
           ),
           child: Center(
             child: Icon(
               Icons.add,
-              color: Colors.black,
+              color: hideColor ? Colors.grey.shade200 : Colors.black,
               size: MediaQuery.of(context).size.width * 0.025,
             ),
           ),

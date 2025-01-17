@@ -28,8 +28,6 @@ import '../Category/category_screen.dart';
 import '../Notification/notification_screen.dart';
 import '../product_review/all_review_screen.dart';
 
-int screenIndex = 0;
-
 class DashBoard extends StatefulWidget {
   const DashBoard({super.key});
 
@@ -40,7 +38,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 9;
+  int screenIndex = 4;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -94,6 +92,7 @@ class _DashBoardState extends State<DashBoard> {
         activeIcon: Icons.energy_savings_leaf,
         icon: Icons.energy_savings_leaf_outlined,
         label: "Crops",
+        isNew: true,
       ),
       SelectionButtonData(
         activeIcon: Icons.discount,
@@ -104,21 +103,25 @@ class _DashBoardState extends State<DashBoard> {
         activeIcon: Icons.category,
         icon: Icons.category_outlined,
         label: "Top Category Row",
+        isNew: true,
       ),
       SelectionButtonData(
         activeIcon: Icons.shopping_cart,
         icon: Icons.shopping_cart_outlined,
         label: "Product Categories",
+        isNew: true,
       ),
       SelectionButtonData(
         activeIcon: EvaIcons.image,
         icon: EvaIcons.imageOutline,
         label: "Product Reviews",
+        isNew: true,
       ),
       SelectionButtonData(
         activeIcon: Icons.feed_sharp,
         icon: Icons.feed_outlined,
         label: "Krishi News",
+        isNew: true,
       ),
       SelectionButtonData(
         activeIcon: Icons.adjust_sharp,
@@ -134,6 +137,7 @@ class _DashBoardState extends State<DashBoard> {
         activeIcon: FontAwesomeIcons.youtube,
         icon: FontAwesomeIcons.squareYoutube,
         label: "Youtube Links",
+        isNew: true,
       ),
       SelectionButtonData(
         activeIcon: EvaIcons.archive,

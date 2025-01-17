@@ -5,22 +5,37 @@ import '../model/crop_stage_model.dart';
 
 class CropActivityCard extends StatelessWidget {
 
+  final String cropId;
+  final String stageId;
   final Activity activity;
-  final bool showDescription;
 
-  const CropActivityCard({super.key, required this.activity, required this.showDescription});
+  const CropActivityCard({
+    super.key,
+    required this.cropId,
+    required this.stageId,
+    required this.activity,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
       onTap: () {
-        Navigator.push(context, MaterialPageRoute(builder: (context) => CropActivityDetailsScreen(activity: activity)));
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) =>
+            CropActivityDetailsScreen(
+              cropId: cropId,
+              stageId: stageId,
+              activity: activity,
+            )
+          )
+        );
       },
       child: Container(
         width: MediaQuery.of(context).size.width * 0.2,
         margin: const EdgeInsets.only(right: 10),
         decoration: BoxDecoration(
-          color: Colors.grey.shade200,
+          color: Colors.yellow.shade200,
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
@@ -30,7 +45,9 @@ class CropActivityCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
               child: Image.network(
                 activity.image,
+                width: double.maxFinite,
                 height: MediaQuery.of(context).size.width * 0.1,
+                fit: BoxFit.cover,
                 errorBuilder: (context, error, stace) {
                   return Container(
                     height: MediaQuery.of(context).size.width * 0.1,

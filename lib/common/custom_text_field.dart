@@ -12,6 +12,9 @@ class CustomTextField extends StatelessWidget {
   final List<TextInputFormatter>? inputFormatters;
 
   final Widget? suffix;
+  final bool showBorders;
+
+  final int? maxLines;
 
   const CustomTextField({
     super.key,
@@ -23,6 +26,8 @@ class CustomTextField extends StatelessWidget {
     this.theme = TextFieldTheme.light,
     this.inputFormatters,
     this.suffix,
+    this.showBorders = true,
+    this.maxLines = 1,
   });
 
   @override
@@ -44,7 +49,7 @@ class CustomTextField extends StatelessWidget {
           color: theme == TextFieldTheme.light ? Colors.white : Colors.black,
         ),
         inputFormatters: inputFormatters,
-
+        maxLines: maxLines,
         decoration: InputDecoration(
 
           hintText: hintText,
@@ -80,8 +85,8 @@ class CustomTextField extends StatelessWidget {
   UnderlineInputBorder underlineInputBorder({double? width, Color? color}) {
     return UnderlineInputBorder(
       borderSide: BorderSide(
-        color: color ?? (theme == TextFieldTheme.light ? Colors.white : Colors.black),
-        width: width ?? 1.25,
+        color: showBorders ? (color ?? (theme == TextFieldTheme.light ? Colors.white : Colors.black)) : Colors.transparent,
+        width: showBorders ? (width ?? 1.25) : 0,
       ),
     );
   }
@@ -89,8 +94,8 @@ class CustomTextField extends StatelessWidget {
   OutlineInputBorder outlineInputBorder({double? width, Color? color}) {
     return OutlineInputBorder(
       borderSide: BorderSide(
-        color: color ?? (theme == TextFieldTheme.light ? Colors.white : Colors.black),
-        width: width ?? 1.25,
+        color: showBorders ? (color ?? (theme == TextFieldTheme.light ? Colors.white : Colors.black)) : Colors.transparent,
+        width: showBorders ? (width ?? 1.25) : 0,
       ),
     );
   }

@@ -3,10 +3,9 @@ class Stage {
   final String stageName;
   final String stageImage;
   final String stageIcon;
-  final String from;
-  final String to;
+  final int from;
+  final int to;
   final List<String> products;
-
   final List<Activities> activities;
 
   Stage({
@@ -16,8 +15,8 @@ class Stage {
     required this.stageIcon,
     required this.from,
     required this.to,
-    required this.activities,
     required this.products,
+    required this.activities,
   });
 
   factory Stage.fromJson(Map<String, dynamic> json) {
@@ -26,20 +25,33 @@ class Stage {
       stageName: json['stageName'] ?? '',
       stageImage: json['stageImage'] ?? '',
       stageIcon: json['stageIcon'] ?? '',
-      from: json['from'] != null ? json['from'].toString() : '',
-      to: json['to'] != null ? json['to'].toString() : '',
+      from: json['from'] ?? 0,
+      to: json['to'] ?? 0,
       activities: json['activities'] ?? [],
       products: List<String>.from(json['products'] ?? []),
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'stageId': stageId,
+      'stageName': stageName,
+      'stageImage': stageImage,
+      'stageIcon': stageIcon,
+      'from': from,
+      'to': to,
+      'products': products,
+    };
+  }
+
 
   Stage copyWith({
     String? stageId,
     String? stageName,
     String? stageImage,
     String? stageIcon,
-    String? from,
-    String? to,
+    int? from,
+    int? to,
     List<String>? products,
     List<Activities>? activities,
   }) {
@@ -68,27 +80,45 @@ class Activities {
 }
 
 class Activity {
+  final String id;
   final String name;
   final String image;
   final String summary;
   final String description;
-  final String instructions;
+  final List<String> instructions;
+  final DateTime timestamp;
 
   Activity({
+    required this.id,
     required this.name,
     required this.image,
     required this.summary,
     required this.description,
     required this.instructions,
+    required this.timestamp,
   });
 
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
+      id: json['id'] ?? '',
       name: json['name'] ?? '',
       image: json['image'] ?? '',
       summary: json['summary'] ?? '',
       description: json['description'] ?? '',
-      instructions: json['instructions'] ?? '',
+      instructions: json['instructions'] != null ? List<String>.from(json['instructions']) : [],
+      timestamp: json['timestamp'] != null ? DateTime.parse(json['timestamp']) : DateTime.now(),
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'image': image,
+      'summary': summary,
+      'description': description,
+      'instructions': instructions,
+      'timestamp': timestamp.toString(),
+    };
   }
 }

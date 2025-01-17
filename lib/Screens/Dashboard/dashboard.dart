@@ -17,6 +17,7 @@ import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dar
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/Screens/Youtube/youtube_videos_screen.dart';
 import 'package:adminpannal/Screens/prouct_catagory/product_catagory_screen.dart';
+import 'package:adminpannal/Screens/state_crops/state_crops_screen.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -38,7 +39,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 4;
+  int screenIndex = 5;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -52,6 +53,7 @@ class _DashBoardState extends State<DashBoard> {
     const ProductBetweenBanners(),
     const SaleScreen(),
     const CropScreen(),
+    const StateCropsScreen(),
     const DiscountCoupons(),
     const CategoryScreen(),
     const ProductCatagoryScreen(),
@@ -92,6 +94,12 @@ class _DashBoardState extends State<DashBoard> {
         activeIcon: Icons.energy_savings_leaf,
         icon: Icons.energy_savings_leaf_outlined,
         label: "Crops",
+        isNew: true,
+      ),
+      SelectionButtonData(
+        activeIcon: Icons.location_city,
+        icon: Icons.location_city_outlined,
+        label: "State Crops",
         isNew: true,
       ),
       SelectionButtonData(

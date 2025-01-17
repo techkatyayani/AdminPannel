@@ -7,6 +7,8 @@ import 'package:adminpannal/Screens/crop_stage/controller/crop_stage_provider.da
 import 'package:adminpannal/Screens/crop_stage/crop_stage_screen.dart';
 import 'package:adminpannal/Screens/product_review/controller/ksk_review_controller.dart';
 import 'package:adminpannal/Screens/prouct_catagory/controller/prouduct_catagory_controller.dart';
+import 'package:adminpannal/Screens/state_crops/controller/state_crop_provider.dart';
+import 'package:adminpannal/Screens/state_crops/state_crops_screen.dart';
 import 'package:adminpannal/config/themes/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -68,6 +70,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => ProuductCatagoryController()),
         ChangeNotifierProvider(create: (_) => DiseaseController()),
         ChangeNotifierProvider(create: (_) => CropStageProvider()),
+        ChangeNotifierProvider(create: (_) => StateCropProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -77,6 +80,8 @@ class _MyAppState extends State<MyApp> {
         theme: AppTheme.basic,
 
         home: nextScreen,
+
+        // home: const StateCropsScreen(),
 
         // home: const CropStageScreen(cropName: 'Chilli', cropId: 'kJpvD0b6AwC4MhYEit1F'),
 

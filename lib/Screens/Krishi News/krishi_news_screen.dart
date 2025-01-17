@@ -26,7 +26,7 @@ class _KrishiNewsScreenState extends State<KrishiNewsScreen> with SingleTickerPr
   void initState() {
     super.initState();
 
-    _tabController = TabController(length: 2, vsync: this, initialIndex: 1);
+    _tabController = TabController(length: 2, vsync: this, initialIndex: 0);
     _tabController.addListener(() {
       setState(() {});
     });

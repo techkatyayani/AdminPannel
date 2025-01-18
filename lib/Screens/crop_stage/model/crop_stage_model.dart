@@ -1,3 +1,4 @@
+
 class Stage {
   final String stageId;
   final String stageName;
@@ -76,7 +77,6 @@ class Activities {
     required this.duration,
     required this.activity,
   });
-
 }
 
 class Activity {

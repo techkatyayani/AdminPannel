@@ -116,3 +116,5 @@ class _MyAppState extends State<MyApp> {
 }
 
 // --web-renderer html
+
+// flutter build web --web-renderer html --release

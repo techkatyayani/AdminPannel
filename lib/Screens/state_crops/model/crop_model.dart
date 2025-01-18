@@ -20,4 +20,13 @@ class CropModel {
       index: json['index'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'Name': name,
+      'Image': image,
+      'index': index,
+    };
+  }
 }

@@ -1,7 +1,10 @@
 import 'dart:io';
 import 'package:adminpannal/Screens/prouct_catagory/controller/prouduct_catagory_controller.dart';
+import 'package:adminpannal/Screens/prouct_catagory/model/product_catagory_model.dart';
+import 'package:adminpannal/common/custom_color_picker.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:provider/provider.dart';
 
 class AddProductCatagoryDialog extends StatefulWidget {
@@ -21,7 +24,10 @@ class _AddProductCatagoryDialogState extends State<AddProductCatagoryDialog> {
       ),
       backgroundColor: boxColor,
       child: Consumer<ProuductCatagoryController>(
-          builder: (context, provider, child) {
+        builder: (context, provider, child) {
+
+          Color color = getColorFromCode(provider.colorHex);
+
         return Container(
           padding: const EdgeInsets.all(20),
           width: MediaQuery.of(context).size.width * 0.5,
@@ -54,9 +60,9 @@ class _AddProductCatagoryDialogState extends State<AddProductCatagoryDialog> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: provider.productIDController,
+                  controller: provider.collectionIdController,
                   decoration: InputDecoration(
-                    hintText: 'Enter Product Id',
+                    hintText: 'Enter Collection Id',
                     hintStyle: TextStyle(color: Colors.grey[400]),
                     filled: true,
                     fillColor: Colors.grey[800],
@@ -67,19 +73,58 @@ class _AddProductCatagoryDialogState extends State<AddProductCatagoryDialog> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                TextFormField(
-                  controller: provider.colorHexController,
-                  decoration: InputDecoration(
-                    hintText: 'Enter Color Hex',
-                    hintStyle: TextStyle(color: Colors.grey[400]),
-                    filled: true,
-                    fillColor: Colors.grey[800],
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: BorderSide.none,
-                    ),
+
+                // TextFormField(
+                //   controller: provider.colorHexController,
+                //   decoration: InputDecoration(
+                //     hintText: 'Enter Color Hex',
+                //     hintStyle: TextStyle(color: Colors.grey[400]),
+                //     filled: true,
+                //     fillColor: Colors.grey[800],
+                //     border: OutlineInputBorder(
+                //       borderRadius: BorderRadius.circular(8),
+                //       borderSide: BorderSide.none,
+                //     ),
+                //   ),
+                // ),
+
+                InkWell(
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+
+                        return CustomColorPicker(
+                          pickerColor: color,
+                          onColorChanged: (color) {
+                            provider.setColorHex(color.toHexString());
+                          }
+                        );
+                      },
+                    );
+                  },
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 40,
+                        height: 40,
+                        color: color,
+                      ),
+
+                      const SizedBox(width: 30),
+
+                      const Text(
+                        'Pick Color',
+                        style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white
+                        ),
+                      )
+                    ],
                   ),
                 ),
+
                 const SizedBox(height: 30),
                 const Text(
                   'Add Image',

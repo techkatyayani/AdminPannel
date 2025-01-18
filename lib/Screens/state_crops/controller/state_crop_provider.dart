@@ -89,7 +89,7 @@ class StateCropProvider with ChangeNotifier {
   List<CropModel> _availableCrops = [];
   List<CropModel> get availableCrops => _availableCrops;
 
-  final List<CropModel> _cropsInState = [];
+  List<CropModel> _cropsInState = [];
   List<CropModel> get cropsInState => _cropsInState;
 
   void addCropsInState(CropModel crop) {
@@ -112,16 +112,26 @@ class StateCropProvider with ChangeNotifier {
     notifyListeners();
   }
 
+  void clearStateCrops() {
+    _cropsInState.clear();
+    notifyListeners();
+  }
+
   Future<void> fetchCropsByState(String state) async {
     try {
+
+      clearStateCrops();
+
       setFetchingCropsByState(true);
 
       DocumentSnapshot<Map<String, dynamic>> snapshot = await firestore.collection('Crops By State').doc(state).get();
 
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data()!;
-        CropModel crop = CropModel.fromJson(data);
-        _cropsInState.add(crop);
+
+        List<dynamic> crops = data['crops'] ?? [];
+
+        _cropsInState = crops.map((crop) => CropModel.fromJson(crop)).toList();
       }
 
       _cropsInState.sort((a, b) => a.name.compareTo(b.name));
@@ -142,4 +152,19 @@ class StateCropProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> saveCropsInState(String state) async {
+    try {
+      DocumentReference<Map<String, dynamic>> ref = firestore.collection('Crops By State').doc(state);
+
+      await ref.set({
+       'crops': cropsInState.map((crop) => crop.toJson()),
+      });
+
+      return true;
+      
+    } catch (e, s) {
+      log('Error saving crops in state..!!\n$e\n$s');
+      return false;
+    }
+  }
 }

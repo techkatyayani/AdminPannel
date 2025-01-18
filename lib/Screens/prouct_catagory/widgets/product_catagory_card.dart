@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 class ProductCatagoryCard extends StatelessWidget {
+
   final ProductCatagoryModel productCatagoryModel;
+
   const ProductCatagoryCard({super.key, required this.productCatagoryModel});
 
   @override
@@ -84,7 +86,7 @@ class ProductCatagoryCard extends StatelessWidget {
                 right: 10,
                 child: IconButton(
                   onPressed: () {
-                    provider.deleteCategory(productCatagoryModel.collectionID);
+                    provider.deleteCategory(productCatagoryModel.collectionId);
                   },
                   icon: const Icon(
                     Icons.delete,

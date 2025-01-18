@@ -5,7 +5,6 @@ import 'package:adminpannal/Screens/prouct_catagory/model/product_catagory_model
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProuductCatagoryController extends ChangeNotifier {
@@ -13,11 +12,18 @@ class ProuductCatagoryController extends ChangeNotifier {
   FirebaseStorage firebaseStorage = FirebaseStorage.instance;
 
   List<ProductCatagoryModel> productCategories = [];
-  bool isLoading = true;
+
+  bool _isLoading = false;
+  bool get isLoading => _isLoading;
+  void setLoading(bool value) {
+    _isLoading = value;
+    notifyListeners();
+  }
 
   Future<void> fetchAllProductCategories() async {
     try {
-      isLoading = true;
+      setLoading(true);
+
       QuerySnapshot snapshot = await firebaseFirestore
           .collection('/DynamicSection/Categories/categories_data')
           .get();
@@ -28,15 +34,50 @@ class ProuductCatagoryController extends ChangeNotifier {
       }).toList();
 
       productCategories = fetchedCategories;
-      isLoading = false;
-      notifyListeners();
+
     } catch (e) {
-      isLoading = false;
-      debugPrint('Error fetching product categories: $e');
+      log('Error fetching product categories: $e');
+    } finally {
+      setLoading(false);
     }
   }
 
-  final languages = ['Hindi', 'English', 'Malayalam', 'Tamil'];
+  List<String> languages = [
+    'Bengali',
+    'English',
+    'Hindi',
+    'Kannada',
+    'Malayalam',
+    'Marathi',
+    'Odia',
+    'Tamil',
+    'Telugu',
+  ];
+
+  String getImageUrl(String language, ProductCatagoryModel category) {
+    switch (language) {
+      case 'Bengali': return category.imageBn;
+
+      case 'English': return category.imageEn;
+
+      case 'Hindi': return category.imageHi;
+
+      case 'Kannada': return category.imageKn;
+
+      case 'Malayalam': return category.imageMl;
+
+      case 'Marathi': return category.imageMr;
+
+      case 'Tamil': return category.imageTa;
+
+      case 'Telugu': return category.imageTl;
+
+      case 'Odia': return category.imageOr;
+
+      default: return '';
+    }
+  }
+
   final Map<String, String?> selectedImages = {
     for (var language in ['Hindi', 'English', 'Malayalam', 'Tamil'])
       language: null,
@@ -57,8 +98,15 @@ class ProuductCatagoryController extends ChangeNotifier {
 
   TextEditingController titleController = TextEditingController();
   TextEditingController collectionIdController = TextEditingController();
-  TextEditingController productIDController = TextEditingController();
-  TextEditingController colorHexController = TextEditingController();
+  // TextEditingController colorHexController = TextEditingController();
+
+  String _colorHex = '';
+  String get colorHex => _colorHex;
+  void setColorHex(String code) {
+    _colorHex = code;
+    notifyListeners();
+  }
+
   bool isLoadingAddcatagory = false;
 
   Future<void> addImagesAndSaveCategory(BuildContext context) async {
@@ -72,14 +120,13 @@ class ProuductCatagoryController extends ChangeNotifier {
       final docRef = firestore
           .collection('/DynamicSection/Categories/categories_data')
           .doc();
-      final collectionId = docRef.id;
+      final id = docRef.id;
 
       String title = titleController.text.trim();
-      String productId = productIDController.text.trim();
-      String colorHex = colorHexController.text.trim();
+      String collection = collectionIdController.text.trim();
 
       // Validate inputs
-      if (title.isEmpty || colorHex.isEmpty || productId.isEmpty) {
+      if (title.isEmpty || colorHex.isEmpty) {
         isLoadingAddcatagory = false;
         notifyListeners();
 
@@ -97,7 +144,7 @@ class ProuductCatagoryController extends ChangeNotifier {
           final fileName = '$language-${DateTime.now().millisecondsSinceEpoch}';
           final storageRef = storage
               .ref()
-              .child('ProductCategoryImages/$collectionId/$fileName');
+              .child('ProductCategoryImages/$id/$fileName');
 
           // Upload the file as bytes
           final uploadTask =
@@ -111,14 +158,19 @@ class ProuductCatagoryController extends ChangeNotifier {
 
       // Create the ProductCategoryModel
       final newCategory = ProductCatagoryModel(
-        productID: productId,
-        collectionID: collectionId,
-        colorHex: colorHex,
+        collectionId: collection,
+        color: getColorFromCode(colorHex),
         imageEn: imageUrls['English'] ?? '',
         imageHi: imageUrls['Hindi'] ?? '',
-        imageMal: imageUrls['Malayalam'] ?? '',
-        imageTam: imageUrls['Tamil'] ?? '',
+        imageMl: imageUrls['Malayalam'] ?? '',
+        imageTa: imageUrls['Tamil'] ?? '',
+        imageBn: imageUrls['Bengali'] ?? '',
+        imageMr: imageUrls['Marathi'] ?? '',
+        imageOr: imageUrls['Oriya'] ?? '',
+        imageTl: imageUrls['Telugu'] ?? '',
+        id: docRef.id,
         title: title,
+        imageKn: imageUrls['Kannada'] ?? '',
       );
 
       // Save the category to Firestore
@@ -127,7 +179,7 @@ class ProuductCatagoryController extends ChangeNotifier {
       isLoadingAddcatagory = false;
       notifyListeners();
 
-      log('Category added successfully to Firestore with ID: $collectionId');
+      log('Category added successfully to Firestore with ID: $id');
       Navigator.pop(context);
     } catch (e) {
       isLoadingAddcatagory = false;
@@ -176,7 +228,7 @@ class ProuductCatagoryController extends ChangeNotifier {
   Future<void> getCollectionData(String collectionId) async {
     try {
       isLoadingCatagory = true;
-      errorMessage = null; // Reset error before making a new request
+      errorMessage = null;
       notifyListeners();
 
       final firestore = FirebaseFirestore.instance;
@@ -195,9 +247,10 @@ class ProuductCatagoryController extends ChangeNotifier {
         errorMessage = 'Document not found';
         notifyListeners();
       }
-    } catch (e) {
+    } catch (e, s) {
       isLoadingCatagory = false;
       errorMessage = 'Error retrieving collection data: $e';
+      log('Error getting collection with id = $e\n$s');
       notifyListeners();
     }
   }
@@ -205,11 +258,16 @@ class ProuductCatagoryController extends ChangeNotifier {
   final Map<String, String> languageFieldMapping = {
     'Hindi': 'imageHi',
     'English': 'imageEn',
-    'Malayalam': 'imageMal',
-    'Tamil': 'imageTam',
+    'Malayalam': 'imageMa',
+    'Tamil': 'imageTa',
+    'Bengali': 'imageBn',
+    'Marathi': 'imageMr',
+    'Oriya': 'imageOr',
+    'Telugu': 'imageTl',
+    'Kannada': 'imageKn',
   };
-  Future<void> deleteImageFromCategory(
-      String collectionId, String language, String imageUrl) async {
+
+  Future<void> deleteImageFromCategory(String collectionId, String language, String imageUrl) async {
     try {
       // Map display language to Firestore field name
       final fieldName = languageFieldMapping[language];
@@ -332,4 +390,6 @@ class ProuductCatagoryController extends ChangeNotifier {
       }
     }
   }
+
+
 }

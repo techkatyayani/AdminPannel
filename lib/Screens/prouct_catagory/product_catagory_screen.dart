@@ -13,19 +13,22 @@ class ProductCatagoryScreen extends StatefulWidget {
 }
 
 class _ProductCatagoryScreenState extends State<ProductCatagoryScreen> {
+
+  late ProuductCatagoryController provider;
+
   @override
   void initState() {
+
+    provider = Provider.of<ProuductCatagoryController>(context, listen: false);
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final prouductCatagoryController =
-          Provider.of<ProuductCatagoryController>(context, listen: false);
-      prouductCatagoryController.fetchAllProductCategories();
+      provider.fetchAllProductCategories();
     });
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    final provi = Provider.of<ProuductCatagoryController>(context);
     return Container(
       padding: const EdgeInsets.all(20),
       width: double.infinity,
@@ -45,9 +48,10 @@ class _ProductCatagoryScreenState extends State<ProductCatagoryScreen> {
                     fontSize: 25,
                   ),
                 ),
+
                 InkWell(
                   onTap: () {
-                    provi.fetchAllProductCategories();
+                    provider.fetchAllProductCategories();
                   },
                   child: const Icon(
                     Icons.replay,
@@ -57,54 +61,60 @@ class _ProductCatagoryScreenState extends State<ProductCatagoryScreen> {
               ],
             ),
           ),
+
           const SizedBox(height: 20),
+
           Consumer<ProuductCatagoryController>(
             builder: (context, provider, child) {
-              // log(provider.isLoading.toString());
               return provider.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : GridView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        crossAxisCount: 6,
-                      ),
-                      itemCount: provider.productCategories.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == provider.productCategories.length) {
-                          return GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return const AddProductCatagoryDialog();
-                                },
-                              );
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                color: const Color.fromARGB(255, 102, 84, 143),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: const Icon(
-                                Icons.add,
-                                size: 30,
-                                color: Colors.white,
-                              ),
-                            ),
-                          );
-                        } else {
-                          final product = provider.productCategories[index];
-                          return ProductCatagoryCard(
-                              productCatagoryModel: product);
-                        }
+                  ?
+              const Center(
+                child: CircularProgressIndicator(),
+              )
+                  :
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  mainAxisSpacing: 10,
+                  crossAxisSpacing: 10,
+                  crossAxisCount: 6,
+                ),
+                itemCount: provider.productCategories.length + 1,
+                itemBuilder: (context, index) {
+
+                  if (index == provider.productCategories.length) {
+                    return GestureDetector(
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return const AddProductCatagoryDialog();
+                          },
+                        );
                       },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 102, 84, 143),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          size: 30,
+                          color: Colors.white,
+                        ),
+                      ),
                     );
+                  }
+
+                  else {
+                    final product = provider.productCategories[index];
+                    return ProductCatagoryCard(
+                        productCatagoryModel: product
+                    );
+                  }
+                },
+              );
             },
           ),
         ],

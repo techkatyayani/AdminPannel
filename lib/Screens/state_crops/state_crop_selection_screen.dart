@@ -1,4 +1,5 @@
 import 'package:adminpannal/Screens/state_crops/controller/state_crop_provider.dart';
+import 'package:adminpannal/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -37,6 +38,51 @@ class _StateCropSelectionScreenState extends State<StateCropSelectionScreen> {
             color: Colors.white,
           ),
         ),
+
+        actions: [
+
+          Consumer<StateCropProvider>(
+            builder: (context, provider, child) {
+              return ElevatedButton(
+                onPressed: () async {
+                  if (provider.cropsInState.isEmpty) {
+                    Utils.showSnackBar(context: context, message: 'Please select at least one crop..!!');
+                    return;
+                  }
+
+                  Utils.showLoadingBox(context: context, title: 'Saving Crops...');
+
+                  bool isSaved = await provider.saveCropsInState(widget.state);
+
+                  Navigator.pop(context);
+
+                  if (isSaved) {
+                    Navigator.pop(context);
+                    Utils.showSnackBar(context: context, message: 'Crops saved successfully :)');
+                    provider.clearStateCrops();
+                  } else {
+                    Utils.showSnackBar(context: context, message: 'An error occured while saving crops..!!');
+                  }
+
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.orange,
+                  foregroundColor: Colors.white,
+                ),
+                child: const Text(
+                  'Save',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Colors.white
+                  ),
+                )
+              );
+            }
+          ),
+
+          const SizedBox(width: 20)
+        ],
       ),
       body: Consumer<StateCropProvider>(
         builder: (context, StateCropProvider provider, child) {
@@ -51,7 +97,8 @@ class _StateCropSelectionScreenState extends State<StateCropSelectionScreen> {
             )
                 :
             Column(
-              children: [
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
                 provider.cropsInState.isEmpty
                     ?
                 Center(
@@ -85,8 +132,8 @@ class _StateCropSelectionScreenState extends State<StateCropSelectionScreen> {
                                 alignment: Alignment.center,
                                 child: Image.network(
                                   crop.image,
-                                  width: MediaQuery.of(context).size.width * 0.15,
-                                  height: MediaQuery.of(context).size.width * 0.15,
+                                  width: MediaQuery.of(context).size.width * 0.05,
+                                  height: MediaQuery.of(context).size.width * 0.05,
                                   errorBuilder: (context, error, stace) {
                                     return const Icon(
                                       Icons.error,
@@ -139,16 +186,27 @@ class _StateCropSelectionScreenState extends State<StateCropSelectionScreen> {
                   ),
                 ),
 
-                const SizedBox(height: 15),
+                const SizedBox(height: 20),
+
+                const Text(
+                  'Available Crops',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white
+                  ),
+                ),
+
+                const SizedBox(height: 5),
 
                 Expanded(
                   child: GridView.builder(
                     padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
                     gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 5,
+                      crossAxisCount: 6,
                       crossAxisSpacing: 10,
                       mainAxisSpacing: 10,
-                      childAspectRatio: 1.4,
+                      childAspectRatio: 1.5,
                     ),
                     itemCount: provider.availableCrops.length,
                     itemBuilder: (context, index) {
@@ -160,32 +218,30 @@ class _StateCropSelectionScreenState extends State<StateCropSelectionScreen> {
                         child: Card(
                           elevation: 14,
                           color: Colors.white,
-                          child: SizedBox(
-                            height: MediaQuery.of(context).size.width * 0.2,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                Image.network(
-                                  crop.image,
-                                  width: MediaQuery.of(context).size.width * 0.1,
-                                  fit: BoxFit.fill,
-                                  errorBuilder: (context, error, stace) {
-                                    return const Icon(
-                                      Icons.error
-                                    );
-                                  },
-                                ),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Image.network(
+                                crop.image,
+                                width: MediaQuery.of(context).size.width * 0.05,
+                                height: MediaQuery.of(context).size.width * 0.05,
+                                fit: BoxFit.fill,
+                                errorBuilder: (context, error, stace) {
+                                  return const Icon(
+                                    Icons.error
+                                  );
+                                },
+                              ),
 
-                                Text(
-                                  crop.name,
-                                  style: const TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.bold,
-                                      color: Colors.black
-                                  ),
-                                )
-                              ],
-                            ),
+                              Text(
+                                crop.name,
+                                style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black
+                                ),
+                              )
+                            ],
                           ),
                         ),
                       );

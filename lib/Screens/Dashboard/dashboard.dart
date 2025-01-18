@@ -39,7 +39,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 5;
+  int screenIndex = 8;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {

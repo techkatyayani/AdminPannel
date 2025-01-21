@@ -1,3 +1,5 @@
+import 'package:adminpannal/Screens/crop_stage/controller/crop_stage_provider.dart';
+import 'package:adminpannal/Utils/utils.dart';
 import 'package:flutter/material.dart';
 
 import '../crop_activity_details_screen.dart';
@@ -8,12 +10,14 @@ class CropActivityCard extends StatelessWidget {
   final String cropId;
   final String stageId;
   final Activity activity;
+  final CropStageProvider provider;
 
   const CropActivityCard({
     super.key,
     required this.cropId,
     required this.stageId,
     required this.activity,
+    required this.provider,
   });
 
   @override
@@ -38,56 +42,91 @@ class CropActivityCard extends StatelessWidget {
           color: Colors.yellow.shade200,
           borderRadius: BorderRadius.circular(10),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
-              child: Image.network(
-                activity.image,
-                width: double.maxFinite,
-                height: MediaQuery.of(context).size.width * 0.1,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stace) {
-                  return Container(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+                  child: Image.network(
+                    activity.image,
+                    width: double.maxFinite,
                     height: MediaQuery.of(context).size.width * 0.1,
-                    color: Colors.grey,
-                  );
-                },
-              ),
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stace) {
+                      return Container(
+                        height: MediaQuery.of(context).size.width * 0.1,
+                        color: Colors.grey,
+                      );
+                    },
+                  ),
+                ),
+
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+
+                      // Activity Name
+                      Text(
+                        activity.name['en'] ?? '',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          color: Colors.black,
+                        ),
+                      ),
+
+                      const SizedBox(height: 5),
+
+                      Text(
+                        activity.summary['en'] ?? '',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black87,
+                        ),
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+
+                      const SizedBox(height: 3),
+                    ],
+                  ),
+                )
+              ],
             ),
 
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+            Positioned(
+              top: 0,
+              right: 0,
+              child: IconButton(
+                onPressed: () async {
 
-                  // Activity Name
-                  Text(
-                    activity.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: Colors.black,
-                    ),
-                  ),
+                  Utils.showLoadingBox(context: context, title: 'Deleting activity...');
 
-                  const SizedBox(height: 5),
+                  bool isDeleted = await provider.deleteActivity(
+                      cropId: cropId,
+                      stageId: stageId,
+                      activityId: activity.id,
+                      activityName: activity.actId
+                  );
 
-                  Text(
-                    activity.summary,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                    ),
-                    maxLines: 3,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+                  Navigator.pop(context);
 
-                  const SizedBox(height: 3),
-                ],
+                  if (isDeleted) {
+                    provider.fetchCropStages(cropId: cropId);
+                    Utils.showSnackBar(context: context, message: 'Activity deleted successfully :)');
+                  } else {
+                    Utils.showSnackBar(context: context, message: 'An error occured while deleting activity..!!');
+                  }
+                },
+                icon: const Icon(
+                  Icons.delete,
+                  color: Colors.red,
+                )
               ),
-            )
+            ),
           ],
         ),
       ),

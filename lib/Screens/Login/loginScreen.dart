@@ -1,4 +1,6 @@
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
+import 'package:adminpannal/Utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:rive/rive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -79,8 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+  
+  final FirebaseFirestore firestore = FirebaseFirestore.instance;
 
-  void login() async {
+  Future<void> login() async {
     setState(() {
       isLoading = true;
     });
@@ -88,90 +92,74 @@ class _LoginScreenState extends State<LoginScreen> {
     String email = emailController.text.trim();
     String password = passwordController.text.trim();
 
-    if ((email == 'marketing900' || email == 'prateek') && (password == 'm900' || password == 'prateek')) {
+    QuerySnapshot<Map<String, dynamic>> snapshot = await firestore.collection('AdminUsers').where('email', isEqualTo: email).limit(1).get();
 
-      SharedPreferences pref = await SharedPreferences.getInstance();
-      await pref.setBool('LOGIN', true);
-
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const DashBoard(),
-        ),
-      );
-
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Wrong Credentials"),
-        ),
-      );
+    if (snapshot.docs.isEmpty) {
+      Utils.showSnackBar(context: context, message: 'No User Found..!!');
+      setState(() {
+        isLoading = false;
+      });
+      return;
     }
 
-    // emailFocusNode.unfocus();
-    // passwordFocusNode.unfocus();
+    QueryDocumentSnapshot<Map<String, dynamic>> doc = snapshot.docs.first;
 
-    // final email = emailController.text;
-    // final password = passwordController.text;
+    if (doc.exists) {
 
-    // if (email.isEmpty || password.isEmpty) {
-    //   showErrorDialog("Please fill all fields");
-    //   setState(() {
-    //     isLoading = false;
-    //   });
-    //   return;
-    // }
+      Map<String, dynamic> data = doc.data();
 
-    // try {
-    //   UserCredential userCredential =
-    //       await FirebaseAuth.instance.signInWithEmailAndPassword(
-    //     email: email,
-    //     password: password,
+      String savedPassword = data['password'] ?? '';
+
+      if (savedPassword == password) {
+        setState(() {
+          isLoading = false;
+        });
+
+        SharedPreferences pref = await SharedPreferences.getInstance();
+        await pref.setBool('LOGIN', true);
+
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const DashBoard(),
+          ),
+        );
+      } else {
+        Utils.showSnackBar(context: context, message: 'Invalid Password..!!');
+        setState(() {
+          isLoading = false;
+        });
+        return;
+      }
+
+    } else {
+      Utils.showSnackBar(context: context, message: 'No User Found..!!');
+      setState(() {
+        isLoading = false;
+      });
+      return;
+    }
+
+
+
+    // if ((email == 'marketing900' || email == 'prateek') && (password == 'm900' || password == 'prateek')) {
+    //
+    //   SharedPreferences pref = await SharedPreferences.getInstance();
+    //   await pref.setBool('LOGIN', true);
+    //
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => const DashBoard(),
+    //     ),
     //   );
-
-    //   final user = userCredential.user;
-    //   if (user != null) {
-    //     // Store user data in Firestore
-    //     await FirebaseFirestore.instance
-    //         .collection('AdminUsers')
-    //         .doc(user.uid)
-    //         .set({
-    //       'email': email,
-    //       'uid': user.uid,
-    //     });
-
-    //     trigSuccess?.change(true);
-    //     await Future.delayed(
-    //       const Duration(milliseconds: 2000),
-    //     );
-
-    //     // ignore: use_build_context_synchronously
-    //     Navigator.push(
-    //       context,
-    //       PageTransition(
-    //         child: const DashBoard(),
-    //         type: PageTransitionType.fade,
-    //       ),
-    //     );
-    //   }
-    // } on FirebaseAuthException catch (e) {
-    //   print(e);
-    //   trigFail?.change(true);
-    //   String errorMessage;
-    //   switch (e.code) {
-    //     case 'user-not-found':
-    //       errorMessage = "No user found for that email.";
-    //       break;
-    //     case 'wrong-password':
-    //       errorMessage = "Wrong password provided.";
-    //       break;
-    //     default:
-    //       errorMessage = "An error occurred. Please try again.";
-    //   }
-    //   showErrorDialog(errorMessage);
-    // } catch (e) {
-    //   trigFail?.change(true);
-    //   showErrorDialog("An error occurred. Please try again.");
+    //
+    // } else {
+    //   ScaffoldMessenger.of(context).showSnackBar(
+    //     const SnackBar(
+    //       content: Text("Wrong Credentials"),
+    //     ),
+    //   );
     // }
 
     setState(() {

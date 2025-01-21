@@ -12,6 +12,18 @@ class CropStageProvider with ChangeNotifier {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
 
+  Map<String, String> languagesMap = {
+    'Bengali': 'bn',
+    'English': 'en',
+    'Hindi': 'hi',
+    'Kannada': 'kn',
+    'Malayalam': 'ml',
+    'Marathi': 'mr',
+    'Odia': 'or',
+    'Tamil': 'ta',
+    'Telugu': 'tl',
+  };
+
   bool _isFetchingStages = false;
   bool get isFetchingStages => _isFetchingStages;
   void setFetchingStages(bool value) {
@@ -59,8 +71,35 @@ class CropStageProvider with ChangeNotifier {
                 .where((doc) => doc.exists)
                 .map((doc) {
                   Map<String, dynamic> data = doc.data();
-                  data['id'] = activity.id;
-                  return Activity.fromJson(data);
+
+                  String id = data['id'];
+                  String actId = data['act_id'];
+                  String image = data['image'];
+                  DateTime timestamp = DateTime.parse(data['timestamp'] ?? '');
+
+                  final name = Map<String, String>.from(data['name'] ?? {});
+                  final summary = Map<String, String>.from(data['summary'] ?? {});
+                  final description = Map<String, String>.from(data['description'] ?? {});
+                  final instructions = (data['instructions'] as Map?)?.map<String, List<String>>((key, value) {
+                    return MapEntry(
+                      key.toString(),
+                      List<String>.from(value ?? []),
+                    );
+                  }) ?? {};
+
+                  Activity activity = Activity(
+                    id: id,
+                    actId: actId,
+                    image: image,
+                    name: name,
+                    summary: summary,
+                    description: description,
+                    instructions: instructions,
+                    timestamp: timestamp,
+                  );
+
+                  return activity;
+
                 }).toList();
 
               Activities allActivities = Activities(
@@ -94,7 +133,17 @@ class CropStageProvider with ChangeNotifier {
 
   /// ADD STAGE
 
-  TextEditingController stageNameController = TextEditingController();
+  TextEditingController stageNameBnController = TextEditingController();
+  TextEditingController stageNameEnController = TextEditingController();
+  TextEditingController stageNameHiController = TextEditingController();
+  TextEditingController stageNameKnController = TextEditingController();
+  TextEditingController stageNameMlController = TextEditingController();
+  TextEditingController stageNameMrController = TextEditingController();
+  TextEditingController stageNameOrController = TextEditingController();
+  TextEditingController stageNameTaController = TextEditingController();
+  TextEditingController stageNameTlController = TextEditingController();
+
+
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
   List<TextEditingController> stageProductControllers = [TextEditingController()];
@@ -122,7 +171,16 @@ class CropStageProvider with ChangeNotifier {
   }
 
   void clearAddStageDialog() {
-    stageNameController.clear();
+    stageNameBnController.clear();
+    stageNameEnController.clear();
+    stageNameHiController.clear();
+    stageNameKnController.clear();
+    stageNameMlController.clear();
+    stageNameMrController.clear();
+    stageNameOrController.clear();
+    stageNameTaController.clear();
+    stageNameTlController.clear();
+
     fromController.clear();
     toController.clear();
     stageProductControllers.clear();
@@ -206,15 +264,15 @@ class CropStageProvider with ChangeNotifier {
     }
   }
 
-  /// EDIT ACTIVITY
+  /// ADD ACTIVITY
 
   Future<void> initActivityDetails({Activity? activity}) async {
     _activityImageUrl = activity?.image ?? '';
-    activityNameController = TextEditingController(text: activity?.name ?? '');
-    activitySummaryController = TextEditingController(text: activity?.summary ?? '');
-    activityDescriptionController = TextEditingController(text: activity?.description ?? '');
+    activityNameController = TextEditingController(text: activity?.name['en'] ?? '');
+    activitySummaryController = TextEditingController(text: activity?.summary['en'] ?? '');
+    activityDescriptionController = TextEditingController(text: activity?.description['en'] ?? '');
     if (activity != null) {
-      for (var instruction in activity.instructions) {
+      for (var instruction in activity.instructions['en'] ?? []) {
         activityInstructionsController.add(TextEditingController(text: instruction));
       }
     } else {
@@ -319,6 +377,7 @@ class CropStageProvider with ChangeNotifier {
     try {
       
       Map<String, dynamic> data = activity.toJson();
+
       log('Activity Data = $data');
 
       final ref = firestore
@@ -338,7 +397,9 @@ class CropStageProvider with ChangeNotifier {
 
       DocumentReference<Map<String, dynamic>> activityRef = ref
           .collection('details')
-          .doc(activity.name);
+          .doc();
+
+      data['act_id'] = activityRef.id;
 
       log('Saving Activity Details..');
       activityRef.set(data);
@@ -353,5 +414,135 @@ class CropStageProvider with ChangeNotifier {
       log('Error saving activity details..!!\n$e\n$s');
       return false;
     }
+  }
+
+  Future<bool> updateActivityDetails({
+    required String cropId,
+    required String stageId,
+    required Activity activity,
+  }) async {
+    try {
+
+      Map<String, dynamic> data = activity.toJson();
+
+      log('Activity Data = $data');
+
+      final ref = firestore
+          .collection('product')
+          .doc(cropId)
+          .collection('Stages')
+          .doc(stageId)
+          .collection('activities')
+          .doc(activity.id)
+          .collection('details')
+          .doc(activity.actId);
+
+      log('Updating Activity Details..');
+      await ref.set(data);
+
+      fetchCropStages(cropId: cropId);
+
+      log('Activity updated successfully at ${ref.path} :)');
+
+      return true;
+
+    } catch (e, s) {
+      log('Error saving activity details..!!\n$e\n$s');
+      return false;
+    }
+  }
+
+  Future<bool> deleteActivities({
+    required String cropId,
+    required String stageId,
+    required String activityId,
+  }) async {
+    try {
+
+      await firestore
+        .collection('product')
+        .doc(cropId)
+        .collection('Stages')
+        .doc(stageId)
+        .collection('activities')
+        .doc(activityId)
+        .delete();
+
+      return true;
+
+    } catch (e, s) {
+      log('Error Deleting Activities...!!\n$e\n$s');
+      return false;
+    }
+  }
+
+  Future<bool> deleteActivity({
+    required String cropId,
+    required String stageId,
+    required String activityId,
+    required String activityName,
+  }) async {
+    try {
+
+      await firestore
+          .collection('product')
+          .doc(cropId)
+          .collection('Stages')
+          .doc(stageId)
+          .collection('activities')
+          .doc(activityId)
+          .collection('details')
+          .doc(activityName)
+          .delete();
+
+      return true;
+
+    } catch (e, s) {
+      log('Error Deleting Activity...!!\n$e\n$s');
+      return false;
+    }
+  }
+
+  /// EDIT ACTIVITY
+
+  Map<String, TextEditingController> activityNameControllers = {};
+  Map<String, TextEditingController> activitySummaryControllers = {};
+  Map<String, TextEditingController> activityDescriptionControllers = {};
+  Map<String, List<TextEditingController>> activityInstructionsControllers = {};
+
+  void initializeControllers({required Activity activity}) {
+
+    languagesMap.forEach((language, code) {
+      activityNameControllers[language] = TextEditingController(text: activity.name[code] ?? '');
+      activitySummaryControllers[language] = TextEditingController(text: activity.summary[code] ?? '');
+      activityDescriptionControllers[language] = TextEditingController(text: activity.description[code] ?? '');
+      activityInstructionsControllers[language] = activity.instructions[code]?.map((instruction) => TextEditingController(text: instruction)).toList() ?? [];
+    });
+  }
+
+  void clearControllers() {
+    activityNameControllers.clear();
+    activitySummaryControllers.clear();
+    activityDescriptionControllers.clear();
+    activityInstructionsControllers.clear();
+  }
+
+  void addInstructionControllers() {
+
+    languagesMap.forEach((language, code) {
+      activityInstructionsControllers[language]!.add(TextEditingController());
+    });
+
+    notifyListeners();
+  }
+
+  void addInstructionController(String key) {
+    activityInstructionsControllers[key]!.add(TextEditingController());
+    notifyListeners();
+  }
+
+  void removeInstructionController(String key, int index) {
+    activityInstructionsControllers[key]!.removeAt(index);
+    notifyListeners();
   }
 }

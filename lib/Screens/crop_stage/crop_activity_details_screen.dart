@@ -5,7 +5,9 @@ import 'package:adminpannal/Screens/crop_stage/model/crop_stage_model.dart';
 import 'package:adminpannal/Utils/utils.dart';
 import 'package:adminpannal/common/custom_text_field.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
+import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
 class CropActivityDetailsScreen extends StatefulWidget {
@@ -44,9 +46,13 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
     provider = Provider.of<CropStageProvider>(context, listen: false);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
+
+      provider.initializeControllers(activity: widget.activity);
+
+
       provider.initActivityDetails(activity: widget.activity);
 
-      await Future.delayed(const Duration(seconds: 1));
+      await Future.delayed(const Duration(seconds: 3));
 
       setState(() {
         isLoading = false;
@@ -84,13 +90,8 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
           child: Scaffold(
             appBar: AppBar(
               scrolledUnderElevation: 0,
-              // title: CustomTextField(
-              //   controller: provider.activityNameController,
-              //   hintText: 'Activity Name',
-              //   showBorders: false,
-              // ),
               title: Text(
-                widget.activity.name,
+                widget.activity.name['en'] ?? '',
                 style: const TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
@@ -127,19 +128,47 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
                         }
                       }
 
-                      List<String> instructions = provider.activityInstructionsController.map((controller) => controller.text.trim()).toList();
+                      Map<String, String> activityName = provider.activityNameControllers.map((key, value) {
+                        return MapEntry(
+                          provider.languagesMap[key]!,
+                          value.text.trim(),
+                        );
+                      });
+
+                      Map<String, String> activitySummary = provider.activitySummaryControllers.map((key, value) {
+                        return MapEntry(
+                          provider.languagesMap[key]!,
+                          value.text.trim(),
+                        );
+                      });
+
+                      Map<String, String> activityDescription = provider.activityDescriptionControllers.map((key, value) {
+                        return MapEntry(
+                          provider.languagesMap[key]!,
+                          value.text.trim(),
+                        );
+                      });
+
+                      Map<String, List<String>> instructions = provider.activityInstructionsControllers.map((key, value) {
+                        return MapEntry(
+                          provider.languagesMap[key]!,
+                          value.isNotEmpty ? value.map((instruction) => instruction.text.trim()).toList() : [''],
+                        );
+                      });
+
 
                       Activity activity = Activity(
                         id: widget.activity.id,
-                        name: widget.activity.name,
+                        actId: widget.activity.actId,
+                        name: activityName,
                         image: imageUrl,
-                        summary: provider.activitySummaryController.text.trim(),
-                        description: provider.activityDescriptionController.text.trim(),
+                        summary: activitySummary,
+                        description: activityDescription,
                         instructions: instructions,
-                        timestamp: DateTime.now(),
+                        timestamp: widget.activity.timestamp,
                       );
 
-                      bool isSaved = await provider.saveActivityDetails(
+                      bool isSaved = await provider.updateActivityDetails(
                         cropId: widget.cropId,
                         stageId: widget.stageId,
                         activity: activity,
@@ -172,7 +201,7 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
               ],
             ),
             body: Padding(
-              padding: EdgeInsets.symmetric(horizontal: size.width * 0.1, vertical: 15),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,13 +224,13 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
                               borderRadius: BorderRadius.circular(15),
                               child: Image.memory(
                                 provider.pickedActivityImage!,
-                                width:  size.width * 0.4,
-                                height: size.height * 0.4,
+                                width:  size.width * 0.3,
+                                height: size.height * 0.3,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stace) {
                                   return Container(
-                                    width:  size.width * 0.4,
-                                    height: size.height * 0.4,
+                                    width:  size.width * 0.3,
+                                    height: size.height * 0.3,
                                     color: Colors.grey.shade300,
                                   );
                                 },
@@ -212,13 +241,13 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
                               borderRadius: BorderRadius.circular(15),
                               child: Image.network(
                                 provider.activityImageUrl,
-                                width:  size.width * 0.4,
-                                height: size.height * 0.4,
+                                width:  size.width * 0.3,
+                                height: size.height * 0.3,
                                 fit: BoxFit.cover,
                                 errorBuilder: (context, error, stace) {
                                   return Container(
-                                    width:  size.width * 0.4,
-                                    height: size.height * 0.4,
+                                    width:  size.width * 0.3,
+                                    height: size.height * 0.3,
                                     color: Colors.grey.shade300,
                                   );
                                 },
@@ -254,18 +283,56 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
 
                     const SizedBox(height: 35),
 
-                    // Activity Summary
-                    CustomTextField(
-                      controller: provider.activitySummaryController,
-                      labelText: 'Activity Summary',
-                      maxLines: 2,
+                    // Activity Name Heading
+                    const Text(
+                      'Activity Name',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange
+                      ),
+                    ),
+
+                    // Activity Name
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: provider.activityNameControllers.entries.map((entry) {
+                        return CustomTextField(
+                          controller: entry.value,
+                          labelText: entry.key,
+                        );
+                      }).toList(),
                     ),
 
                     const SizedBox(height: 25),
 
-                    // Activity Description
+                    // Activity Summary Heading
                     const Text(
-                      'Description',
+                      'Activity Summary',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.orange
+                      ),
+                    ),
+
+                    // Activity Summary
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: provider.activitySummaryControllers.entries.map((entry) {
+                        return CustomTextField(
+                          controller: entry.value,
+                          labelText: entry.key,
+                          maxLines: 2,
+                        );
+                      }).toList(),
+                    ),
+
+                    const SizedBox(height: 25),
+
+                    // Activity Description Heading
+                    const Text(
+                      'Activity Description',
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.bold,
@@ -275,13 +342,19 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
 
                     const SizedBox(height: 5),
 
-                    CustomTextField(
-                      controller: provider.activityDescriptionController,
-                      labelText: 'Activity Description',
-                      maxLines: 4,
+                    // Activity Description
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: provider.activityDescriptionControllers.entries.map((entry) {
+                        return CustomTextField(
+                          controller: entry.value,
+                          labelText: entry.key,
+                          maxLines: 4,
+                        );
+                      }).toList(),
                     ),
 
-                    const SizedBox(height: 20),
+                    const SizedBox(height: 25),
 
                     // Activity Instructions
                     Row(
@@ -298,7 +371,7 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
                         const SizedBox(width: 5),
 
                         IconButton(
-                          onPressed: provider.addActivityInstruction,
+                          onPressed: provider.addInstructionControllers,
                           icon: const Icon(
                             Icons.add,
                             color: Colors.orange,
@@ -312,32 +385,86 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
                     ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: provider.activityInstructionsController.length,
+                      itemCount: provider.activityInstructionsControllers.length,
                       itemBuilder: (context, index) {
-                        return ListTile(
-                          leading: Text(
-                            '${index + 1}',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600,
-                              color: Colors.white,
-                            ),
-                          ),
 
-                          title: CustomTextField(
-                            controller: provider.activityInstructionsController[index],
-                            hintText: 'Instruction ${index + 1}',
-                            maxLines: 2,
-                          ),
+                        final entries = provider.activityInstructionsControllers.entries.toList();
 
-                          trailing: IconButton(
-                            onPressed: () {
-                              provider.removeActivityInstruction(index);
-                            },
-                            icon: const Icon(
-                              Icons.delete,
-                              color: Colors.red,
-                            )
+                        final entry = entries[index];
+
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 20),
+                          child: Stack(
+                            clipBehavior: Clip.none,
+                            children: [
+                              Container(
+                                constraints: BoxConstraints(
+                                  minHeight: MediaQuery.of(context).size.height * 0.1
+                                ),
+                                decoration: const BoxDecoration(
+                                  border: Border.fromBorderSide(
+                                    BorderSide(
+                                      color: Colors.white,
+                                      width: 1.5
+                                    )
+                                  )
+                                ),
+                                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                                child: ListView.builder(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: EdgeInsets.zero,
+                                  itemCount: entry.value.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      title: CustomTextField(
+                                        controller: entry.value[index],
+                                        labelText: 'Instruction ${index + 1}',
+                                        maxLines: 3,
+                                      ),
+
+                                      trailing: IconButton(
+                                        onPressed: () {
+                                          provider.removeInstructionController(entry.key, index);
+                                        },
+                                        icon: const Icon(
+                                          Icons.delete,
+                                          color: Colors.red,
+                                        ),
+                                      ),
+                                    );
+                                  }
+                                ),
+                              ),
+
+                              Positioned(
+                                top: -15,
+                                left: 10,
+                                child: TextButton.icon(
+                                  onPressed: () {
+                                    provider.addInstructionController(entry.key);
+                                  },
+                                  style: TextButton.styleFrom(
+                                    backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                                    foregroundColor: Colors.transparent,
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                                  ),
+                                  icon: const Icon(
+                                    Icons.add,
+                                    color: Colors.amber,
+                                  ),
+                                  iconAlignment: IconAlignment.end,
+                                  label: Text(
+                                    entry.key,
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.amber,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
                         );
                       }

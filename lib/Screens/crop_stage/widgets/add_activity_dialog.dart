@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:adminpannal/Screens/crop_stage/controller/crop_stage_provider.dart';
 import 'package:adminpannal/Screens/crop_stage/model/crop_stage_model.dart';
 import 'package:adminpannal/Utils/utils.dart';
@@ -37,15 +35,15 @@ class _AddActivityDialogState extends State<AddActivityDialog> {
 
     Size size = MediaQuery.of(context).size;
 
-    log('Activity Id = ${widget.activityId}');
+    // log('Activity Id = ${widget.activityId}');
 
     return Form(
       canPop: false,
       key: formKey,
       child: Dialog(
         child: Container(
-          width: size.width * 0.75,
-          height: size.height * 0.85,
+          width: size.width * 0.9,
+          height: size.height * 0.9,
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
           child: Consumer<CropStageProvider>(
             builder: (context, CropStageProvider provider, child) {
@@ -270,11 +268,20 @@ class _AddActivityDialogState extends State<AddActivityDialog> {
 
                               Activity activity = Activity(
                                 id: activityId,
-                                name: activityName,
+                                actId: '',
                                 image: imageUrl,
-                                summary: provider.activitySummaryController.text.trim(),
-                                description: provider.activityDescriptionController.text.trim(),
-                                instructions: instructions,
+                                name: {
+                                  'en': activityName
+                                },
+                                summary: {
+                                  'en': provider.activitySummaryController.text.trim(),
+                                },
+                                description: {
+                                  'en': provider.activityDescriptionController.text.trim(),
+                                },
+                                instructions: {
+                                  'en': instructions,
+                                },
                                 timestamp: DateTime.now(),
                               );
 

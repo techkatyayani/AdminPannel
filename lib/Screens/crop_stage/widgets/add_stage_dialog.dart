@@ -35,93 +35,197 @@ class _AddStageDialogState extends State<AddStageDialog> {
       key: formKey,
       child: Dialog(
         child: Container(
-          width: size.width * 0.75,
-          height: size.height * 0.85,
+          width: size.width * 0.9,
+          height: size.height * 0.9,
           padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 25),
           child: Consumer<CropStageProvider>(
               builder: (context, CropStageProvider provider, child) {
                 return SingleChildScrollView(
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Add Stage',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white
-                        )
-                      ),
-
-                      const SizedBox(height: 25),
-
-                      InkWell(
-                          onTap: () async {
-                            Uint8List? image = await provider.pickImage();
-                            if (image != null) {
-                              provider.setPickedStageIcon(image);
-                            }
-                          },
-                          child: provider.pickedStageIcon != null
-                              ?
-                          ClipRRect(
-                            child: Image.memory(
-                              provider.pickedStageIcon!,
-                              width: size.width * 0.25,
-                              height: size.height * 0.25,
-                              fit: BoxFit.fill,
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text(
+                                'Add Stage',
+                                style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white,
+                                )
                             ),
-                          )
-                              :
-                          const CustomMediaUploadCard()
+
+                            const SizedBox(height: 25),
+
+                            InkWell(
+                                onTap: () async {
+                                  Uint8List? image = await provider.pickImage();
+                                  if (image != null) {
+                                    provider.setPickedStageIcon(image);
+                                  }
+                                },
+                                child: provider.pickedStageIcon != null
+                                    ?
+                                ClipRRect(
+                                  child: Image.memory(
+                                    provider.pickedStageIcon!,
+                                    width: size.width * 0.25,
+                                    height: size.height * 0.25,
+                                    fit: BoxFit.fill,
+                                  ),
+                                )
+                                    :
+                                const CustomMediaUploadCard()
+                            ),
+                          ],
+                        ),
                       ),
 
                       const SizedBox(height: 25),
 
-                      // Stage Name
-                      CustomTextField(
-                        controller: provider.stageNameController,
-                        labelText: 'Stage Name',
-                      ),
-
-                      const SizedBox(height: 10),
-
-                      // From
-                      CustomTextField(
-                        controller: provider.fromController,
-                        labelText: 'From',
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        suffix: const Text(
-                          'in Days',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white70,
-                          ),
+                      // Stage Name Heading
+                      const Text(
+                        'Stage Name',
+                        style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.orange
                         ),
                       ),
 
-                      const SizedBox(height: 10),
-
-                      // To
                       CustomTextField(
-                        controller: provider.toController,
-                        labelText: 'To',
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly
-                        ],
-                        suffix: const Text(
-                          'in Days',
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: Colors.white70,
-                          ),
-                        ),
+                        controller: provider.stageNameBnController,
+                        labelText: 'Bengali Stage Name',
                       ),
 
                       const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameEnController,
+                        labelText: 'English Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameHiController,
+                        labelText: 'Hindi Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameKnController,
+                        labelText: 'Kannada Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameMlController,
+                        labelText: 'Malayalam Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameMrController,
+                        labelText: 'Marathi Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameOrController,
+                        labelText: 'Oriya Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameTaController,
+                        labelText: 'Tamil Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      CustomTextField(
+                        controller: provider.stageNameTlController,
+                        labelText: 'Telugu Stage Name',
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // Stage Duration Heading
+                      const Text(
+                        'Stage Duration',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange
+                        ),
+                      ),
+
+                      Row(
+                        children: [
+                          
+                          // From
+                          Flexible(
+                            child: CustomTextField(
+                              controller: provider.fromController,
+                              labelText: 'From',
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              suffix: const Text(
+                                'in Days',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                          ),
+                      
+                          const SizedBox(width: 10),
+                      
+                          // To
+                          Flexible(
+                            child: CustomTextField(
+                              controller: provider.toController,
+                              labelText: 'To',
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly
+                              ],
+                              suffix: const Text(
+                                'in Days',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Colors.white70,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      const SizedBox(height: 10),
+
+                      // Stage Products Heading
+                      const Text(
+                        'Stage Products',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.orange
+                        ),
+                      ),
 
                       // Stage Products
                       ListView.builder(
@@ -251,19 +355,27 @@ class _AddStageDialogState extends State<AddStageDialog> {
 
                                 Stage stage = Stage(
                                   stageId: stageId,
-                                  stageName: provider.stageNameController.text.trim(),
                                   stageImage: '',
                                   stageIcon: url.toString(),
                                   from: int.tryParse(provider.fromController.text.trim()) ?? 0,
                                   to: int.tryParse(provider.toController.text.trim()) ?? 0,
                                   products: products,
                                   activities: [],
+                                  stageNameBn: provider.stageNameBnController.text.trim(),
+                                  stageNameEn: provider.stageNameEnController.text.trim(),
+                                  stageNameHi: provider.stageNameHiController.text.trim(),
+                                  stageNameKn: provider.stageNameKnController.text.trim(),
+                                  stageNameMl: provider.stageNameMlController.text.trim(),
+                                  stageNameMr: provider.stageNameMrController.text.trim(),
+                                  stageNameOr: provider.stageNameOrController.text.trim(),
+                                  stageNameTa: provider.stageNameTaController.text.trim(),
+                                  stageNameTl: provider.stageNameTlController.text.trim(),
                                 );
 
                                 bool status = await provider.addCropStage(
                                     cropId: widget.cropId,
                                     stageId: stageId,
-                                    stage: stage
+                                    stage: stage,
                                 );
 
                                 Navigator.pop(context);

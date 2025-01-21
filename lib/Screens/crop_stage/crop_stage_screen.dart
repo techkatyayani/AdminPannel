@@ -97,7 +97,7 @@ class _CropStageScreenState extends State<CropStageScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          stage.stageName,
+                          stage.stageNameEn,
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -244,13 +244,44 @@ class _CropStageScreenState extends State<CropStageScreen> {
                           children: [
 
                             // Activity Duration
-                            Text(
-                              'Duration - ${activities.duration} Days',
-                              style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white
-                              ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Duration - ${activities.duration} Days',
+                                  style: const TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white
+                                  ),
+                                ),
+
+                                IconButton(
+                                  onPressed: () async {
+
+                                    Utils.showLoadingBox(context: context, title: 'Deleting Activities...');
+
+                                    bool isDeleted = await provider.deleteActivities(
+                                      cropId: widget.cropId,
+                                      stageId: stage.stageId,
+                                      activityId: 'activity_${index+1}',
+                                    );
+
+                                    Navigator.pop(context);
+
+                                    if (isDeleted) {
+                                      provider.fetchCropStages(cropId: widget.cropId);
+                                      Utils.showSnackBar(context: context, message: 'Activities deleted successfully :)');
+                                    } else {
+                                      Utils.showSnackBar(context: context, message: 'An error occured while deleting activities..!!');
+                                    }
+                                  },
+                                  icon: const Icon(
+                                    Icons.delete,
+                                    color: Colors.red,
+                                  )
+                                ),
+                              ],
                             ),
 
                             const SizedBox(height: 10),
@@ -282,6 +313,7 @@ class _CropStageScreenState extends State<CropStageScreen> {
                                     cropId: widget.cropId,
                                     stageId: stage.stageId,
                                     activity: activities.activity[activityIndex],
+                                    provider: provider,
                                   );
                                 },
                               ),

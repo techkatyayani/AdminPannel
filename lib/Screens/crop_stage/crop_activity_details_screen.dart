@@ -49,9 +49,6 @@ class _CropActivityDetailsScreenState extends State<CropActivityDetailsScreen> {
 
       provider.initializeControllers(activity: widget.activity);
 
-
-      provider.initActivityDetails(activity: widget.activity);
-
       await Future.delayed(const Duration(seconds: 3));
 
       setState(() {

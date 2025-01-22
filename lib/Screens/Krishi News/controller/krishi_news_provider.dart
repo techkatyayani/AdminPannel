@@ -104,7 +104,6 @@ class KrishiNewsProvider with ChangeNotifier {
       String caption = captionController.text.trim();
       String product = productController.text.trim();
 
-
       log('Author: $author');
       log('Title: $title');
       log('Caption: $caption');
@@ -144,6 +143,7 @@ class KrishiNewsProvider with ChangeNotifier {
       final data = {
         'id': newPostRef.id,
         'author': author,
+        'authorId': author,
         'caption': caption,
         'title': title,
         'mediaUrl': mediaUrl,

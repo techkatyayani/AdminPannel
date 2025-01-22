@@ -72,9 +72,9 @@ class CropStageProvider with ChangeNotifier {
                 .map((doc) {
                   Map<String, dynamic> data = doc.data();
 
-                  String id = data['id'];
-                  String actId = data['act_id'];
-                  String image = data['image'];
+                  String id = data['id'] ?? '';
+                  String actId = data['act_id'] ?? '';
+                  String image = data['image'] ?? '';
                   DateTime timestamp = DateTime.parse(data['timestamp'] ?? '');
 
                   final name = Map<String, String>.from(data['name'] ?? {});

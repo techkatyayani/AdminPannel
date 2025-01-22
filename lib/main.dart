@@ -79,11 +79,11 @@ class _MyAppState extends State<MyApp> {
 
         theme: AppTheme.basic,
 
-        // home: nextScreen,
+        home: nextScreen,
 
         // home: const StateCropsScreen(),
 
-        home: const CropStageScreen(cropName: 'Onion', cropId: 'DnERTpTStF6tBRPFXhPA'),
+        // home: const CropStageScreen(cropName: 'Onion', cropId: 'DnERTpTStF6tBRPFXhPA'),
 
         // home: const DashBoard(),
 

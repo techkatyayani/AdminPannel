@@ -53,7 +53,7 @@ class _StateCropsScreenState extends State<StateCropsScreen> {
             child: Row(
               children: [
                 Text(
-                  '${index + 1}',
+                  '${index + 1}.',
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,

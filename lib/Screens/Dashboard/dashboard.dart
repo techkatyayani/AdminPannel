@@ -13,6 +13,7 @@ import 'package:adminpannal/Screens/Log%20Out/logoutScreen.dart';
 import 'package:adminpannal/Screens/Others/others_screen.dart';
 import 'package:adminpannal/Screens/ProductBetweenBanners/ProductBetweenBanners.dart';
 import 'package:adminpannal/Screens/Sale/saleScreen.dart';
+import 'package:adminpannal/Screens/Similar%20Products/similar_products_screen.dart';
 import 'package:adminpannal/Screens/Soil&Water%20Testing/soilAndwaterTesting.dart';
 import 'package:adminpannal/Screens/Support/support_screen.dart';
 import 'package:adminpannal/Screens/Youtube/youtube_videos_screen.dart';
@@ -39,7 +40,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 0;
+  int screenIndex = 3;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -51,6 +52,7 @@ class _DashBoardState extends State<DashBoard> {
     const HomeRearrangeScreen(),
     const BannerScreen(),
     const ProductBetweenBanners(),
+    const SimilarProductsScreen(),
     const SaleScreen(),
     const CropScreen(),
     const StateCropsScreen(),
@@ -84,6 +86,12 @@ class _DashBoardState extends State<DashBoard> {
         activeIcon: Icons.pages,
         icon: Icons.pages_rounded,
         label: "Product Between Banners",
+      ),
+      SelectionButtonData(
+        activeIcon: FontAwesomeIcons.productHunt,
+        icon: FontAwesomeIcons.productHunt,
+        label: "Similar Products",
+        isNew: true
       ),
       SelectionButtonData(
         activeIcon: Icons.card_giftcard,

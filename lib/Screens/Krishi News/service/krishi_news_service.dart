@@ -55,7 +55,8 @@ class KrishiNewsService {
 
   Future<bool> deletePost(String postId) async {
     try {
-      await firestore.collection('KrishiNewsPosts').doc(postId).delete();
+      final ref = firestore.collection('KrishiNewsPosts').doc(postId);
+      await ref.delete();
       return true;
     } catch (e) {
       log('Error deleting post - $e');

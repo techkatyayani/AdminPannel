@@ -3,6 +3,7 @@ import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/Screens/Crops/crop_disease_section/controller/disease_controller.dart';
 import 'package:adminpannal/Screens/Dashboard/dashboard.dart';
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
+import 'package:adminpannal/Screens/Similar%20Products/controller/similar_products_provider.dart';
 import 'package:adminpannal/Screens/crop_stage/controller/crop_stage_provider.dart';
 import 'package:adminpannal/Screens/crop_stage/crop_stage_screen.dart';
 import 'package:adminpannal/Screens/product_review/controller/ksk_review_controller.dart';
@@ -71,6 +72,7 @@ class _MyAppState extends State<MyApp> {
         ChangeNotifierProvider(create: (_) => DiseaseController()),
         ChangeNotifierProvider(create: (_) => CropStageProvider()),
         ChangeNotifierProvider(create: (_) => StateCropProvider()),
+        ChangeNotifierProvider(create: (_) => SimilarProductsProvider()),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

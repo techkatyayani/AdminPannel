@@ -11,8 +11,9 @@ import '../add_crop_screen.dart';
 class DiseaseDetailsCard extends StatelessWidget {
 
   final VoidCallback onBack;
+  final VoidCallback onNext;
 
-  const DiseaseDetailsCard({super.key, required this.onBack});
+  const DiseaseDetailsCard({super.key, required this.onBack, required this.onNext});
 
   final String message = "Please add disease details. Symptoms based on language shall be added in disease details after the crop is created";
 
@@ -45,6 +46,7 @@ class DiseaseDetailsCard extends StatelessWidget {
                 customImageCard(
                   context: context,
                   title: 'Disease Image',
+                  mediaRatio: 'Check on app at disease screen',
                   onTap: () async {
                     Uint8List? image = await provider.pickImage();
                     provider.setSelectedDiseaseImage(image);
@@ -159,6 +161,8 @@ class DiseaseDetailsCard extends StatelessWidget {
               ),
             ),
 
+            const SizedBox(height: 10),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -194,35 +198,27 @@ class DiseaseDetailsCard extends StatelessWidget {
                   ),
                 ),
 
-                TextButton(
+                TextButton.icon(
                   onPressed: () async {
                     if (provider.diseaseDetails.isEmpty) {
                       Utils.showSnackBar(context: context, message: 'Please Enter at least one Disease Details..!!');
                       return;
                     }
 
-                    Utils.showLoadingBox(context: context, title: 'Saving Crop Details...');
-
-                    bool status = await provider.addNewCrop();
-
-                    Navigator.pop(context);
-
-                    if (status) {
-                      Utils.showSnackBar(context: context, message: 'New Crop Added Successfully :)');
-                      Navigator.pop(context);
-                    } else {
-                      Utils.showSnackBar(context: context, message: 'Failed to Add New Crop..!!');
-                    }
-
-
+                    onNext.call();
                   },
-                  child: const Text(
-                    'Save',
+                  label: const Text(
+                    'Next',
                     style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white
                     ),
+                  ),
+                  iconAlignment: IconAlignment.end,
+                  icon: const Icon(
+                    Icons.arrow_forward,
+                    color: Colors.white,
                   ),
                 ),
               ],

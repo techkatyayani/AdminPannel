@@ -55,6 +55,9 @@ class StateCropProvider with ChangeNotifier {
     try {
       setFetchingCrops(true);
 
+      _crops.clear();
+      notifyListeners();
+
       QuerySnapshot<Map<String, dynamic>> snapshot = await firestore.collection('product').get();
 
       for (var doc in snapshot.docs) {
@@ -112,15 +115,13 @@ class StateCropProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void clearStateCrops() {
-    _cropsInState.clear();
-    notifyListeners();
-  }
-
   Future<void> fetchCropsByState(String state) async {
     try {
 
-      clearStateCrops();
+      _cropsInState.clear();
+      notifyListeners();
+
+      log('Crop in State Reset = $cropsInState');
 
       setFetchingCropsByState(true);
 
@@ -129,19 +130,37 @@ class StateCropProvider with ChangeNotifier {
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data()!;
 
-        List<dynamic> crops = data['crops'] ?? [];
+        List<String> crops = List<String>.from(data['crops'] ?? []);
 
-        _cropsInState = crops.map((crop) => CropModel.fromJson(crop)).toList();
+        List<CropModel> stateCrops = [];
+
+        for (var crop in crops) {
+          int index = _crops.indexWhere((test) => test.id == crop);
+          if (index != -1) {
+            stateCrops.add(_crops[index]);
+          }
+        }
+
+        _cropsInState = stateCrops;
+        notifyListeners();
+
+        _cropsInState.sort((a, b) => a.name.compareTo(b.name));
+
+        log('Fetched Crops In State = $_cropsInState');
       }
 
-      _cropsInState.sort((a, b) => a.name.compareTo(b.name));
-
-      _availableCrops = _crops;
+      _availableCrops = _crops.toList();
+      log('Available Crops Length Reset = ${_availableCrops.length}');
       notifyListeners();
 
       for (var crop in _cropsInState) {
-        _availableCrops.removeWhere((test) => crop.id == test.id);
+        _availableCrops.removeWhere((test) {
+          log('Crops Removed ${test.name}');
+          return crop.id == test.id;
+        });
       }
+
+      log('Available Crops Length = ${_availableCrops.length}');
 
       notifyListeners();
 
@@ -157,8 +176,11 @@ class StateCropProvider with ChangeNotifier {
       DocumentReference<Map<String, dynamic>> ref = firestore.collection('Crops By State').doc(state);
 
       await ref.set({
-       'crops': cropsInState.map((crop) => crop.toJson()),
+       'crops': cropsInState.map((crop) => crop.id),
       });
+
+      _cropsInState.clear();
+      notifyListeners();
 
       return true;
       

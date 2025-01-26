@@ -167,7 +167,8 @@ class _CropStageScreenState extends State<CropStageScreen> {
                                         onCancel: () {
                                           Navigator.pop(context);
                                           provider.setPickedStageIcon(null);
-                                        }
+                                        },
+                                        mediaRatio: 'Small icon like image (25 x 25)',
                                     );
                                   },
                                 );

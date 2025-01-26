@@ -247,45 +247,6 @@ class _KrishiNewsScreenState extends State<KrishiNewsScreen> with SingleTickerPr
   }
 }
 
-Widget buildUploadIcon(BuildContext context, bool isVideo) {
-  return Container(
-    width: MediaQuery.of(context).size.width * 0.25,
-    height: MediaQuery.of(context).size.height * 0.25,
-    decoration: BoxDecoration(
-      color: krishiFontColorPallets[2],
-      borderRadius: BorderRadius.circular(10),
-      border: const Border.fromBorderSide(
-        BorderSide(
-          color: boxColor,
-          width: 2,
-        ),
-      ),
-    ),
-    alignment: Alignment.center,
-    child: Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Icon(
-          Icons.cloud_upload_outlined,
-          color: boxColor,
-          size: 50,
-        ),
-
-        const SizedBox(height: 20),
-
-        Text(
-          'Upload ${isVideo ? 'Video' : 'Image'}',
-          style: const TextStyle(
-              fontSize: 16,
-              color: boxColor,
-              fontWeight: FontWeight.bold
-          ),
-        )
-      ],
-    ),
-  );
-}
-
 String formatDuration(DateTime postTime) {
   Duration duration = DateTime.now().difference(postTime);
   if (duration.inMinutes < 1) {

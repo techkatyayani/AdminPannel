@@ -288,6 +288,7 @@ class DiseaseCard extends StatelessWidget {
                                         .of(context)
                                         .size
                                         .height * 0.175,
+                                    mediaRatio: '',
                                   )
                               ),
                             ],

@@ -79,7 +79,9 @@ class _AddActivityDialogState extends State<AddActivityDialog> {
                         ),
                       )
                           :
-                      const CustomMediaUploadCard()
+                      const CustomMediaUploadCard(
+                        mediaRatio: '5:3 (1080 (width) x 400(height))',
+                      )
                     ),
 
                     const SizedBox(height: 25),

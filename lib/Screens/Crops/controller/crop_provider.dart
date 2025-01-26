@@ -14,6 +14,37 @@ class CropProvider with ChangeNotifier {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
   FirebaseStorage storage = FirebaseStorage.instance;
 
+  List<String> states = [
+    "Andhra Pradesh",
+    "Arunachal Pradesh",
+    "Assam",
+    "Bihar",
+    "Chhattisgarh",
+    "Goa",
+    "Gujarat",
+    "Haryana",
+    "Himachal Pradesh",
+    "Jharkhand",
+    "Karnataka",
+    "Kerala",
+    "Madhya Pradesh",
+    "Maharashtra",
+    "Manipur",
+    "Meghalaya",
+    "Mizoram",
+    "Nagaland",
+    "Odisha",
+    "Punjab",
+    "Rajasthan",
+    "Sikkim",
+    "Tamil Nadu",
+    "Telangana",
+    "Tripura",
+    "Uttar Pradesh",
+    "Uttarakhand",
+    "West Bengal"
+  ];
+
 
   /// ADD CROP
 
@@ -80,6 +111,7 @@ class CropProvider with ChangeNotifier {
     newCropCollectionIdController.clear();
 
     _diseaseDetails.clear();
+    _pickedStates.clear();
 
     notifyListeners();
   }
@@ -97,12 +129,30 @@ class CropProvider with ChangeNotifier {
 
     return null;
   }
+  
+  final List<String> _pickedStates = [];
+  List<String> get pickedStates => _pickedStates;
+  void addPickedState(String state) {
+    _pickedStates.add(state);
+    notifyListeners();
+  }
+  void removePickedState(String state) {
+    _pickedStates.removeWhere((test) => test == state);
+    notifyListeners();
+  }
+
+  bool doesPickedStatesContain(String state){
+    return _pickedStates.contains(state);
+  }
 
   Future<bool> addNewCrop() async {
     try {
       log('Saving Crop Data...');
 
       final ref = firestore.collection('product');
+
+      final docRef = ref.doc();
+      String id = docRef.id;
 
       log('Getting Existing Crop Length...');
       final existingCrops = await ref.get();
@@ -111,9 +161,9 @@ class CropProvider with ChangeNotifier {
 
       log('Uploading Crop Details Images...');
       List<String?> urls = await Future.wait([
-        uploadImage(file: selectedCropImage!, path: 'Crops'),
-        uploadImage(file: selectedEnglishBannerImage!, path: 'Crop Banners'),
-        uploadImage(file: selectedHindiBannerImage!, path: 'Crop Banners'),
+        uploadImage(file: selectedCropImage!, path: '$id/Crop'),
+        uploadImage(file: selectedEnglishBannerImage!, path: '$id/Crop Banners/English'),
+        uploadImage(file: selectedHindiBannerImage!, path: '$id/Crop Banners/Hindi'),
       ]);
 
       Map<String, dynamic> cropData = {
@@ -126,11 +176,8 @@ class CropProvider with ChangeNotifier {
       };
 
       log('Saving Crop Details..');
-      final docRef = ref.doc();
 
       await docRef.set(cropData);
-
-      String id = docRef.id;
 
       log('Crop Doc Created with id = $id');
 
@@ -144,7 +191,7 @@ class CropProvider with ChangeNotifier {
         Uint8List image = disease['image'];
 
         log('Uploading Disease Image...');
-        String? url = await uploadImage(file: image, path: 'Crop Disease');
+        String? url = await uploadImage(file: image, path: '$id/Diseases/${diseaseDocRef.id}');
 
         Map<String, dynamic> diseaseData = {
           'Image': url ?? '',
@@ -163,6 +210,17 @@ class CropProvider with ChangeNotifier {
       }
 
       log('New Crop Added Successfully :)');
+
+      if (pickedStates.isNotEmpty) {
+        final stateRef = firestore.collection('Crops By State');
+        for (var state in pickedStates) {
+          await stateRef.doc(state)
+            .set({
+              'crops': [id]
+            });
+        }
+      }
+      
       resetAddCropScreen();
 
       return true;
@@ -277,7 +335,7 @@ class CropProvider with ChangeNotifier {
       String? imageUrl;
 
       if (pickedCropImage != null) {
-        imageUrl = await uploadImage(file: pickedCropImage!, path: 'Crop Images');
+        imageUrl = await uploadImage(file: pickedCropImage!, path: '$cropId/Crops');
       }
 
       Map<String, dynamic> data = {
@@ -371,13 +429,20 @@ class CropProvider with ChangeNotifier {
 
       String? imageUrl;
 
+      final ref = firestore
+          .collection('product')
+          .doc(cropId)
+          .collection('Disease')
+          .doc(diseaseId);
+
       if (pickedDiseaseImage != null) {
-        imageUrl = await uploadImage(file: pickedDiseaseImage!, path: 'Crop Diseases');
+        imageUrl = await uploadImage(file: pickedDiseaseImage!, path: '$cropId/Diseases/${ref.id}');
       }
 
       Map<String, dynamic> data = {
         'Name': diseaseNameController.text.trim(),
-        'Image': imageUrl ?? diseaseImageUrl ?? '',
+        'Image': imageUrl ?? '',
+        'id': collectionIdController.text.trim(),
 
         'name_bn': bengaliNameController.text.trim(),
         'name_en': englishNameController.text.trim(),
@@ -394,12 +459,8 @@ class CropProvider with ChangeNotifier {
 
       log('Disease Details = $data');
 
-      await firestore
-          .collection('product')
-          .doc(cropId)
-          .collection('Disease')
-          .doc(diseaseId)
-          .set(data, SetOptions(merge: true));
+
+      await ref.set(data, SetOptions(merge: true));
 
       clearDiseaseDetailsDialog();
 
@@ -411,13 +472,70 @@ class CropProvider with ChangeNotifier {
     }
   }
 
+  Future<bool> addDisease({
+    required String cropId,
+  }) async {
+    try {
+
+      String? imageUrl;
+
+      final diseaseDocRef = firestore
+          .collection('product')
+          .doc(cropId)
+          .collection('Disease')
+          .doc();
+
+      if (pickedDiseaseImage != null) {
+        imageUrl = await uploadImage(file: pickedDiseaseImage!, path: '$cropId/Diseases/${diseaseDocRef.id}');
+      }
+
+      Map<String, dynamic> data = {
+        'Name': diseaseNameController.text.trim(),
+        'Image': imageUrl ?? diseaseImageUrl ?? '',
+        'id': collectionIdController.text.trim(),
+
+        'name_bn': bengaliNameController.text.trim(),
+        'name_en': englishNameController.text.trim(),
+        'name_hi': hindiNameController.text.trim(),
+
+        'name_kn': kannadaNameController.text.trim(),
+        'name_ml': malayalamNameController.text.trim(),
+        'name_mr': marathiNameController.text.trim(),
+
+        'name_or': oriyaNameController.text.trim(),
+        'name_ta': tamilNameController.text.trim(),
+        'name_tl': teluguNameController.text.trim(),
+      };
+
+      log('Disease Details = $data');
+
+      await diseaseDocRef.set(data);
+
+      await diseaseDocRef.collection('Symptoms').add({
+        'englishSymptoms': [
+          ''
+        ],
+      });
+
+      clearDiseaseDetailsDialog();
+
+      return true;
+
+    } catch (e, s) {
+      log('Error Adding Disease Details..!!\n$e\n$s');
+      return false;
+    }
+  }
+
   Future<String?> uploadImage({
     required Uint8List file,
     required String path,
   }) async {
     try {
 
-      var ref = storage.ref().child(path);
+      final name = DateTime.now().millisecondsSinceEpoch;
+
+      var ref = storage.ref('Crops').child('$path/$name');
 
       UploadTask task = ref.putData(file);
 

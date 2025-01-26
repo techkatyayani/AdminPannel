@@ -1,4 +1,5 @@
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
+import 'package:adminpannal/common/custom_media_upload_card.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,10 @@ class VideoUploadCard extends StatelessWidget {
           ?
       provider.postVideoBytes == null
           ?
-      buildUploadIcon(context, true)
+      const CustomMediaUploadCard(
+        isVideo: true,
+        mediaRatio: '16 : 9',
+      )
           :
      Padding(
        padding: const EdgeInsets.symmetric(vertical: 10),
@@ -49,7 +53,10 @@ class VideoUploadCard extends StatelessWidget {
           :
       provider.postVideo == null
           ?
-      buildUploadIcon(context, true)
+      const CustomMediaUploadCard(
+        isVideo: true,
+        mediaRatio: '16 : 9',
+      )
           :
       const Text(
         'Video File Selected..!!',

@@ -17,6 +17,7 @@ class Header extends StatelessWidget {
   }
 }
 
+
 class TodayText extends StatelessWidget {
   const TodayText({super.key});
 
@@ -29,7 +30,6 @@ class TodayText extends StatelessWidget {
         children: [
           const Text(
             "Today",
-            // style: Theme.of(context).textTheme.caption,
           ),
           Text(
             DateTime.now().toIso8601String().substring(0, 10),

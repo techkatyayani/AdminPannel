@@ -331,6 +331,7 @@ class _CropScreenState extends State<CropScreen> {
                                     .of(context)
                                     .size
                                     .height * 0.175,
+                                mediaRatio: '',
                               )
                           ),
 

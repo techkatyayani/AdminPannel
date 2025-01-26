@@ -12,6 +12,7 @@ class ImageUploadDialog extends StatelessWidget {
   final VoidCallback onTap;
   final VoidCallback onUpload;
   final VoidCallback onCancel;
+  final String mediaRatio;
 
   const ImageUploadDialog({
     super.key,
@@ -20,6 +21,7 @@ class ImageUploadDialog extends StatelessWidget {
     required this.onTap,
     required this.onUpload,
     required this.onCancel,
+    required this.mediaRatio,
   });
 
   @override
@@ -91,6 +93,7 @@ class ImageUploadDialog extends StatelessWidget {
               CustomMediaUploadCard(
                 width: size.width * 0.15,
                 height: size.height * 0.2,
+                mediaRatio: mediaRatio,
               ),
             ),
 

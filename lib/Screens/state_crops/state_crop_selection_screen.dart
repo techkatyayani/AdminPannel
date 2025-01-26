@@ -59,7 +59,6 @@ class _StateCropSelectionScreenState extends State<StateCropSelectionScreen> {
                   if (isSaved) {
                     Navigator.pop(context);
                     Utils.showSnackBar(context: context, message: 'Crops saved successfully :)');
-                    provider.clearStateCrops();
                   } else {
                     Utils.showSnackBar(context: context, message: 'An error occured while saving crops..!!');
                   }

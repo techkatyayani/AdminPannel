@@ -127,7 +127,7 @@ class _AddProductCatagoryDialogState extends State<AddProductCatagoryDialog> {
 
                 const SizedBox(height: 30),
                 const Text(
-                  'Add Image',
+                  'Add Image (Strip Banner Like Image)',
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,

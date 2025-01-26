@@ -4,6 +4,7 @@ import 'package:adminpannal/Screens/Category/model/category.dart';
 import 'package:adminpannal/Screens/Krishi%20News/widgets/custom_post_text_field.dart';
 import 'package:adminpannal/Utils/utils.dart';
 import 'package:adminpannal/common/custom_color_picker.dart';
+import 'package:adminpannal/common/custom_media_upload_card.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -187,7 +188,9 @@ class RowCategoryScreen extends StatelessWidget {
                             onTap: provider.pickCategoryImage,
                             child: provider.addCategoryImage == null
                                 ?
-                            buildUploadIcon(context, false)
+                            const CustomMediaUploadCard(
+                              mediaRatio: 'Small Icon with transparent background (50 x 50)',
+                            )
                                 :
                             ClipRRect(
                               borderRadius: BorderRadius.circular(10),

@@ -48,7 +48,7 @@ class KrishiNewsService {
 
     } catch (e, stace) {
       log('Error fetching Krishi Posts...');
-      log('Error is $e\nStace is $stace');
+      log('Error is $e\n', stackTrace: stace);
       return [];
     }
   }

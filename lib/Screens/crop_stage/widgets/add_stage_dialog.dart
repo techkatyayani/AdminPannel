@@ -79,7 +79,9 @@ class _AddStageDialogState extends State<AddStageDialog> {
                                   ),
                                 )
                                     :
-                                const CustomMediaUploadCard()
+                                const CustomMediaUploadCard(
+                                  mediaRatio: 'Small icon like image (25 x 25)',
+                                )
                             ),
                           ],
                         ),

@@ -151,6 +151,7 @@ class KrishiNewsProvider with ChangeNotifier {
         'likedBy': [],
         'timestamp': Timestamp.fromDate(timestamp),
         'product': product,
+        'isApproved': true,
       };
 
       await newPostRef.set(data);
@@ -167,6 +168,50 @@ class KrishiNewsProvider with ChangeNotifier {
 
     } catch (e) {
       log('Error posting $mediaType || $e');
+    }
+  }
+
+  bool _isPostApproved = false;
+  bool get isPostApproved => _isPostApproved;
+  void setPostApproved(bool value) {
+    _isPostApproved = value;
+    notifyListeners();
+  }
+
+  bool _isApproving = false;
+  bool get isApproving => _isApproving;
+  void setApproving(bool value) {
+    _isApproving = value;
+    notifyListeners();
+  }
+
+  Future<void> updatePostApproval({
+    required String postId,
+    required bool status,
+  }) async {
+    try {
+
+      setApproving(true);
+
+      final ref = FirebaseFirestore.instance
+          .collection('KrishiNewsPosts')
+          .doc(postId);
+
+      log('Updating krishi news doc at ${ref.path}...');
+
+      await ref.set(
+        {
+          'isApproved': status,
+        },
+        SetOptions(merge: true)
+      );
+
+      setPostApproved(status);
+
+    } catch (e, s) {
+      log('Error updating post status..!!\n$e\n$s');
+    } finally {
+      setApproving(false);
     }
   }
 

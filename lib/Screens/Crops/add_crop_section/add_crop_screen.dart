@@ -2,7 +2,9 @@ import 'dart:typed_data';
 
 import 'package:adminpannal/Screens/Crops/add_crop_section/widgets/crop_details_card.dart';
 import 'package:adminpannal/Screens/Crops/add_crop_section/widgets/disease_details_card.dart';
+import 'package:adminpannal/Screens/Crops/add_crop_section/widgets/state_details_card.dart';
 import 'package:adminpannal/Utils/utils.dart';
+import 'package:adminpannal/common/custom_media_upload_card.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
@@ -82,7 +84,15 @@ class _AddCropScreenState extends State<AddCropScreen> {
                 onBack: () {
                   pageController.jumpToPage(0);
                 },
+                onNext: () {
+                  pageController.jumpToPage(2);
+                },
               ),
+              StateDetailsCard(
+                onBack: () {
+                  pageController.jumpToPage(1);
+                },
+              )
             ],
           )
         ),
@@ -94,6 +104,7 @@ class _AddCropScreenState extends State<AddCropScreen> {
 Widget customImageCard({
   required BuildContext context,
   required String title,
+  String? mediaRatio,
   required VoidCallback onTap,
   required Uint8List? image,
   double? width,
@@ -162,6 +173,17 @@ Widget customImageCard({
           ),
         ),
       ),
+
+      const SizedBox(height: 10),
+
+      Text(
+        mediaRatio ?? '',
+        style: const TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w600,
+          color:  Colors.orangeAccent,
+        ),
+      )
     ],
   );
 }

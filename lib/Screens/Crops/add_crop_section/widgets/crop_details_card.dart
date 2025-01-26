@@ -74,6 +74,7 @@ class CropDetailsCard extends StatelessWidget {
                   customImageCard(
                     context: context,
                     title: 'Crop Image',
+                    mediaRatio: 'Check on app at crop screen',
                     onTap: () async {
                       Uint8List? image = await provider.pickImage();
                       provider.setSelectedCropImage(image);
@@ -84,6 +85,7 @@ class CropDetailsCard extends StatelessWidget {
                   customImageCard(
                     context: context,
                     title: 'Crop English Banner Image',
+                    mediaRatio: 'Check on app at crop disease screen',
                     onTap: () async {
                       Uint8List? image = await provider.pickImage();
                       provider.setSelectedEnglishBannerImage(image);
@@ -94,6 +96,7 @@ class CropDetailsCard extends StatelessWidget {
                   customImageCard(
                       context: context,
                       title: 'Crop Hindi Banner Image',
+                      mediaRatio: 'Check on app at crop disease screen',
                       onTap: () async {
                         Uint8List? image = await provider.pickImage();
                         provider.setSelectedHindiBannerImage(image);

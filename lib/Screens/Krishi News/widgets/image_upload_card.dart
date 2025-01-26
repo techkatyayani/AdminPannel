@@ -1,4 +1,5 @@
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
+import 'package:adminpannal/common/custom_media_upload_card.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -18,7 +19,9 @@ class ImageUploadCard extends StatelessWidget {
           ?
       provider.postImageBytes == null
           ?
-      buildUploadIcon(context, false)
+      const CustomMediaUploadCard(
+        mediaRatio: '1 : 1',
+      )
           :
       ClipRRect(
         borderRadius: BorderRadius.circular(10),
@@ -31,7 +34,9 @@ class ImageUploadCard extends StatelessWidget {
           :
       provider.postImage == null
           ?
-      buildUploadIcon(context, false)
+      const CustomMediaUploadCard(
+        mediaRatio: '1 : 1',
+      )
           :
       ClipRRect(
         borderRadius: BorderRadius.circular(20),

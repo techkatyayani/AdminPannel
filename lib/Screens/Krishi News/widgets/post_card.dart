@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:adminpannal/Screens/Krishi%20News/controller/krishi_news_provider.dart';
 import 'package:adminpannal/Screens/Krishi%20News/model/krishi_news_model.dart';
+import 'package:adminpannal/Screens/Krishi%20News/post_detail_screen.dart';
 import 'package:adminpannal/Utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
@@ -70,30 +71,36 @@ class _PostCardState extends State<PostCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(10),
-        borderSide: const BorderSide(
-          color: Colors.transparent,
-          width: 0
+    return GestureDetector(
+      onTap: () {
+        widget.provider.setPostApproved(widget.post.isApproved);
+        Navigator.push(context, MaterialPageRoute(builder: (_) => PostDetailScreen(post: widget.post)));
+      },
+      child: Card(
+        shape: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+          borderSide: const BorderSide(
+            color: Colors.transparent,
+            width: 0
+          ),
         ),
-      ),
-      color: Colors.white,
-      child: Padding(
-        padding: const EdgeInsets.only(top: 5, bottom: 10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            postAuthorCard(),
+        color: Colors.white,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 5, bottom: 10),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              postAuthorCard(),
 
-            widget.mediaType == 'image'
-                ?
-            buildImage()
-                :
-            buildVideo(),
+              widget.mediaType == 'image'
+                  ?
+              buildImage()
+                  :
+              buildVideo(),
 
-            aboutPostCard(),
-          ],
+              aboutPostCard(),
+            ],
+          ),
         ),
       ),
     );

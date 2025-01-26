@@ -2,6 +2,9 @@ import 'dart:developer';
 
 import 'package:adminpannal/Screens/Crops/controller/crop_provider.dart';
 import 'package:adminpannal/Screens/crop_stage/crop_stage_screen.dart';
+import 'package:adminpannal/Utils/utils.dart';
+import 'package:adminpannal/common/custom_media_upload_card.dart';
+import 'package:adminpannal/common/custom_text_field.dart';
 import 'package:adminpannal/config/responsive/responsive.dart';
 import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -499,6 +502,270 @@ class _SubCropsScreenState extends State<SubCropsScreen> {
           ],
         ),
       ),
+      floatingActionButton: InkWell(
+        onTap: () {
+          showAddDiseaseDialog(context: context);
+        },
+        child: Container(
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+            color: Colors.orange,
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            Icons.add,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+
+  showAddDiseaseDialog({
+    required BuildContext context,
+  }) {
+    final formKey = GlobalKey<FormState>();
+
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Form(
+            key: formKey,
+            child: Dialog(
+              child: Consumer<CropProvider>(
+                builder: (BuildContext context, CropProvider provider,
+                    Widget? child) {
+                  return Container(
+                    width: MediaQuery
+                        .of(context)
+                        .size
+                        .width * 0.75,
+                    height: MediaQuery
+                        .of(context)
+                        .size
+                        .height * 0.9,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20, vertical: 30),
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: [
+
+                          const Text(
+                            'Add Disease',
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.white
+                            ),
+                          ),
+
+                          const SizedBox(height: 15),
+
+                          Row(
+                            children: [
+                              Flexible(
+                                child: Column(
+                                  children: [
+                                    CustomTextField(
+                                      controller: provider
+                                          .diseaseNameController,
+                                      labelText: 'Disease Name',
+                                    ),
+
+                                    CustomTextField(
+                                      controller: provider.collectionIdController,
+                                      labelText: 'Collection Id',
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                              InkWell(
+                                  onTap: provider.pickDiseaseImage,
+                                  child: provider.pickedDiseaseImage != null
+                                      ?
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: Image.memory(
+                                      provider.pickedDiseaseImage!,
+                                      width: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .width * 0.25,
+                                      height: MediaQuery
+                                          .of(context)
+                                          .size
+                                          .height * 0.25,
+                                    ),
+                                  )
+                                      :
+                                  CustomMediaUploadCard(
+                                    width: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .width * 0.175,
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * 0.175,
+                                    mediaRatio: '',
+                                  )
+                              ),
+                            ],
+                          ),
+
+                          const SizedBox(width: 25),
+
+                          CustomTextField(
+                            controller: provider.bengaliNameController,
+                            labelText: 'Bengali Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.englishNameController,
+                            labelText: 'English Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.hindiNameController,
+                            labelText: 'Hindi Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.kannadaNameController,
+                            labelText: 'Kannada Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.malayalamNameController,
+                            labelText: 'Malayalam Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.marathiNameController,
+                            labelText: 'Marathi Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.oriyaNameController,
+                            labelText: 'Oriya Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.tamilNameController,
+                            labelText: 'Tamil Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          CustomTextField(
+                            controller: provider.teluguNameController,
+                            labelText: 'Telugu Disease Name',
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.red,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  minimumSize: const Size(100, 45),
+                                ),
+                                onPressed: () {
+                                  provider.clearDiseaseDetailsDialog();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text(
+                                  'Cancel',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(width: 20),
+
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: const Color.fromARGB(
+                                      255, 102, 84, 143),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5),
+                                  ),
+                                  minimumSize: const Size(100, 45),
+                                ),
+                                onPressed: () async {
+                                  if (provider.diseaseImageUrl == null &&
+                                      provider.pickedDiseaseImage == null) {
+                                    Utils.showSnackBar(context: context,
+                                        message: 'Please select a disease image..!!');
+                                    return;
+                                  }
+
+                                  if (formKey.currentState!.validate()) {
+                                    Utils.showLoadingBox(context: context,
+                                        title: 'Adding Disease Details...');
+
+                                    bool status = await provider.addDisease(
+                                      cropId: widget.cropId,
+                                    );
+
+                                    Navigator.pop(context);
+                                    Navigator.pop(context);
+
+                                    if (status) {
+                                      Utils.showSnackBar(context: context,
+                                          message: 'Disease Details Added Successfully :)');
+                                    } else {
+                                      Utils.showSnackBar(context: context,
+                                          message: 'Failed to add disease details..!!');
+                                    }
+                                  }
+                                },
+                                child: const Text(
+                                  'Add',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              ),
+            ),
+          );
+        }
     );
   }
 

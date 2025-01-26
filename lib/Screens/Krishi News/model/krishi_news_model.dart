@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 class KrishiNewsModel {
   final String id;
   final String author;
+  final String authorId;
   final String title;
   final String caption;
   final String product;
@@ -12,11 +13,13 @@ class KrishiNewsModel {
   final List<String> likedBy;
   final List<Comments> comments;
   final int totalComments;
+  final bool isApproved;
   final Timestamp timestamp;
 
   KrishiNewsModel({
     required this.id,
     required this.author,
+    required this.authorId,
     required this.title,
     required this.caption,
     required this.product,
@@ -26,6 +29,7 @@ class KrishiNewsModel {
     required this.likedBy,
     required this.comments,
     required this.totalComments,
+    required this.isApproved,
     required this.timestamp,
   });
 
@@ -33,6 +37,8 @@ class KrishiNewsModel {
     return KrishiNewsModel(
       id: json['id'] ?? '',
       author: json['author'] ?? '',
+      authorId: json['authorId'] ?? '',
+      isApproved: json['isApproved'] ?? false,
       title: json['title'] ?? '',
       caption: json['caption'] ?? '',
       product: json['product'] ?? '',
@@ -50,6 +56,8 @@ class KrishiNewsModel {
     return {
       'id': id,
       'author': author,
+      'authorId': authorId,
+      'isApproved': isApproved,
       'title': title,
       'caption': caption,
       'product': product,
@@ -64,6 +72,7 @@ class KrishiNewsModel {
   KrishiNewsModel copyWith({
     String? id,
     String? author,
+    String? authorId,
     String? title,
     String? caption,
     String? product,
@@ -74,10 +83,12 @@ class KrishiNewsModel {
     List<Comments>? comments,
     int? totalComments,
     Timestamp? timestamp,
+    bool? isApproved,
   }) {
     return KrishiNewsModel(
       id: id ?? this.id,
       author: author ?? this.author,
+      authorId: authorId ?? this.authorId,
       title: title ?? this.title,
       caption: caption ?? this.caption,
       product: product ?? this.product,
@@ -88,6 +99,7 @@ class KrishiNewsModel {
       comments: comments ?? this.comments,
       totalComments: totalComments ?? this.totalComments,
       timestamp: timestamp ?? this.timestamp,
+      isApproved: isApproved ?? this.isApproved,
     );
   }
 }

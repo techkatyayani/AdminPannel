@@ -40,7 +40,7 @@ class DashBoard extends StatefulWidget {
 class _DashBoardState extends State<DashBoard> {
   final scaffoldKey = GlobalKey<ScaffoldState>();
   bool isSidebarExpanded = true;
-  int screenIndex = 3;
+  int screenIndex = 0;
 
   void openDrawer() {
     if (scaffoldKey.currentState != null) {
@@ -200,7 +200,7 @@ class _DashBoardState extends State<DashBoard> {
                               projectImage: const AssetImage(
                                   "assets/images/launchicon.png"),
                               projectName: "Krishi Seva Kendra",
-                              releaseTime: DateTime(2024, 1, 22),
+                              releaseTime: DateTime(2024, 1, 31),
                               percent: .3,
                             ),
                           ),
@@ -274,7 +274,7 @@ class _DashBoardState extends State<DashBoard> {
                                       projectImage: const AssetImage(
                                           "assets/images/launchicon.png"),
                                       projectName: "Krishi Seva Kendra",
-                                      releaseTime: DateTime(2024, 1, 22),
+                                      releaseTime: DateTime(2024, 1, 31),
                                       percent: .8,
                                     ),
                                   ),

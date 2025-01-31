@@ -9,12 +9,11 @@ class HomeRearrangeScreen extends StatefulWidget {
   const HomeRearrangeScreen({super.key});
 
   @override
-  State<HomeRearrangeScreen> createState() =>
-      _HomeRearrangeScreenState();
+  State<HomeRearrangeScreen> createState() => _HomeRearrangeScreenState();
 }
 
 class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
-  List<DocumentSnapshot>? _docs; // Store the documents in a list
+  List<DocumentSnapshot<Map<String, dynamic>>> _docs = [];
 
   @override
   Widget build(BuildContext context) {
@@ -40,25 +39,32 @@ class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
               ),
             ),
           ),
+
           const SizedBox(height: 20),
-          StreamBuilder(
+
+          StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
             stream: FirebaseFirestore.instance
                 .collection("HomeLayout")
-                .orderBy('id') // Order by id
+                .orderBy('index')
                 .snapshots(),
-            builder:
-                (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+
+            builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Lottie.asset(
                   "assets/images/loading.json",
                   height: 140,
                 );
               }
+
               if (snapshot.hasError) {
                 return Text('Error: ${snapshot.error}');
               }
 
-              _docs = snapshot.data!.docs; // Store the documents
+              if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                return const Text("No data found");
+              }
+
+              _docs = snapshot.data!.docs;
 
               return ReorderableListView(
                 shrinkWrap: true,
@@ -67,26 +73,23 @@ class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
                   if (newIndex > oldIndex) {
                     newIndex -= 1;
                   }
-                  final DocumentSnapshot item = _docs!.removeAt(oldIndex);
-                  _docs!.insert(newIndex, item);
-                  showDialog(
+
+                  bool? confirm = await showDialog<bool>(
                     context: context,
                     builder: (BuildContext context) {
                       return AlertDialog(
                         title: const Text("Confirm"),
-                        content: const Text(
-                            "Are you sure you want to change the position of this item?"),
+                        content: const Text("Are you sure you want to change the position of this item?"),
                         actions: [
                           TextButton(
                             onPressed: () {
-                              Navigator.pop(context);
+                              Navigator.pop(context, false);
                             },
                             child: const Text("Cancel"),
                           ),
                           TextButton(
-                            onPressed: () async {
-                              Navigator.pop(context);
-                              await _updateDocumentIndices();
+                            onPressed: () {
+                              Navigator.pop(context, true);
                             },
                             child: const Text("Yes"),
                           ),
@@ -94,13 +97,26 @@ class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
                       );
                     },
                   );
+
+                  if (confirm == true) {
+                    final item = _docs.removeAt(oldIndex);
+                    _docs.insert(newIndex, item);
+
+                    setState(() {}); // Refresh UI
+                    await _updateDocumentIndices();
+                  }
                 },
+
                 children: List.generate(
-                  _docs!.length,
-                  (index) {
-                    final DocumentSnapshot doc = _docs![index];
+                  _docs.length,
+                      (index) {
+                    final DocumentSnapshot<Map<String, dynamic>> data = _docs[index];
+
+                    Map<String, dynamic>? doc = data.data();
+                    if (doc == null) return const SizedBox();
+
                     return Padding(
-                      key: ValueKey(doc.id),
+                      key: ValueKey(data.id),
                       padding: const EdgeInsets.only(bottom: 10),
                       child: Container(
                         padding: const EdgeInsets.all(14),
@@ -111,7 +127,7 @@ class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
                         child: Row(
                           children: [
                             Text(
-                              doc['id'],
+                              '${doc['index'] ?? '-'}',
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 18,
@@ -122,13 +138,13 @@ class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  doc['name'],
+                                  doc['name'] ?? '',
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 18),
                                 ),
                                 Text(
-                                  doc['collectionId'],
+                                  doc['collectionId'] ?? '',
                                 ),
                               ],
                             ),
@@ -148,9 +164,9 @@ class _HomeRearrangeScreenState extends State<HomeRearrangeScreen> {
 
   Future<void> _updateDocumentIndices() async {
     final batch = FirebaseFirestore.instance.batch();
-    for (int i = 0; i < _docs!.length; i++) {
-      final doc = _docs![i];
-      batch.update(doc.reference, {'id': (i + 1).toString()});
+    for (int i = 0; i < _docs.length; i++) {
+      final doc = _docs[i];
+      batch.update(doc.reference, {'index': i + 1}); // Store index as an integer
     }
     await batch.commit();
   }

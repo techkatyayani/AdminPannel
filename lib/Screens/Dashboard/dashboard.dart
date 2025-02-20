@@ -200,7 +200,7 @@ class _DashBoardState extends State<DashBoard> {
                               projectImage: const AssetImage(
                                   "assets/images/launchicon.png"),
                               projectName: "Krishi Seva Kendra",
-                              releaseTime: DateTime(2024, 1, 31),
+                              releaseTime: DateTime(2024, 2, 20),
                               percent: .3,
                             ),
                           ),
@@ -274,7 +274,7 @@ class _DashBoardState extends State<DashBoard> {
                                       projectImage: const AssetImage(
                                           "assets/images/launchicon.png"),
                                       projectName: "Krishi Seva Kendra",
-                                      releaseTime: DateTime(2024, 1, 31),
+                                      releaseTime: DateTime(2024, 2, 20),
                                       percent: .8,
                                     ),
                                   ),

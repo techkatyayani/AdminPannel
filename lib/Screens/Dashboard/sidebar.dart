@@ -36,7 +36,7 @@ class _SidebarState extends State<Sidebar> {
                 data: ProjectCardData(
                   projectImage: const AssetImage("assets/images/logo1.png"),
                   projectName: "Krishi Seva Kendra Admin",
-                  releaseTime: DateTime(2024, 1, 31),
+                  releaseTime: DateTime(2024, 2, 20),
                   percent: .3,
                 ),
               ),

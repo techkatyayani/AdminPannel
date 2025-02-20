@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:adminpannal/Utils/app_language.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -111,7 +112,19 @@ class CropStageProvider with ChangeNotifier {
             })
         );
 
-        return stageData.copyWith(activities: allActivities);
+        CollectionProductModel? product;
+
+        final collectionRef = await stagesRef.doc(stageDoc.id).collection('Products').get();
+
+        if (collectionRef.docs.isNotEmpty) {
+          final collectionDoc = collectionRef.docs.first;
+          if (collectionDoc.exists) {
+            Map<String, dynamic> data = collectionDoc.data();
+            product = CollectionProductModel.fromJson(data);
+          }
+        }
+
+        return stageData.copyWith(activities: allActivities, product: product);
       }));
 
       List<Stage> finalStages = rawStages
@@ -146,15 +159,18 @@ class CropStageProvider with ChangeNotifier {
 
   TextEditingController fromController = TextEditingController();
   TextEditingController toController = TextEditingController();
-  List<TextEditingController> stageProductControllers = [TextEditingController()];
-  void addProductController() {
-    stageProductControllers.add(TextEditingController());
-    notifyListeners();
-  }
-  void removeProductController(int index) {
-    stageProductControllers.removeAt(index);
-    notifyListeners();
-  }
+
+  TextEditingController collectionIdController = TextEditingController();
+
+  TextEditingController collectionNameBnController = TextEditingController();
+  TextEditingController collectionNameEnController = TextEditingController();
+  TextEditingController collectionNameHiController = TextEditingController();
+  TextEditingController collectionNameKnController = TextEditingController();
+  TextEditingController collectionNameMlController = TextEditingController();
+  TextEditingController collectionNameMrController = TextEditingController();
+  TextEditingController collectionNameOrController = TextEditingController();
+  TextEditingController collectionNameTaController = TextEditingController();
+  TextEditingController collectionNameTlController = TextEditingController();
 
   Uint8List? _pickedStageIcon;
   Uint8List? get pickedStageIcon => _pickedStageIcon;
@@ -167,6 +183,46 @@ class CropStageProvider with ChangeNotifier {
   Uint8List? get pickedStageImage => _pickedStageImage;
   void setPickedStageImage(Uint8List? image) {
     _pickedStageImage = image;
+    notifyListeners();
+  }
+
+  final Map<String, Uint8List?> _pickedStageBannerImage = {};
+  Map<String, Uint8List?> get pickedStageBannerImage => _pickedStageBannerImage;
+  void setPickedStageBannerImage(String key, Uint8List? image) {
+    _pickedStageBannerImage[key] = image;
+    notifyListeners();
+  }
+
+  Future<void> initStageDialog(Stage stage) async {
+    stageNameBnController.text = stage.stageNameBn;
+    stageNameEnController.text = stage.stageNameEn;
+    stageNameHiController.text = stage.stageNameHi;
+    stageNameKnController.text = stage.stageNameKn;
+    stageNameMlController.text = stage.stageNameMl;
+    stageNameMrController.text = stage.stageNameMr;
+    stageNameOrController.text = stage.stageNameOr;
+    stageNameTaController.text = stage.stageNameTa;
+    stageNameTlController.text = stage.stageNameTl;
+
+    fromController.text = stage.from.toString();
+    toController.text = stage.to.toString();
+
+    collectionIdController.text = stage.product?.collectionId ?? '';
+
+    collectionNameBnController.text = stage.product?.collectionName['bn'] ?? '';
+    collectionNameEnController.text = stage.product?.collectionName['en'] ?? '';
+    collectionNameHiController.text = stage.product?.collectionName['hi'] ?? '';
+    collectionNameKnController.text = stage.product?.collectionName['kn'] ?? '';
+    collectionNameMlController.text = stage.product?.collectionName['ml'] ?? '';
+    collectionNameMrController.text = stage.product?.collectionName['mr'] ?? '';
+    collectionNameOrController.text = stage.product?.collectionName['or'] ?? '';
+    collectionNameTaController.text = stage.product?.collectionName['ta'] ?? '';
+    collectionNameTlController.text = stage.product?.collectionName['tl'] ?? '';
+
+    AppLanguage.languageCodes.map((code) async {
+      _pickedStageBannerImage[code] = null;
+    }).toList();
+
     notifyListeners();
   }
 
@@ -183,13 +239,34 @@ class CropStageProvider with ChangeNotifier {
 
     fromController.clear();
     toController.clear();
-    stageProductControllers.clear();
+    // stageProductControllers.clear();
 
-    stageProductControllers.add(TextEditingController());
+    // stageProductControllers.add(TextEditingController());
 
     _pickedStageIcon = null;
     _pickedStageImage = null;
 
+    notifyListeners();
+  }
+
+  bool _stageNameExpanded = true;
+  bool get stageNameExpanded => _stageNameExpanded;
+  void toggleStageNameExpanded() {
+    _stageNameExpanded = !stageNameExpanded;
+    notifyListeners();
+  }
+
+  bool _collectionNameExpanded = true;
+  bool get collectionNameExpanded => _collectionNameExpanded;
+  void toggleCollectionNameExpanded() {
+    _collectionNameExpanded = !collectionNameExpanded;
+    notifyListeners();
+  }
+
+  bool _stageBannerExpanded = true;
+  bool get stageBannerExpanded => _stageBannerExpanded;
+  void toggleStageBannerExpanded() {
+    _stageBannerExpanded = !stageBannerExpanded;
     notifyListeners();
   }
 
@@ -216,7 +293,24 @@ class CropStageProvider with ChangeNotifier {
 
       log('Crop Stage added :)');
 
-      _stages.add(stage);
+      if (stage.product != null) {
+        final collectionRef = await ref.collection('Products').get();
+        if (collectionRef.docs.isEmpty) {
+          await ref.collection('Products').doc().set(stage.product!.toJson());
+        } else {
+          final doc = collectionRef.docs.first;
+          await ref.collection('Products').doc(doc.id).set(stage.product!.toJson());
+        }
+      }
+
+      if (stage.product == null) {
+        _stages.add(stage);
+      } else {
+        int index = _stages.indexWhere((s) => s.stageId == stageId);
+        if (index != -1) {
+          _stages[index] = stage;
+        }
+      }
       notifyListeners();
 
       return true;

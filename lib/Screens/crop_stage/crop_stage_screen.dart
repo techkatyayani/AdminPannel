@@ -89,116 +89,125 @@ class _CropStageScreenState extends State<CropStageScreen> {
                 children: [
 
                   // Stage Name
-                  Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 20),
-                    color: Colors.orange.shade300,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          stage.stageNameEn,
-                          style: const TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black
+                  InkWell(
+                    onTap: () {
+                      showAddStageDialog(
+                        context: context,
+                        cropId: widget.cropId,
+                        currentStage: stage,
+                      );
+                    },
+                    child: Container(
+                      width: double.maxFinite,
+                      padding: const EdgeInsets.only(left: 8, top: 8, bottom: 8, right: 20),
+                      color: Colors.orange.shade300,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            stage.stageNameEn,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black
+                            ),
                           ),
-                        ),
 
-                        InkWell(
-                          onTap: () async {
-                            showDialog(
-                              context: context,
-                              barrierDismissible: false,
-                              builder: (context) {
-                                return Consumer<CropStageProvider>(
-                                  builder: (BuildContext context, CropStageProvider provider, Widget? child) {
-                                    return ImageUploadDialog(
-                                        pickedImage: provider.pickedStageIcon,
-                                        imageUrl: stage.stageIcon == '' ? null : stage.stageIcon,
-                                        onTap: () async {
-                                          Uint8List? image = await provider.pickImage();
-                                          if (image != null) {
-                                            provider.setPickedStageIcon(image);
-                                          }
-                                        },
-                                        onUpload: () async {
-                                          if (provider.pickedStageIcon != null) {
+                          InkWell(
+                            onTap: () async {
+                              showDialog(
+                                context: context,
+                                barrierDismissible: false,
+                                builder: (context) {
+                                  return Consumer<CropStageProvider>(
+                                    builder: (BuildContext context, CropStageProvider provider, Widget? child) {
+                                      return ImageUploadDialog(
+                                          pickedImage: provider.pickedStageIcon,
+                                          imageUrl: stage.stageIcon == '' ? null : stage.stageIcon,
+                                          onTap: () async {
+                                            Uint8List? image = await provider.pickImage();
+                                            if (image != null) {
+                                              provider.setPickedStageIcon(image);
+                                            }
+                                          },
+                                          onUpload: () async {
+                                            if (provider.pickedStageIcon != null) {
 
-                                            Utils.showLoadingBox(context: context, title: 'Uploading Image...');
+                                              Utils.showLoadingBox(context: context, title: 'Uploading Image...');
 
-                                            String imageId = DateTime.now().millisecondsSinceEpoch.toString();
+                                              String imageId = DateTime.now().millisecondsSinceEpoch.toString();
 
-                                            String? url = await provider.uploadImage(
-                                                file: provider.pickedStageIcon!,
-                                                path: 'crop_stage_activities/${widget.cropId}/${stage.stageId}_$imageId'
-                                            );
-
-                                            Navigator.pop(context);
-
-                                            if (url != null) {
-
-                                              Utils.showLoadingBox(context: context, title: 'Saving Image...');
-
-                                              bool isSaved = await provider.updateStageImage(
-                                                cropId: widget.cropId,
-                                                stageId: stage.stageId,
-                                                imageUrl: url,
+                                              String? url = await provider.uploadImage(
+                                                  file: provider.pickedStageIcon!,
+                                                  path: 'crop_stage_activities/${widget.cropId}/${stage.stageId}_$imageId'
                                               );
 
                                               Navigator.pop(context);
-                                              Navigator.pop(context);
 
-                                              if (isSaved) {
-                                                Utils.showSnackBar(context: context, message: 'Image Saved Successfully..!!');
+                                              if (url != null) {
+
+                                                Utils.showLoadingBox(context: context, title: 'Saving Image...');
+
+                                                bool isSaved = await provider.updateStageImage(
+                                                  cropId: widget.cropId,
+                                                  stageId: stage.stageId,
+                                                  imageUrl: url,
+                                                );
+
+                                                Navigator.pop(context);
+                                                Navigator.pop(context);
+
+                                                if (isSaved) {
+                                                  Utils.showSnackBar(context: context, message: 'Image Saved Successfully..!!');
+                                                } else {
+                                                  Utils.showSnackBar(context: context, message: 'An error occured while saving image..!!');
+                                                }
+
                                               } else {
-                                                Utils.showSnackBar(context: context, message: 'An error occured while saving image..!!');
+                                                Navigator.pop(context);
+                                                Utils.showSnackBar(context: context, message: 'An error occured while uploading image..!!');
                                               }
-
                                             } else {
                                               Navigator.pop(context);
-                                              Utils.showSnackBar(context: context, message: 'An error occured while uploading image..!!');
+                                              Utils.showSnackBar(context: context, message: 'Please select image to upload..!!');
                                             }
-                                          } else {
+                                          },
+                                          onCancel: () {
                                             Navigator.pop(context);
-                                            Utils.showSnackBar(context: context, message: 'Please select image to upload..!!');
-                                          }
-                                        },
-                                        onCancel: () {
-                                          Navigator.pop(context);
-                                          provider.setPickedStageIcon(null);
-                                        },
-                                        mediaRatio: 'Small icon like image (25 x 25)',
-                                    );
-                                  },
-                                );
-                              }
-                            );
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.orange,
-                                width: 3,
+                                            provider.setPickedStageIcon(null);
+                                          },
+                                          mediaRatio: 'Small icon like image (25 x 25)',
+                                      );
+                                    },
+                                  );
+                                }
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.orange,
+                                  width: 3,
+                                ),
+                              ),
+                              child: Image.network(
+                                stage.stageIcon,
+                                height: 25,
+                                width: 25,
+                                errorBuilder: (context, error, stace) {
+                                  return const FaIcon(
+                                    FontAwesomeIcons.pagelines,
+                                    color: Colors.orange
+                                  );
+                                },
                               ),
                             ),
-                            child: Image.network(
-                              stage.stageIcon,
-                              height: 25,
-                              width: 25,
-                              errorBuilder: (context, error, stace) {
-                                return const FaIcon(
-                                  FontAwesomeIcons.pagelines,
-                                  color: Colors.orange
-                                );
-                              },
-                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
 

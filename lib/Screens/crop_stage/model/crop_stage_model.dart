@@ -1,14 +1,12 @@
-
 import 'dart:developer';
 
 class Stage {
   final String stageId;
-  final String stageImage;
   final String stageIcon;
   final int from;
   final int to;
-  final List<String> products;
   final List<Activities> activities;
+  final CollectionProductModel? product;
 
   final String stageNameBn;
   final String stageNameEn;
@@ -22,12 +20,11 @@ class Stage {
 
   Stage({
     required this.stageId,
-    required this.stageImage,
     required this.stageIcon,
     required this.from,
     required this.to,
-    required this.products,
     required this.activities,
+    this.product,
 
     required this.stageNameBn,
     required this.stageNameEn,
@@ -43,12 +40,11 @@ class Stage {
   factory Stage.fromJson(Map<String, dynamic> json) {
     return Stage(
       stageId: json['stageId'] ?? '',
-      stageImage: json['stageImage'] ?? '',
       stageIcon: json['stageIcon'] ?? '',
       from: json['from'] ?? 0,
       to: json['to'] ?? 0,
+      product: json['product'],
       activities: json['activities'] ?? [],
-      products: List<String>.from(json['products'] ?? []),
       stageNameBn: json['stageNameBn'] ?? '',
       stageNameEn: json['stageNameEn'] ?? '',
       stageNameHi: json['stageNameHi'] ?? '',
@@ -64,11 +60,9 @@ class Stage {
   Map<String, dynamic> toJson() {
     return {
       'stageId': stageId,
-      'stageImage': stageImage,
       'stageIcon': stageIcon,
       'from': from,
       'to': to,
-      'products': products,
       'stageNameBn': stageNameBn,
       'stageNameEn': stageNameEn,
       'stageNameHi': stageNameHi,
@@ -84,13 +78,11 @@ class Stage {
 
   Stage copyWith({
     String? stageId,
-    String? stageImage,
     String? stageIcon,
     int? from,
     int? to,
-    List<String>? products,
     List<Activities>? activities,
-
+    CollectionProductModel? product,
     String? stageNameBn,
     String? stageNameEn,
     String? stageNameHi,
@@ -103,11 +95,10 @@ class Stage {
   }) {
     return Stage(
       stageId: stageId ?? this.stageId,
-      stageImage: stageImage ?? this.stageImage,
       stageIcon: stageIcon ?? this.stageIcon,
       from: from ?? this.from,
       to: to ?? this.to,
-      products: products ?? this.products,
+      product: product,
       activities: activities ?? this.activities,
       stageNameBn: stageNameBn ?? this.stageNameBn,
       stageNameEn: stageNameEn ?? this.stageNameEn,
@@ -196,4 +187,56 @@ class Activity {
       'timestamp': timestamp.toString(),
     };
   }
+}
+
+class CollectionProductModel {
+
+  final String collectionId;
+  final Map<String, String> collectionName;
+  final Map<String, String> bannerImageUrl;
+  final String backgroundImageUrl;
+
+  CollectionProductModel({
+    required this.collectionId,
+    required this.collectionName,
+    required this.bannerImageUrl,
+    required this.backgroundImageUrl,
+  });
+
+  factory CollectionProductModel.fromJson(Map<String, dynamic> json) {
+    return CollectionProductModel(
+      collectionId: json['collectionId'] ?? '',
+      collectionName: json['collectionName'] != null
+          ? Map<String, String>.from(json['collectionName'])
+          : {},
+      bannerImageUrl: json['bannerImageUrl'] != null
+          ? Map<String, String>.from(json['bannerImageUrl'])
+          : {},
+      backgroundImageUrl: json['backgroundImageUrl'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'collectionId': collectionId,
+      'collectionName': collectionName,
+      'bannerImageUrl': bannerImageUrl,
+      'backgroundImageUrl': backgroundImageUrl,
+    };
+  }
+
+  CollectionProductModel copyWith({
+    String? collectionId,
+    Map<String, String>? collectionName,
+    Map<String, String>? bannerImageUrl,
+    String? backgroundImageUrl,
+  }) {
+    return CollectionProductModel(
+      collectionId: collectionId ?? this.collectionId,
+      collectionName: collectionName ?? this.collectionName,
+      bannerImageUrl: bannerImageUrl ?? this.bannerImageUrl,
+      backgroundImageUrl: backgroundImageUrl ?? this.backgroundImageUrl,
+    );
+  }
+
 }

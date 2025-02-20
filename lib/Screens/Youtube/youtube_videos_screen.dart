@@ -1,6 +1,8 @@
 import 'dart:developer';
 
+import 'package:adminpannal/Utils/app_language.dart';
 import 'package:adminpannal/Utils/utils.dart';
+import 'package:adminpannal/constants/app_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -17,9 +19,9 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
   
   bool isFetching = false;
 
-  List<String> links = [];
+  Map<String, List<String>> links = {};
 
-  List<TextEditingController> controllers = [];
+  Map<String, List<TextEditingController>> controllers = {};
 
   @override
   void initState() {
@@ -38,17 +40,27 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
       if (snapshot.exists) {
         Map<String, dynamic> data = snapshot.data()!;
 
-        List<dynamic> ids = data['ids'];
+        for (var entry in AppLanguage.languageCodeToName.entries) {
 
-        links  = ids.map((test) {
+          String code = entry.key;
+          String language = entry.value;
 
-          String id = test.toString();
+          List<dynamic> ids = data['id_$code'] ?? [];
 
-          controllers.add(TextEditingController(text: id));
+          links[language] = ids.map((id) => id.toString()).toList();
 
-          return id;
+          controllers[language] = [];
 
-        }).toList();
+          links[language]!.map((test) {
+
+            String id = test.toString();
+
+            controllers[language]!.add(TextEditingController(text: id));
+
+            return id;
+
+          }).toList();
+        }
       }
       
     } catch (e, stace) {
@@ -66,16 +78,24 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
 
       DocumentReference<Map<String, dynamic>> snapshot = firestore.collection('DynamicSection').doc('Youtube_Ids');
 
-      List<String> links = [];
+      Map<String, dynamic> data = {};
 
-      for (var link in controllers) {
-        String id = link.text.trim();
-        links.add(id);
+      for (var controller in controllers.entries) {
+
+        String key = AppLanguage.languageNameToCode[controller.key]!;
+        List<TextEditingController> ids = controller.value;
+
+        List<String> ytIds = [];
+
+        for (var id in ids) {
+          String yt = id.text.trim();
+          ytIds.add(yt);
+        }
+
+        data['id_$key'] = ytIds;
       }
 
-      await snapshot.set({
-        'ids': links
-      });
+      await snapshot.set(data);
 
     } catch (e, stace) {
       log('Error saving youtube links :(\n$e\n$stace');
@@ -84,14 +104,16 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
     }
   }
 
-  Future<void> deleteLink(int index) async {
+  Future<void> deleteLink(String key, int index) async {
     try {
 
       DocumentReference<Map<String, dynamic>> snapshot = firestore.collection('DynamicSection').doc('Youtube_Ids');
 
+      List<TextEditingController> ids = controllers[key]!;
+
       List<String> links = [];
 
-      for (var link in controllers) {
+      for (var link in ids) {
         String id = link.text.trim();
         links.add(id);
       }
@@ -103,10 +125,12 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
       Utils.showLoadingBox(context: context, title: 'Deleting $removedLink...');
 
       await snapshot.set({
-        'ids': links
-      });
+        'id_${AppLanguage.languageNameToCode[key]}': links,
+      },
+        SetOptions(merge: true),
+      );
 
-      controllers.removeAt(index);
+      controllers[key]!.removeAt(index);
 
     } catch (e, stace) {
       log('Error deleting youtube links :(\n$e\n$stace');
@@ -154,23 +178,62 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
 
-                const Text(
-                  'Note :- You need to write just id of youtube video.',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.red
-                  ),
-                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 5),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
 
-                const SizedBox(height: 10),
+                          Text(
+                            'Note :- You need to write just id of youtube video.',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.red
+                            ),
+                          ),
 
-                const Text(
-                  'For instance - for video link "https://www.youtube.com/embed/0CyW8I7lRgA", you need to write only "0CyW8I7lRgA"',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.grey
+                          SizedBox(height: 10),
+
+                          Text(
+                            'For instance - for video link "https://www.youtube.com/embed/0CyW8I7lRgA", you need to write only "0CyW8I7lRgA"',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey
+                            ),
+                          ),
+
+                        ],
+                      ),
+
+                      InkWell(
+                        onTap: () {
+                          if (formKey.currentState!.validate()) {
+                            saveLinks();
+                          }
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: Colors.orange,
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                          alignment: Alignment.center,
+                          child: const Text(
+                            'Save',
+                            style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
 
@@ -180,117 +243,123 @@ class _YoutubeVideosScreenState extends State<YoutubeVideosScreen> {
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
                   padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 10),
-                  itemCount: controllers.length,
-                  itemBuilder: (context, index) {
+                  itemCount: controllers.entries.length,
+                  itemBuilder: (context, i) {
 
-                    TextEditingController controller = controllers[index];
+                    final entry = controllers.entries.toList()[i];
 
-                    return Row(
-                      children: [
-                        Text(
-                          '${index+1}.',
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white
+                    String language = entry.key;
+                    List<TextEditingController> ids = entry.value;
+
+                    return Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: const BoxDecoration(
+                        color: boxColor
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+
+                          Text(
+                            language,
+                            style: const TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange
+                            ),
                           ),
-                        ),
 
-                        const SizedBox(width: 10),
+                          const SizedBox(height: 10),
 
-                        customTextField(controller: controller),
+                          ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemCount: ids.length,
+                            itemBuilder: (context, index) {
+                              return Row(
+                                children: [
+                                  Text(
+                                    '${index+1}.',
+                                    style: const TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.white
+                                    ),
+                                  ),
 
-                        const SizedBox(width: 10),
+                                  const SizedBox(width: 10),
 
-                        IconButton(
-                          onPressed: () {
+                                  customTextField(controller: ids[index]),
 
-                            Utils.showConfirmBox(
-                              context: context,
-                              message: 'Are you sure to delete youtube video..!!',
-                              onConfirm: () {
-                                deleteLink(index);
-                              },
-                              onCancel: () {
-                                Navigator.pop(context);
-                              },
-                              confirmText: 'Delete'
-                            );
-                          },
-                          icon: const Icon(
-                            Icons.delete,
-                            color: Colors.red,
-                          )
-                        ),
-                      ],
+                                  const SizedBox(width: 10),
+
+                                  IconButton(
+                                      onPressed: () {
+                                        Utils.showConfirmBox(
+                                          context: context,
+                                          message: 'Are you sure to delete youtube video..!!',
+                                          onConfirm: () {
+                                            deleteLink(language, index);
+                                          },
+                                          onCancel: () {
+                                            Navigator.pop(context);
+                                          },
+                                          confirmText: 'Delete'
+                                        );
+                                      },
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      )
+                                  ),
+                                ],
+                              );
+                            },
+                            separatorBuilder: (BuildContext context, int index) {
+                              return const SizedBox(height: 10);
+                            },
+                          ),
+
+                          const SizedBox(height: 10),
+
+                          InkWell(
+                            onTap: () {
+                              setState(() {
+                                controllers[language]!.add(TextEditingController());
+                              });
+                            },
+                            child: Container(
+                              width: double.maxFinite,
+                              padding: const EdgeInsets.symmetric(vertical: 8),
+                              decoration: BoxDecoration(
+                                  color: Colors.white.withValues(alpha: 0.1),
+                                  borderRadius: BorderRadius.circular(30),
+                                  border: Border.fromBorderSide(BorderSide(
+                                      color: Colors.grey.shade200
+                                  ))
+                              ),
+                              alignment: Alignment.center,
+                              child: const Text(
+                                '+  Add More Links',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.white
+                                ),
+                              ),
+                            ),
+                          ),
+
+                        ],
+                      ),
                     );
                   },
                   separatorBuilder: (BuildContext context, int index) {
-                    return const SizedBox(height: 10);
+                    return const SizedBox(height: 25);
                   },
                 ),
 
                 const SizedBox(height: 10),
-
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      controllers.add(TextEditingController());
-                    });
-                  },
-                  child: Container(
-                    width: double.maxFinite,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(30),
-                      border: Border.fromBorderSide(BorderSide(
-                        color: Colors.grey.shade200
-                      ))
-                    ),
-                    alignment: Alignment.center,
-                    child: const Text(
-                      '+  Add More Links',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white
-                      ),
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: MediaQuery.of(context).size.height * 0.25),
-
-                Row(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    InkWell(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          saveLinks();
-                        }
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: Colors.orange,
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        alignment: Alignment.center,
-                        child: const Text(
-                          'Save',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
               ],
             ),
 

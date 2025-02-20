@@ -1,26 +1,18 @@
 import 'dart:developer';
 import 'dart:typed_data';
 
+import 'package:adminpannal/Utils/app_language.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 
 class SimilarProductsProvider with ChangeNotifier {
 
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage storage = FirebaseStorage.instance;
-
-  Map<String, String> languagesMap = {
-    'Bengali': 'bn',
-    'English': 'en',
-    'Hindi': 'hi',
-    'Kannada': 'kn',
-    'Malayalam': 'ml',
-    'Marathi': 'mr',
-    'Odia': 'or',
-    'Tamil': 'ta',
-    'Telugu': 'tl',
-  };
+  final ImagePicker _picker = ImagePicker();
 
   Stream<Map<String, dynamic>> fetchSimilarProductsBanner() async* {
     try {
@@ -64,6 +56,70 @@ class SimilarProductsProvider with ChangeNotifier {
     }
   }
 
+
+  /// SIMILAR PRODUCT IDs
+
+  final TextEditingController _productIdController = TextEditingController();
+  TextEditingController get productIdController => _productIdController;
+
+  final List<TextEditingController> _productControllers = [];
+
+  List<TextEditingController> get productControllers => _productControllers;
+
+  void addProductController() {
+    _productControllers.add(TextEditingController());
+    notifyListeners();
+  }
+
+  void removeProductController(int index) {
+    _productControllers.removeAt(index);
+    notifyListeners();
+  }
+
+  void initProductControllers(List<String> ids) {
+
+    _productControllers.clear();
+
+    for (var id in ids) {
+      _productControllers.add(TextEditingController(text: id));
+    }
+    notifyListeners();
+  }
+
+  void initAddProductIdDialog() {
+    _productIdController.clear();
+    _productControllers.clear();
+  }
+
+  Future<bool> saveSimilarProductsIds({String? docId}) async {
+    try {
+
+      log('Saving product ids...');
+
+      final ref = firestore.collection('Similar Products');
+
+      Map<String, dynamic> data = {
+        'products': productControllers.map((controller) => controller.text.trim()).toList()
+      };
+
+      if (docId != null) {
+        ref.doc(docId).set(data);
+      }
+      else {
+        ref.doc(productIdController.text.trim()).set(data);
+      }
+
+      return true;
+
+    } catch (e, s) {
+      log('Error saving product ids..!!\n$e\n$s');
+      return false;
+    }
+  }
+
+
+  /// SIMILAR PRODUCT BANNER
+
   final Map<String, Uint8List?> _pickedImages = {};
   Map<String, Uint8List?> get pickedImages => _pickedImages;
   void addPickedImage(String key, Uint8List? image) {
@@ -82,23 +138,20 @@ class SimilarProductsProvider with ChangeNotifier {
 
       final ref = firestore.collection('Similar Products').doc('banner');
 
-      final downloadUrls = await Future.wait(
-        pickedImages.entries.map((entry) async {
-          String key = entry.key;
-          Uint8List? file = entry.value;
+      for (var entries in pickedImages.entries) {
+        String language = entries.key;
+        Uint8List? file = entries.value;
 
-          if (file != null) {
-            String? url = await uploadImage(file: file, path: key);
-            return {
-              key: url
-            };
-          }
+        if (file != null) {
+          String? url = await uploadImage(file: file, path: language);
 
-        }).toList()
-      );
+          String docKey = AppLanguage.languageNameToCode[language]!;
 
-      for (var entries in downloadUrls) {
-
+          ref.set(
+            {'banner_$docKey': url ?? ''},
+            SetOptions(merge: true),
+          );
+        }
       }
 
       return true;
@@ -109,6 +162,16 @@ class SimilarProductsProvider with ChangeNotifier {
     }
   }
 
+  Future<Uint8List?> pickImage() async {
+    final XFile? pickedImage = await _picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedImage != null) {
+      final Uint8List imageBytes = await pickedImage.readAsBytes();
+      return imageBytes;
+    }
+
+    return null;
+  }
 
   Future<String?> uploadImage({
     required Uint8List file,
